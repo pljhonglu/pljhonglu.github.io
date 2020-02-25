@@ -1,0 +1,512 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>移动端接口指南 | 独 奏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="该文档参考 REST Web API 设计，但是考虑到目前服务器所使用技术完全使用 REST API 工作量过大。所以做了一些妥协。 加星号部分可根据需求选择性实现。">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="移动端接口指南">
+<meta property="og:url" content="https://honglu.me/2016/07/29/移动端接口指南/index.html">
+<meta property="og:site_name" content="独 奏">
+<meta property="og:description" content="该文档参考 REST Web API 设计，但是考虑到目前服务器所使用技术完全使用 REST API 工作量过大。所以做了一些妥协。 加星号部分可根据需求选择性实现。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-09T03:55:11.826Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="移动端接口指南">
+<meta name="twitter:description" content="该文档参考 REST Web API 设计，但是考虑到目前服务器所使用技术完全使用 REST API 工作量过大。所以做了一些妥协。 加星号部分可根据需求选择性实现。">
+  
+    <link rel="alternative" href="/atom.xml" title="独 奏" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Baidu Analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ff2d4025fdadaba5944a656c7fdd681f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- End Baidu Analytics -->
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-66673227-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">独 奏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">道阻且长，行则将至</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+          <a class="main-nav-link" href="http://wiki.honglu.me">Wiki</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="honglu.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-移动端接口指南" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/07/29/移动端接口指南/" class="article-date">
+  <time datetime="2016-07-29T03:20:00.000Z" itemprop="datePublished">7月 29 2016</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/HTTP/">HTTP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      移动端接口指南
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>该文档参考 REST Web API 设计，但是考虑到目前服务器所使用技术完全使用 REST API 工作量过大。所以做了一些妥协。</p>
+<p>加星号部分可根据需求选择性实现。</p>
+<a id="more"></a>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>首先描述一下 Request 和 Response 的大概格式</p>
+<h3 id="Request"><a href="#Request" class="headerlink" title="Request"></a>Request</h3><figure class="highlight http"><table><tr><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/api</span> HTTP/1.1</span><br><span class="line"><span class="attribute">Host</span>: www.domain.com</span><br><span class="line"><span class="attribute">Accept</span>: application/vnd.company+json</span><br><span class="line"><span class="attribute">Accept-Language</span>: zh-cn</span><br><span class="line"><span class="attribute">Accept-Encoding</span>: gzip, deflate</span><br><span class="line"><span class="attribute">X-Api-Version</span>: 1.0</span><br><span class="line"><span class="attribute">User-Agent</span>: app/1.0 CFNetwork/760.6.3 iOS/9.3</span><br><span class="line"><span class="attribute">Connection</span>: keep-alive</span><br><span class="line"><span class="attribute">Content-type</span>: application/json</span><br><span class="line"><span class="attribute">Content-Length</span>: 1024</span><br><span class="line"><span class="attribute">Etag</span>: "qwghu2u3423kjgh234iughjkh"</span><br><span class="line"><span class="attribute">X-UUID</span>: 01234567-89ab-cdef-0123-456789abcdef</span><br><span class="line"><span class="attribute">X-Geo-Location</span>: +40.6894-074.0447</span><br><span class="line"></span><br><span class="line"><span class="attribute">content</span></span><br></pre></td></tr></table></figure>
+<h3 id="Response"><a href="#Response" class="headerlink" title="Response"></a>Response</h3><figure class="highlight"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 <span class="number">200</span> OK</span><br><span class="line"><span class="attribute">Date</span>: Thu, 28 Jul 2016 06:55:31 GMT</span><br><span class="line"><span class="attribute">Content-Type</span>: application/vnd.company+json;charset=utf-8</span><br><span class="line"><span class="attribute">Vary</span>: Accept-Encoding</span><br><span class="line"><span class="attribute">Server</span>: nginx/1.0.4</span><br><span class="line"><span class="attribute">Content-Encoding</span>: gzip</span><br><span class="line"><span class="attribute">Etag</span>: "qwghu2u3423kjgh234iughjkh"</span><br><span class="line"><span class="attribute">Content-Length</span>: 1024</span><br><span class="line"></span><br><span class="line">&#123;"code":200,"message":"success","data":&#123;"color":"WHITE","size":7.5&#125;&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="请求方式"><a href="#请求方式" class="headerlink" title="请求方式"></a>请求方式</h2><p>这里分为两种方案：</p>
+<h3 id="REST"><a href="#REST" class="headerlink" title="REST"></a>REST</h3><p>该方案是 REST API 的请求模式</p>
+<ul>
+<li>GET (选择)：从服务器上获取一个具体的资源或者一个资源列表。 </li>
+<li>POST （创建）： 在服务器上创建一个新的资源。</li>
+<li>PUT（更新）：以整体的方式更新服务器上的一个资源。 </li>
+<li>PATCH （更新）：只更新服务器上一个资源的一个属性。</li>
+<li>DELETE（删除）：删除服务器上的一个资源。 </li>
+<li>HEAD ： 获取一个资源的元数据，如数据的哈希值或最后的更新时间。</li>
+<li>OPTIONS：获取客户端能对资源做什么操作的信息。</li>
+</ul>
+<h3 id="ONLY-GET-POST"><a href="#ONLY-GET-POST" class="headerlink" title="ONLY GET/POST"></a>ONLY GET/POST</h3><p>对于大部分服务器并没有很好的支持 PUT/DELETE 之类的方法，因此，只使用 GET/POST 方法，是个便捷省力的方式。</p>
+<p>当然我们也可以把其它操作放到 Request Header 里面，只需要在 Header 里面加上 <code>x-Method</code> 字段就可以了。</p>
+<h3 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h3><p>对于提交 body 中的数据，服务器只接受 <strong>JSON序列化</strong> 的数据，不接受 form-encoded 数据，这样可以保持请求和返回都是JSON数据。</p>
+<p>注意各方法必须符合下表中 <strong>幂等</strong> 以及 <strong>安全</strong> 要求</p>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th>幂等</th>
+<th>安全</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OPTIONS</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>HEAD</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>no</td>
+<td>no</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>no</td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p>安全：不改变服务器资源状态<br>幂等：请求的结果和请求次数无关</p>
+<p>PUT 必须是对服务器资源的完整替换，而 PATCH 可以要求服务器执行逻辑操作(比如加减)，所以 PATCH 不是幂等的。</p>
+<h2 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h2><h3 id="X-Api-Version"><a href="#X-Api-Version" class="headerlink" title="X-Api-Version"></a>X-Api-Version</h3><p>版本号通常有两种标识方式</p>
+<p>一种是放到 header 里，如上面的:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">X-Api-Version: 3.0</span><br></pre></td></tr></table></figure>
+<p>另一种是直接在URL 添加版本号</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http://api.domain.com/v3/</span><br></pre></td></tr></table></figure>
+<p>第一种可以针对单个接口设置版本号，第二种是整套接口系统采用统一版本号。</p>
+<p>第二种可用于对外开放 API，比如微博、github的 open API，使用统一版本号。</p>
+<p>针对单个 APP 通常采用第一种。</p>
+<h3 id="自定义-content-type"><a href="#自定义-content-type" class="headerlink" title="自定义 content-type"></a>自定义 content-type</h3><p>不要使用标准的 content-type ，因为客户端没有处理这些 content-type 的能力，可以使用下面的自定义格式</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Content-type: application/vnd.company+xml</span><br><span class="line">Content-type: application/vnd.company+json</span><br></pre></td></tr></table></figure>
+<p>客户端可以根据这些特定的 content-type 写专门的解析方式。</p>
+<p>所有 application/vnd 都是提供商自定的 content-type 而不是标准。仅应用于非标准 content-type。</p>
+<h3 id="User-Agent"><a href="#User-Agent" class="headerlink" title="User-Agent"></a>User-Agent</h3><p><code>User-Agent</code> 采用 <code>APP名称/版本号 网络组件名/版本号 系统名/版本号</code> 的形式。</p>
+<h3 id="x-UUID"><a href="#x-UUID" class="headerlink" title="x-UUID*"></a>x-UUID*</h3><p>这里发送设备的 UUID，方便服务器进行统计</p>
+<p>UUID 使用 <code>01234567-89ab-cdef-0123-456789abcdef</code> 这种形式</p>
+<h3 id="Etag"><a href="#Etag" class="headerlink" title="Etag*"></a>Etag*</h3><p>方便客户端进行数据缓存，后面有详细说明。</p>
+<h3 id="x-Geo-Location"><a href="#x-Geo-Location" class="headerlink" title="x-Geo-Location*"></a>x-Geo-Location*</h3><p>该字段是发送用户当前地理坐标的，同样是方便服务器进行统计的。</p>
+<p>当然，部分接口可能也会利用这个字段进行针对性的给用户推送地域性的信息，比如本地新闻</p>
+<h2 id="BODY"><a href="#BODY" class="headerlink" title="BODY"></a>BODY</h2><h3 id="JSON-数据"><a href="#JSON-数据" class="headerlink" title="JSON 数据"></a>JSON 数据</h3><figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"code"</span>:</span><br><span class="line">  <span class="string">"message"</span>:</span><br><span class="line">  <span class="string">"errors"</span>:</span><br><span class="line">  <span class="string">"data"</span>:</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>严格数据类型</li>
+<li>去除空值，除非十分有必要存在，那么则使用 null</li>
+<li>时间采用 <a href="https://www.iso.org/obp/ui/#iso:std:iso:8601:ed-3:v1:en" target="_blank" rel="noopener">ISO 8601</a> 标准格式 <code>YYYY-MM-DDTHH:MM:SSZ</code></li>
+<li>只有成功时才返回 data，不成功则不返回 data。data 的数据类型限定为对象或数组</li>
+<li>数据中的枚举采用字符枚举如：<code>{&quot;color&quot;: &quot;WHITE&quot;}</code></li>
+<li>服务器端可以把所有的错误异常都映射为 error 模板</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"code"</span> : <span class="number">422</span>,</span><br><span class="line">  <span class="attr">"message"</span> : <span class="string">"Unprocessable Entity"</span>,</span><br><span class="line">  <span class="attr">"errors"</span> : [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">"field"</span> : <span class="string">"first_name"</span>,</span><br><span class="line">      <span class="attr">"message"</span> : <span class="string">"First name cannot have fancy characters"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="attr">"field"</span> : <span class="string">"password"</span>,</span><br><span class="line">       <span class="attr">"message"</span> : <span class="string">"Password cannot be blank"</span></span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>参考：<a href="https://github.com/darcyliu/google-styleguide/blob/master/JSONStyleGuide.md" target="_blank" rel="noopener">Google JSON风格指南</a></p>
+</blockquote>
+<h3 id="分页"><a href="#分页" class="headerlink" title="分页"></a>分页</h3><p>推荐使用下列属性对数据进行分页：</p>
+<ul>
+<li>page 当前页码</li>
+<li>page_size 每页返回多少数据，可以通过参数指定，但是服务器需设置上限</li>
+<li>total_page 总页数</li>
+<li>has_next 是否有下一页</li>
+</ul>
+<p>total_page 与 has_next 可以二选一</p>
+<h2 id="OTHERS"><a href="#OTHERS" class="headerlink" title="OTHERS"></a>OTHERS</h2><h3 id="身份认证"><a href="#身份认证" class="headerlink" title="身份认证"></a>身份认证</h3><ul>
+<li>basic 认证，只有部署 SSL 证书情况下使用，不推荐</li>
+<li>token：header 增加 <code>Authorization: Bearer {token}</code> 或者 <code>x-Token</code> 验证</li>
+<li><a href="http://oauth.net/2/" target="_blank" rel="noopener">OAuth</a></li>
+</ul>
+<h3 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h3><p>URL 以及 HTTP Header 中的关键字推荐使用短横线做连接符，例如:</p>
+<p>不推荐: <code>http://domain.com/api/book_list</code><br>推 荐: <code>http://domain.com/api/book-list</code> </p>
+<p>参数(URL Param 和 JSON Key)推荐使用下划线或驼峰式命名，如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http://domain.com/api/book?book_name=java</span><br><span class="line">http://domain.com/api/book?bookName=java</span><br></pre></td></tr></table></figure>
+<h3 id="时间-amp-经纬度"><a href="#时间-amp-经纬度" class="headerlink" title="时间 &amp; 经纬度"></a>时间 &amp; 经纬度</h3><p>时间格式遵循 <a href="https://www.iso.org/obp/ui/#iso:std:iso:8601:ed-3:v1:en" target="_blank" rel="noopener">ISO 8601</a> 建议的格式: </p>
+<ul>
+<li>日期: <code>2014-07-09</code></li>
+<li>时间: <code>14:31:22+0800</code></li>
+<li>具体时间: <code>2007-11-06T16:34:41Z</code></li>
+<li>持续时间: <code>P1Y3M5DT6H7M30S</code> （表示在一年三个月五天六小时七分三十秒内）</li>
+<li>时间区间: <code>2007-03-01T13:00:00Z/2008-05-11T15:30:00Z</code>、 <code>2007-03-01T13:00:00Z/P1Y2M10DT2H30M</code></li>
+<li>重复时间: <code>R3/2004-05-06T13:00:00+08/P0Y6M5DT3H0M0S</code> （表示从2004年5月6日北京时间下午1点起，在半年零5天3小时内，重复3次）</li>
+</ul>
+<p>时区推荐默认使用 <a href="https://zh.wikipedia.org/wiki/%E5%8D%8F%E8%B0%83%E4%B8%96%E7%95%8C%E6%97%B6" target="_blank" rel="noopener">UTC</a> 时间</p>
+<p>纬度/经度应该使用 <a href="https://zh.wikipedia.org/wiki/ISO_6709" target="_blank" rel="noopener">ISO 6709</a> 建议的格式</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  // 自由女神像的纬度/经度位置.</span><br><span class="line">  "statueOfLiberty": "+40.6894-074.0447"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="安全"><a href="#安全" class="headerlink" title="安全"></a>安全</h3><p>使用 SSL，禁用 80 端口访问。</p>
+<h3 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h3><p>缓存是客户端的一个重要功能，可以有效减少用户流量，比较推荐的方法是客户端实现 <code>Cache-Control</code> 的缓存逻辑，然后可以根据服务器返回来实现对应的缓存策略。</p>
+<p><code>Cache-Control</code> 通常有下面几种取值：</p>
+<ul>
+<li>private: 仅用于缓存用户个人资料，其他用户无法访问，且只有第一次会发送请求，以后直接从缓存读取。</li>
+<li>no-cache: 客户端 request 会携带 <code>Last-Modified</code> 或 <code>Etag</code> 询问服务器资源是否更改，如果未更改，则使用缓存。</li>
+<li>max-age: <code>max-age=60</code> 则表示缓存60秒内有效</li>
+<li>must-revalidate: 除非用户强制刷新，否则使用缓存数据</li>
+</ul>
+<h4 id="Last-Modified"><a href="#Last-Modified" class="headerlink" title="Last-Modified"></a>Last-Modified</h4><p>客户端第一次请求时，服务器端的返回 HTTP 200，同时携带 <code>Last-Modified</code> 标记该资源在服务器端最后被修改的时间</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Last-Modified:Tue, 24 Feb 2009 08:01:04 GMT</span><br></pre></td></tr></table></figure>
+<p>客户端第二次该资源时，向服务器传送 <code>If-Modified-Since</code> 询问该时间之后文件是否有被修改过：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If-Modified-Since:Tue, 24 Feb 2009 08:01:04 GMT</span><br></pre></td></tr></table></figure>
+<p>如果服务器端的资源没有变化，则自动返回 HTTP 304 状态码，内容为空。当服务器端代码发生改变或者重启服务器时，则重新发出资源，返回和第一次请求时类似。</p>
+<h4 id="Etag-1"><a href="#Etag-1" class="headerlink" title="Etag"></a>Etag</h4><p>首次请求服务器返回资源，header 中包含 <code>Etag</code>，http code 200</p>
+<p>Etag: “qwghu2u3423kjgh234iughjkh”</p>
+<p>客户端请求同一个文件，header 附加 <code>If-None-Match</code> 字段为服务器返回的 Etag</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">If-None-Match:“qwghu2u3423kjgh234iughjkh″</span><br></pre></td></tr></table></figure>
+<p>服务器检查完修改时间和Etag之后，若资源未改变，则返回 http code 304；否则返回 HTTP 200 并附带新的 Etag。</p>
+<h4 id="Expires-or-max-age"><a href="#Expires-or-max-age" class="headerlink" title="Expires or max-age"></a>Expires or max-age</h4><p>服务器也可以在 Response Header 中附加 Expires 字段，表明资源有效期，但是 Expires 存在服务器时间和客户端时间不同步的问题，所以还是推荐使用 max-age。</p>
+<p>max-age 可以和 Etag 或 Last-Modified 配合使用。max-age 有效期内，不访问网络，超出有效期则访问服务器询问资源是否被修改。</p>
+<blockquote>
+<p>参考：<br><a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching?hl=zh-cn" target="_blank" rel="noopener">max-age</a><br><a href="https://blog.toright.com/posts/3414/%E5%88%9D%E6%8E%A2-http-1-1-cache-%E6%A9%9F%E5%88%B6.html" target="_blank" rel="noopener">初探 HTTP 1.1 Cache 機制</a><br><a href="http://blog.csdn.net/eroswang/article/details/8302191" target="_blank" rel="noopener">浏览器缓存详解:expires,cache-control,last-modified,etag详细说明</a></p>
+</blockquote>
+<h3 id="错误码"><a href="#错误码" class="headerlink" title="错误码"></a>错误码</h3><p>服务器目前只有200，500错误。其它错误均在 Response Body 的 code 字段中返回。</p>
+<p>尽管错误码在 Response Body 中，但是我们依然遵循 http status code 对错误码范围的划分，主要考虑就是以后如果使用 Http status code 返回的方式时，目前定义的错误码依然可以使用。</p>
+<p>具体为：</p>
+<ul>
+<li><p>200 段表示请求成功</p>
+<ul>
+<li>200 OK : 请求执行成功并返回相应数据，如 GET 成功</li>
+<li>201 Created : 对象创建成功并返回相应资源数据，如 POST 成功</li>
+<li>202 Accepted : 表示一个请求已经进入后台排队（异步任务）</li>
+<li>204 No Content : 请求执行成功，不返回相应资源数据，如 PATCH ， DELETE 成功</li>
+</ul>
+</li>
+<li><p>300 段资源重定向，重定向的新地址都需要在响应头 Location 中返回</p>
+<ul>
+<li>301 Moved Permanently : 被请求的资源已永久移动到新位置，需 location</li>
+<li>302 Found : 请求的资源临时移动到新位置，需 location</li>
+<li>304 Not Modified : 资源自从上次请求后没有再次发生变化，主要使用场景在于实现数据缓存</li>
+</ul>
+</li>
+<li><p>400 段表示客户端错误</p>
+<ul>
+<li>400 Bad Request : 请求体包含语法错误(请求格式错误)</li>
+<li>401 Unauthorized : 用户没有权限（令牌、用户名、密码错误）</li>
+<li>403 Forbidden : 表示用户验证成功，但是没有该资源权限。</li>
+<li>404 Not Found : 找不到目标资源</li>
+<li>405 Method Not Allowed : 不允许执行目标方法，响应中应该带有 Allow 头，内容为对该资源有效的 HTTP 方法</li>
+<li>406 Not Acceptable : 服务器不支持客户端请求的内容格式，但响应里会包含服务端能够给出的格式的数据，并在 Content-Type 中声明格式名称</li>
+<li>409 Conflict : 请求操作和资源的当前状态存在冲突。主要使用场景在于实现并发控制</li>
+<li>410 Gone : 被请求的资源已被删除，只有在确定了这种情况是永久性的时候才可以使用，否则建议使用 404 Not Found</li>
+<li>422 Unprocessable Entity : 请求格式正确，但是由于含有语义错误(校验错误)，无法响应</li>
+</ul>
+</li>
+<li><p>500 段表示服务器错误</p>
+<ul>
+<li>500 Internal Server Error : 服务器遇到了一个未曾预料的状况，导致了它无法完成对请求的处理。</li>
+<li>501 Not Implemented : 服务器不支持当前请求所需要的某个功能。</li>
+<li>502 Bad Gateway : 作为网关或者代理工作的服务器尝试执行请求时，从上游服务器接收到无效的响应。</li>
+<li>503 Service Unavailable : 由于临时的服务器维护或者过载，服务器当前无法处理请求。这个状况是临时的，并且将在一段时间以后恢复。如果能够预计延迟时间，那么响应中可以包含一个 Retry-After 头用以标明这个延迟时间（内容可以为数字，单位为秒；或者是一个 HTTP 协议指定的时间格式）。如果没有给出这个 Retry-After 信息，那么客户端应当以处理 500 响应的方式处理它。</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2016/07/29/移动端接口指南/" data-id="ck71kb9we006o63t593q8kftt" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2016/07/29/移动端接口指南/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/08/20/Laravel使用JWT多用户认证/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          Laravel 5.2 使用 JWT 进行多用户认证
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/06/22/Threejs全景探索/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Threejs 全景探索</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/05/27/负数取模/">负数取模</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/30/深入理解RunLoop/">深入理解 RunLoop</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/12/计算机浮点数那些事/">计算机浮点数那些事</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/01/HTTPS总结/">HTTPS 总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/03/HTTPS详解(二)/">HTTPS 详解(二)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OSX/">OSX</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Swift/">Swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具党/">工具党</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/有意思/">有意思</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲聊/">闲聊</a><span class="category-list-count">7</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AFNetworking/" style="font-size: 10px;">AFNetworking</a> <a href="/tags/APPStore/" style="font-size: 10px;">APPStore</a> <a href="/tags/ARC/" style="font-size: 10px;">ARC</a> <a href="/tags/Autolayout/" style="font-size: 10px;">Autolayout</a> <a href="/tags/Cocoa/" style="font-size: 10px;">Cocoa</a> <a href="/tags/CocoaPods/" style="font-size: 10px;">CocoaPods</a> <a href="/tags/CollectionViewLayout/" style="font-size: 10px;">CollectionViewLayout</a> <a href="/tags/Content-Type/" style="font-size: 10px;">Content-Type</a> <a href="/tags/CoreData/" style="font-size: 10px;">CoreData</a> <a href="/tags/CoreText/" style="font-size: 10px;">CoreText</a> <a href="/tags/GFWList/" style="font-size: 10px;">GFWList</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/NSAttributedString/" style="font-size: 10px;">NSAttributedString</a> <a href="/tags/OSX/" style="font-size: 12.5px;">OSX</a> <a href="/tags/Objective-C/" style="font-size: 10px;">Objective-C</a> <a href="/tags/RESTAPI/" style="font-size: 10px;">RESTAPI</a> <a href="/tags/RSA/" style="font-size: 12.5px;">RSA</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/SizeClasses/" style="font-size: 10px;">SizeClasses</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/Threejs/" style="font-size: 10px;">Threejs</a> <a href="/tags/UITableView/" style="font-size: 10px;">UITableView</a> <a href="/tags/UITextField/" style="font-size: 10px;">UITextField</a> <a href="/tags/UIView/" style="font-size: 17.5px;">UIView</a> <a href="/tags/UIViewController/" style="font-size: 10px;">UIViewController</a> <a href="/tags/UIWebView/" style="font-size: 10px;">UIWebView</a> <a href="/tags/VCard/" style="font-size: 10px;">VCard</a> <a href="/tags/Waterdrop/" style="font-size: 10px;">Waterdrop</a> <a href="/tags/WormHole/" style="font-size: 10px;">WormHole</a> <a href="/tags/XIB/" style="font-size: 12.5px;">XIB</a> <a href="/tags/block/" style="font-size: 10px;">__block</a> <a href="/tags/api-HTTP/" style="font-size: 10px;">api.HTTP</a> <a href="/tags/autorelease/" style="font-size: 10px;">autorelease</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/bounds/" style="font-size: 10px;">bounds</a> <a href="/tags/crash/" style="font-size: 10px;">crash</a> <a href="/tags/frame/" style="font-size: 10px;">frame</a> <a href="/tags/gitignore/" style="font-size: 10px;">gitignore</a> <a href="/tags/header/" style="font-size: 10px;">header</a> <a href="/tags/http/" style="font-size: 17.5px;">http</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOSHelper/" style="font-size: 10px;">iOSHelper</a> <a href="/tags/iTerm/" style="font-size: 10px;">iTerm</a> <a href="/tags/isa/" style="font-size: 10px;">isa</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/lipo/" style="font-size: 10px;">lipo</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pod/" style="font-size: 10px;">pod</a> <a href="/tags/protocol/" style="font-size: 10px;">protocol</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/weak/" style="font-size: 10px;">weak</a> <a href="/tags/web/" style="font-size: 17.5px;">web</a> <a href="/tags/xcode/" style="font-size: 10px;">xcode</a> <a href="/tags/xib/" style="font-size: 10px;">xib</a> <a href="/tags/三体/" style="font-size: 10px;">三体</a> <a href="/tags/加密/" style="font-size: 10px;">加密</a> <a href="/tags/奇技淫巧/" style="font-size: 10px;">奇技淫巧</a> <a href="/tags/安全/" style="font-size: 12.5px;">安全</a> <a href="/tags/宏/" style="font-size: 10px;">宏</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/支付宝/" style="font-size: 12.5px;">支付宝</a> <a href="/tags/李健/" style="font-size: 10px;">李健</a> <a href="/tags/模/" style="font-size: 10px;">模</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/浮点/" style="font-size: 10px;">浮点</a> <a href="/tags/淘宝/" style="font-size: 10px;">淘宝</a> <a href="/tags/程序猿/" style="font-size: 10px;">程序猿</a> <a href="/tags/袖手旁观/" style="font-size: 10px;">袖手旁观</a> <a href="/tags/装B/" style="font-size: 10px;">装B</a> <a href="/tags/调试/" style="font-size: 10px;">调试</a> <a href="/tags/贱人曾/" style="font-size: 10px;">贱人曾</a> <a href="/tags/运行时/" style="font-size: 10px;">运行时</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/闲聊/" style="font-size: 12.5px;">闲聊</a> <a href="/tags/隐私/" style="font-size: 10px;">隐私</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 独 奏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+    <a href="http://wiki.honglu.me" class="mobile-nav-link">Wiki</a>
+  
+</nav>
+
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'du-zou-s-blog';
+  
+  var disqus_url = 'https://honglu.me/2016/07/29/移动端接口指南/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

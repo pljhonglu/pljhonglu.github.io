@@ -1,0 +1,454 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Swift 构造过程 | 独 奏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Swift 的构造过程算是比较复杂的，《The Swift Programming Language》 中关于 Initialization 的信息量也是非常大。 Swift 中构造器的写法如下 class Student: NSObject &amp;#123;    var name: String?    init(name: String) &amp;#123;        super.init()">
+<meta name="keywords" content="iOS,Swift">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift 构造过程">
+<meta property="og:url" content="https://honglu.me/2015/07/25/Swift构造过程/index.html">
+<meta property="og:site_name" content="独 奏">
+<meta property="og:description" content="Swift 的构造过程算是比较复杂的，《The Swift Programming Language》 中关于 Initialization 的信息量也是非常大。 Swift 中构造器的写法如下 class Student: NSObject &amp;#123;    var name: String?    init(name: String) &amp;#123;        super.init()">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/initializerDelegation01_2x.png">
+<meta property="og:image" content="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/twoPhaseInitialization01_2x.png">
+<meta property="og:image" content="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/twoPhaseInitialization02_2x.png">
+<meta property="og:updated_time" content="2018-08-09T03:55:11.794Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Swift 构造过程">
+<meta name="twitter:description" content="Swift 的构造过程算是比较复杂的，《The Swift Programming Language》 中关于 Initialization 的信息量也是非常大。 Swift 中构造器的写法如下 class Student: NSObject &amp;#123;    var name: String?    init(name: String) &amp;#123;        super.init()">
+<meta name="twitter:image" content="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/initializerDelegation01_2x.png">
+  
+    <link rel="alternative" href="/atom.xml" title="独 奏" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Baidu Analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ff2d4025fdadaba5944a656c7fdd681f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- End Baidu Analytics -->
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-66673227-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">独 奏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">道阻且长，行则将至</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+          <a class="main-nav-link" href="http://wiki.honglu.me">Wiki</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="honglu.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-Swift构造过程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/07/25/Swift构造过程/" class="article-date">
+  <time datetime="2015-07-25T02:12:10.000Z" itemprop="datePublished">7月 25 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Swift/">Swift</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Swift 构造过程
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Swift 的构造过程算是比较复杂的，《The Swift Programming Language》 中关于 Initialization 的信息量也是非常大。</p>
+<p>Swift 中构造器的写法如下</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>: <span class="title">NSObject</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span>?</span><br><span class="line">    <span class="keyword">init</span>(name: <span class="type">String</span>) &#123;</span><br><span class="line">        <span class="keyword">super</span>.<span class="keyword">init</span>()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>与 Objective-C 不同，</p>
+<ul>
+<li>Swift 的构造器是没有返回值的</li>
+<li>Swift 的构造器是通过参数列表来区分的</li>
+<li>Swift 的构造器默认情况下是不被继承的</li>
+</ul>
+<a id="more"></a>
+<h2 id="存储型属性的初始赋值"><a href="#存储型属性的初始赋值" class="headerlink" title="存储型属性的初始赋值"></a>存储型属性的初始赋值</h2><hr>
+<p>Swift 中分『存储型属性』(stored properties)和『计算型属性』(computed properties)。</p>
+<p>类和结构体在创建实例时，必须为所有存储型属性设置合适的初始值。存储型属性的值不能处于一个未知的状态。</p>
+<blockquote>
+<p>Classes and structures must set all of their stored properties to an appropriate initial value by the time an instance of that class or structure is created. Stored properties cannot be left in an indeterminate state.</p>
+</blockquote>
+<p>这里有两点说明</p>
+<ul>
+<li>枚举类型本身只能包含计算型属性，所以枚举类型是除外的</li>
+<li>当存储类型是 可选类型(optional) 时，Swift 会自动帮你赋初始值 nil。也就是说，可选类型的存储型属性可以既不在定义中为其赋值，也不在 init 中将其初始化。</li>
+</ul>
+<p>设置初始值的方式</p>
+<ul>
+<li>在定义时提供默认值</li>
+<li>在构造器(init)中初始化</li>
+</ul>
+<h2 id="定制构造过程"><a href="#定制构造过程" class="headerlink" title="定制构造过程"></a>定制构造过程</h2><hr>
+<p>你可以在定义构造器时提供构造参数，为其提供定制化构造所需值的类型和名字。构造器参数的功能和语法跟函数和方法参数相同。</p>
+<p>构造器跟函数和方法不同的是 <strong>构造器要求每一个参数都有外部名字(external parameter name)，如果没有显示的指定外部名字，那么编译器会自动生成一个与内部名字相同的外部名字。</strong></p>
+<blockquote>
+<p>如果你不希望为构造器的某个参数提供外部名字，可以使用下划线<code>_</code>来描述外部名来覆盖默认行为</p>
+</blockquote>
+<h2 id="常量初始化"><a href="#常量初始化" class="headerlink" title="常量初始化"></a>常量初始化</h2><hr>
+<p>在构造器中可以对常量进行初始化操作</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> gender: <span class="type">Int</span> = -<span class="number">1</span>	<span class="comment">// gender表示「性别」，-1（未知），0（女），1（男）</span></span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span></span><br><span class="line">    <span class="keyword">init</span>(name: <span class="type">String</span>, gender: <span class="type">Int</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.name = name</span><br><span class="line">        <span class="keyword">self</span>.gender = gender</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：<br><strong>对某个类实例来说，它的常量属性只能在定义它的类的构造过程中修改，不能在子类中修改。</strong></p>
+<h2 id="默认构造器"><a href="#默认构造器" class="headerlink" title="默认构造器"></a>默认构造器</h2><hr>
+<p>Swift 将为所有属性已提供默认值的且自身没有定义任何构造器的结构体或基类，提供一个默认的构造器。这个默认构造器将简单的创建一个所有属性值都设置为默认值的实例。</p>
+<blockquote>
+<p>Swift provides a default initializer for any structure or base class that provides default values for all of its properties and does not provide at least one initializer itself. The default initializer simply creates a new instance with all of its properties set to their default values.</p>
+</blockquote>
+<p>注意默认构造器的条件</p>
+<ul>
+<li>所有存储型属性都有默认值(可选类型的属性可以不指定默认值)</li>
+<li>没有显示创建任何构造器</li>
+<li>本身是结构体或者基类</li>
+</ul>
+<p>可以预见，默认构造器的形式为 <code>init(){}</code></p>
+<h3 id="结构体逐一成员构造器"><a href="#结构体逐一成员构造器" class="headerlink" title="结构体逐一成员构造器"></a>结构体逐一成员构造器</h3><p>逐一成员构造器 是结构体独有的。我们在调用 逐一成员构造器 时，通过与成员属性名相同的参数名进行传值来完成对成员属性的初始赋值。</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Size</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> width = <span class="number">0.0</span>, height = <span class="number">0.0</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> size1 = <span class="type">Size</span>()                          <span class="comment">// 使用 默认构造器 对属性进行初始化</span></span><br><span class="line"><span class="keyword">let</span> size2 = <span class="type">Size</span>(width: <span class="number">10.0</span>, height: <span class="number">10.0</span>) <span class="comment">// 使用 逐一成员构造器 对属性进行初始化</span></span><br></pre></td></tr></table></figure>
+<h2 id="值类型的构造器代理"><a href="#值类型的构造器代理" class="headerlink" title="值类型的构造器代理"></a>值类型的构造器代理</h2><hr>
+<p>构造器可以通过调用其它构造器来完成实例的部分构造过程。这一过程称为构造器代理，它能减少多个构造器间的代码重复。</p>
+<p>构造器代理的实现规则和形式在值类型和类类型中有所不同。值类型（结构体和枚举类型）不支持继承，所以构造器代理的过程相对简单，因为它们只能代理任务给本身提供的其它构造器（即self.init(…)）；类则不同，它可以继承自其它类，这意味着 <strong>类有责任保证其所有继承的存储型属性在构造时也能正确的初始化</strong>。</p>
+<p>值类型的构造器这里相对简单，就不细说了</p>
+<h2 id="类的继承和构造过程"><a href="#类的继承和构造过程" class="headerlink" title="类的继承和构造过程"></a>类的继承和构造过程</h2><hr>
+<p>类里面的所有存储型属性(包括所有继承自父类的属性)都必须在构造过程中设置初始值。</p>
+<p>Swift 提供了两种类型的类构造器来确保所有类实例中存储型属性都能获得初始值，它们分别是指定构造器(designated initializers)和便利构造器(convenience initializers)。</p>
+<p>被 <code>convenience</code> 修饰的是便利构造器，其他的是指定构造器。每个类都必须拥有至少一个指定构造器，这个指定构造器可以是从父类继承来的。</p>
+<h3 id="构造器链"><a href="#构造器链" class="headerlink" title="构造器链"></a>构造器链</h3><p>为了简化「指定构造器」和「便利构造器」之间的调用关系，Swift采用以下三条规则来限制构造器之间的代理调用：</p>
+<p>规则一，指定构造器必须调用其直接父类的指定构造器；<br>规则二，便利构造器必须调用同一类中定义的其他构造器；<br>规则三，便利构造器必须最终调用一个指定构造器；  </p>
+<p>简言之就是指定构造器必须向上调用，便利构造器必须横向调用</p>
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/initializerDelegation01_2x.png" alt=""></p>
+<h3 id="两段式构造"><a href="#两段式构造" class="headerlink" title="两段式构造"></a>两段式构造</h3><p>Swift中类的构造过程包含两个阶段。</p>
+<ul>
+<li>第一阶段，每个存储型属性通过引入它们的类的构造器来设置初始值。</li>
+<li>第二阶段，在新实例准备使用之前进一步定制存储型属性。</li>
+</ul>
+<p>安全检查</p>
+<ol>
+<li>指定构造器必须保证它所在类引入的所有属性都必须先初始化完成，之后才能将其他构造任务向上代理父类的构造器；简而言之，子类的构造器在 <code>super.init(...)</code> 之前必须确保自己的存储型属性（非继承属性）都完成了初始化。</li>
+<li>指定构造器必须在调用父类构造器之后再为继承的属性设置新值。否则，指定构造器赋予的新值将被父类中的构造器所覆盖。</li>
+<li>便利构造器必须在调用同一类中的其它构造器之后再为其它属性赋值。否则，便利构造器赋予的新值将被同类中其它指定构造器所覆盖。</li>
+<li>构造器在第一阶段构造完成之前，不能调用任何实例方法、不能读取任何实例属性的值，也不能引用self的值。类实例在第一阶段结束以前并不是完全有效，仅能访问属性和调用方法，一旦完成第一阶段，该实例才会声明为有效实例。</li>
+</ol>
+<p>两段式构造详细说明</p>
+<p>阶段一</p>
+<ul>
+<li>某个指定构造器或便利构造器被调用；</li>
+<li>完成新实例内存的分配，但此时内存还没有被初始化；</li>
+<li>指定构造器确保其所在类引入的所有存储型属性都已赋初值。存储型属性所属的内存完成初始化；</li>
+<li>指定构造器将调用父类的构造器，完成父类属性的初始化；</li>
+<li>这个调用父类构造器的过程沿着构造器链一直往上执行，直到到达构造器链的最顶部；</li>
+<li>当到达了构造器链最顶部，且已确保所有实例包含的存储型属性都已经赋值，这个实例的内存被认为已经完全初始化。此时阶段1完成。</li>
+</ul>
+<p>阶段二</p>
+<ul>
+<li>从顶部构造器链一直往下，每个构造器链中类的指定构造器都有机会进一步定制实例。构造器此时可以访问self、修改它的属性并调用实例方法等等。</li>
+<li>最终，任意构造器链中的便利构造器可以有机会定制实例和使用self。</li>
+</ul>
+<p>下图展示了在假定的子类和父类之间构造的「阶段一」：</p>
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/twoPhaseInitialization01_2x.png" alt=""></p>
+<p>以下展示了相同构造过程的「阶段二」：</p>
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/swift/conceptual/swift_programming_language/Art/twoPhaseInitialization02_2x.png" alt=""></p>
+<h3 id="类构造器的继承和重载"><a href="#类构造器的继承和重载" class="headerlink" title="类构造器的继承和重载"></a>类构造器的继承和重载</h3><p>跟OC中的子类不同，Swift 中的子类不会默认继承父类的构造器。</p>
+<p>当你要重载一个父类的指定构造器的时候，不论是重载为指定构造器还是便利构造器，必须加上 <code>override</code> 关键字。</p>
+<blockquote>
+<p>You always write the override modifier when overriding a superclass designated initializer, even if your subclass’s implementation of the initializer is a convenience initializer.</p>
+</blockquote>
+<p>构造器自动继承</p>
+<p>特定条件下，父类构造器是可以被自动继承的，条件如下：</p>
+<ul>
+<li>如果子类没有定义任何指定构造器，它将自动继承所有父类的指定构造器</li>
+<li>如果子类提供了所有父类指定构造器的实现(不管是继承过来的还是重载的)，他将自动继承父类的便利构造器</li>
+</ul>
+<p>这里注意</p>
+<ul>
+<li>如果子类定义了指定构造器(不论是不是重载)，那么就意味着子类不会继承父类所有指定构造器了。这种情况下，除非子类重载了父类所有指定构造器，否则不会继承父类的便利构造器。</li>
+<li>如果存在存储型属性没有指定默认值(可选类型默认为 nil)，那么编译器会强制你提供指定构造器来初始化存储型属性</li>
+</ul>
+<h2 id="可失败构造器-Failable-Initializer"><a href="#可失败构造器-Failable-Initializer" class="headerlink" title="可失败构造器(Failable Initializer)"></a>可失败构造器(Failable Initializer)</h2><hr>
+<p>可失败的构造器就是一个允许返回 nil 的构造器。在构造器中我们不需要显式的<code>return self</code>因为编译器为我们做了这个工作，但是对于可失败的构造器来说，就需要我们显示的<code>retun nil</code>，我们只要在必要的地方<code>retun nil</code>就好了，<code>return self</code>编译器依然会自动添加。</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> age: <span class="type">Int</span> = <span class="number">0</span></span><br><span class="line">    <span class="keyword">init</span>?(age: <span class="type">Int</span>) &#123;</span><br><span class="line">        <span class="keyword">self</span>.age = age</span><br><span class="line">        <span class="keyword">if</span> age &lt; <span class="number">0</span> || age &gt; <span class="number">200</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>说明</p>
+<ul>
+<li>可失败的构造器并不是类独有的，结构体和枚举也同样适用</li>
+<li>由于构造器是通过参数列表来区分的，所以一个构造器声明为可失败构造器之后，就不能再声明为非可失败构造器了，比如不能同时出现<code>init?(){}</code>和<code>init(){}</code></li>
+<li>值类型(如结构体和枚举类型)可以在任意时刻触发失败行为。但是类的可失败构造器只能在所有类属性被初始化完毕和调用完父类的构造器之后才能触发失败行为。</li>
+<li>可失败构造器可以调用同级或上级的可失败构造器</li>
+<li>非可失败构造器不能调用可失败构造器</li>
+<li>可以用一个非可失败构造器覆盖一个可失败构造器，但反过来就不行了。</li>
+</ul>
+<h3 id="可失败构造器-init"><a href="#可失败构造器-init" class="headerlink" title="可失败构造器 init!"></a>可失败构造器 init!</h3><p>可失败构造器除了 <code>init?</code> 之外还有另一种形式 <code>init!</code> ，<code>init!</code>是自带解包(implicitly unwrapped)的.</p>
+<h2 id="必要构造器-Required-Initializers"><a href="#必要构造器-Required-Initializers" class="headerlink" title="必要构造器(Required Initializers)"></a>必要构造器(Required Initializers)</h2><hr>
+<p>如果在类的构造器前加<code>required</code>关键字，则要求该类的所有子类都必须实现该构造器，且实现的时候也必须加<code>required</code>关键字，也就是说必要构造器是一直向下传递的。</p>
+<p>这里最常用的就是当我们某一个类继承<code>UIViewController</code>然后定义了指定构造器之后，编译器会要求必须实现<code>init(coder aDecoder: NSCoder)</code>构造器。这个<code>init(coder aDecoder: NSCoder)</code>构造器是在<code>NSCoding</code>协议中定义的。<br>也就是说当我们没有定义任何指定构造器的时候，必要构造器是可以继承下来的，一旦我们定义了指定构造器，那么我们就必须实现必要构造器</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><hr>
+<p>《The Swift Programming Language》中对于构造器的描述是一个大长篇，这里虽然做了一些精简，但是依然是一个长篇，里面的内容值得我们仔细琢磨，在实践中多多体会。</p>
+<p>这里我依然有个问题还不是太明白：</p>
+<p>在 UIViewController 中定义了指定构造器<br><code>init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?)</code><br>但是却可以通过<code>UIViewController()</code>来调用默认构造器，这个不清楚是怎么做到的。</p>
+<blockquote>
+<p>答案：UIViewController 的这个无参的构造器是从 UIKit 里面迁移过来的，也就是说这个无参的构造器实际上就是 Objective-C 的 UIViewController 的无参构造方法。<br>所以当我们继承 UIViewController 之后，在自己的必要构造器里面是不能调用这个无参的构造器的，编译器会报错<br>同理 UIView 也有类似的构造器<br>由于目前 Cocoa 框架并没有用 Swift 重写，我们开发中使用 Cocoa 框架虽说可以通过 Swift 调用，但毕竟是 Objective-C bridge过来的，用起来还是蛮蛋疼的。<br>——2015-7-29</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/07/25/Swift构造过程/" data-id="ck71kb9ul003063t52nb3jq2w" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/07/25/Swift构造过程/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swift/">Swift</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/08/04/APP安全性解析/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          APP安全性解析
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/07/13/常用的几种Content-Type/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">常用的几种 Content-Type</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/05/27/负数取模/">负数取模</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/30/深入理解RunLoop/">深入理解 RunLoop</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/12/计算机浮点数那些事/">计算机浮点数那些事</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/01/HTTPS总结/">HTTPS 总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/03/HTTPS详解(二)/">HTTPS 详解(二)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OSX/">OSX</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Swift/">Swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具党/">工具党</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/有意思/">有意思</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲聊/">闲聊</a><span class="category-list-count">7</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AFNetworking/" style="font-size: 10px;">AFNetworking</a> <a href="/tags/APPStore/" style="font-size: 10px;">APPStore</a> <a href="/tags/ARC/" style="font-size: 10px;">ARC</a> <a href="/tags/Autolayout/" style="font-size: 10px;">Autolayout</a> <a href="/tags/Cocoa/" style="font-size: 10px;">Cocoa</a> <a href="/tags/CocoaPods/" style="font-size: 10px;">CocoaPods</a> <a href="/tags/CollectionViewLayout/" style="font-size: 10px;">CollectionViewLayout</a> <a href="/tags/Content-Type/" style="font-size: 10px;">Content-Type</a> <a href="/tags/CoreData/" style="font-size: 10px;">CoreData</a> <a href="/tags/CoreText/" style="font-size: 10px;">CoreText</a> <a href="/tags/GFWList/" style="font-size: 10px;">GFWList</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/NSAttributedString/" style="font-size: 10px;">NSAttributedString</a> <a href="/tags/OSX/" style="font-size: 12.5px;">OSX</a> <a href="/tags/Objective-C/" style="font-size: 10px;">Objective-C</a> <a href="/tags/RESTAPI/" style="font-size: 10px;">RESTAPI</a> <a href="/tags/RSA/" style="font-size: 12.5px;">RSA</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/SizeClasses/" style="font-size: 10px;">SizeClasses</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/Threejs/" style="font-size: 10px;">Threejs</a> <a href="/tags/UITableView/" style="font-size: 10px;">UITableView</a> <a href="/tags/UITextField/" style="font-size: 10px;">UITextField</a> <a href="/tags/UIView/" style="font-size: 17.5px;">UIView</a> <a href="/tags/UIViewController/" style="font-size: 10px;">UIViewController</a> <a href="/tags/UIWebView/" style="font-size: 10px;">UIWebView</a> <a href="/tags/VCard/" style="font-size: 10px;">VCard</a> <a href="/tags/Waterdrop/" style="font-size: 10px;">Waterdrop</a> <a href="/tags/WormHole/" style="font-size: 10px;">WormHole</a> <a href="/tags/XIB/" style="font-size: 12.5px;">XIB</a> <a href="/tags/block/" style="font-size: 10px;">__block</a> <a href="/tags/api-HTTP/" style="font-size: 10px;">api.HTTP</a> <a href="/tags/autorelease/" style="font-size: 10px;">autorelease</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/bounds/" style="font-size: 10px;">bounds</a> <a href="/tags/crash/" style="font-size: 10px;">crash</a> <a href="/tags/frame/" style="font-size: 10px;">frame</a> <a href="/tags/gitignore/" style="font-size: 10px;">gitignore</a> <a href="/tags/header/" style="font-size: 10px;">header</a> <a href="/tags/http/" style="font-size: 17.5px;">http</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOSHelper/" style="font-size: 10px;">iOSHelper</a> <a href="/tags/iTerm/" style="font-size: 10px;">iTerm</a> <a href="/tags/isa/" style="font-size: 10px;">isa</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/lipo/" style="font-size: 10px;">lipo</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pod/" style="font-size: 10px;">pod</a> <a href="/tags/protocol/" style="font-size: 10px;">protocol</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/weak/" style="font-size: 10px;">weak</a> <a href="/tags/web/" style="font-size: 17.5px;">web</a> <a href="/tags/xcode/" style="font-size: 10px;">xcode</a> <a href="/tags/xib/" style="font-size: 10px;">xib</a> <a href="/tags/三体/" style="font-size: 10px;">三体</a> <a href="/tags/加密/" style="font-size: 10px;">加密</a> <a href="/tags/奇技淫巧/" style="font-size: 10px;">奇技淫巧</a> <a href="/tags/安全/" style="font-size: 12.5px;">安全</a> <a href="/tags/宏/" style="font-size: 10px;">宏</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/支付宝/" style="font-size: 12.5px;">支付宝</a> <a href="/tags/李健/" style="font-size: 10px;">李健</a> <a href="/tags/模/" style="font-size: 10px;">模</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/浮点/" style="font-size: 10px;">浮点</a> <a href="/tags/淘宝/" style="font-size: 10px;">淘宝</a> <a href="/tags/程序猿/" style="font-size: 10px;">程序猿</a> <a href="/tags/袖手旁观/" style="font-size: 10px;">袖手旁观</a> <a href="/tags/装B/" style="font-size: 10px;">装B</a> <a href="/tags/调试/" style="font-size: 10px;">调试</a> <a href="/tags/贱人曾/" style="font-size: 10px;">贱人曾</a> <a href="/tags/运行时/" style="font-size: 10px;">运行时</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/闲聊/" style="font-size: 12.5px;">闲聊</a> <a href="/tags/隐私/" style="font-size: 10px;">隐私</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 独 奏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+    <a href="http://wiki.honglu.me" class="mobile-nav-link">Wiki</a>
+  
+</nav>
+
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'du-zou-s-blog';
+  
+  var disqus_url = 'https://honglu.me/2015/07/25/Swift构造过程/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

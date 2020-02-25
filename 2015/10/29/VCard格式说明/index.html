@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>VCard 格式说明 | 独 奏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近做一个通讯录相关的东西，需要把通讯录导出 VCF 文件。之前没有接触过 VCard 相关的东西，并不知道 VCard 的格式定义。试着导出了一个 VCF 文件看一下，iCloud 导出的 VCF 文件里面部分字段都加着下划线，明显不是本身定义的字段，看起来像是扩展字段的样子，这让我犯了难。既然这样，只能先查一下 VCF 的格式规范了，奈何中文资料并不多，大部分只是对字段进行了说明，而且不够详细">
+<meta name="keywords" content="VCard">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VCard 格式说明">
+<meta property="og:url" content="https://honglu.me/2015/10/29/VCard格式说明/index.html">
+<meta property="og:site_name" content="独 奏">
+<meta property="og:description" content="最近做一个通讯录相关的东西，需要把通讯录导出 VCF 文件。之前没有接触过 VCard 相关的东西，并不知道 VCard 的格式定义。试着导出了一个 VCF 文件看一下，iCloud 导出的 VCF 文件里面部分字段都加着下划线，明显不是本身定义的字段，看起来像是扩展字段的样子，这让我犯了难。既然这样，只能先查一下 VCF 的格式规范了，奈何中文资料并不多，大部分只是对字段进行了说明，而且不够详细">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-09T03:55:11.796Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="VCard 格式说明">
+<meta name="twitter:description" content="最近做一个通讯录相关的东西，需要把通讯录导出 VCF 文件。之前没有接触过 VCard 相关的东西，并不知道 VCard 的格式定义。试着导出了一个 VCF 文件看一下，iCloud 导出的 VCF 文件里面部分字段都加着下划线，明显不是本身定义的字段，看起来像是扩展字段的样子，这让我犯了难。既然这样，只能先查一下 VCF 的格式规范了，奈何中文资料并不多，大部分只是对字段进行了说明，而且不够详细">
+  
+    <link rel="alternative" href="/atom.xml" title="独 奏" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Baidu Analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ff2d4025fdadaba5944a656c7fdd681f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- End Baidu Analytics -->
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-66673227-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">独 奏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">道阻且长，行则将至</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+          <a class="main-nav-link" href="http://wiki.honglu.me">Wiki</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="honglu.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-VCard格式说明" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/29/VCard格式说明/" class="article-date">
+  <time datetime="2015-10-29T09:08:19.000Z" itemprop="datePublished">10月 29 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/闲聊/">闲聊</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      VCard 格式说明
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近做一个通讯录相关的东西，需要把通讯录导出 VCF 文件。之前没有接触过 VCard 相关的东西，并不知道 VCard 的格式定义。试着导出了一个 VCF 文件看一下，iCloud 导出的 VCF 文件里面部分字段都加着下划线，明显不是本身定义的字段，看起来像是扩展字段的样子，这让我犯了难。既然这样，只能先查一下 VCF 的格式规范了，奈何中文资料并不多，大部分只是对字段进行了说明，而且不够详细，只能硬着头皮去看官方文档了。VCard 的文档在 <a href="https://tools.ietf.org/html/rfc6350" target="_blank" rel="noopener">RFC6350</a> 这份规范上被定义。所以主要看的这个文档。</p>
+<p>字段定义就不多言了。出门左转，<a href="http://baike.baidu.com/link?url=3Eu0JTwgtJ8bNhLPmGbnBRwI3yypyHzT6mRG7_gKr9q4i9SRugVT42qm0gYBDDzrthKG_9EXPWSiRi9uHxVZDa" target="_blank" rel="noopener">百度百科</a>。这里只记录一下使用过程中需要注意的点</p>
+<a id="more"></a>
+<h3 id="1-每条记录使用-LF-CR-分割"><a href="#1-每条记录使用-LF-CR-分割" class="headerlink" title="1.每条记录使用[LF][CR]分割"></a>1.每条记录使用[LF][CR]分割</h3><p>每条记录使用换行+回车的形式进行分割，也就是<code>\r\n</code>。<br>因此每一行都是一条记录(不严谨)</p>
+<h3 id="2-记录长度不超过75字节"><a href="#2-记录长度不超过75字节" class="headerlink" title="2.记录长度不超过75字节"></a>2.记录长度不超过75字节</h3><p>每条记录长度不超过75字节。如果超过的话需要每75字节进行截取进行换行(使用[LF][CR]换行)。下一行需要以空格开头，同样不超过75字节，例如头像的 PHOTO 字段由于包含图片信息，base64编码之后通常会超长，这个字段格式化之后如下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">PHOTO;ENCODING=BASE64:/9j/4AAQSkZJRgABAQAASABIAAD/4QBMRXhpZgAATU0AKgAAAAgAA</span><br><span class="line"> gESAAMAAAABAAEAAIdpAAQAAAABAAAAJgAAAAAAAqACAAQAAAABAAABWaADAAQAAAABAAABWQA</span><br><span class="line"> AAAD/7QA4UGhvdG9zaG9wIDMuMAA4QklNBAQAAAAAAAA4QklNBCUAAAAAABDUHYzZjwCyBOmAC</span><br><span class="line"> Q96z/8ASPU/kP8ACuWn1jULkgyyKSOAQiKefcCq3226/v8A/joqlh7AoH//0v5/6KKKACiiigA</span><br><span class="line"> ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKA</span><br><span class="line"> CiiigAooooAKKKKACiiigAooooAKKKKAP/T/n/ooooAKKKKACiiigAooooAKKKKACiiigAoooo</span><br><span class="line"> AKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiii</span><br><span class="line"> gAooooA/9T+f+iiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKK</span><br><span class="line"> KACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/2Q==</span><br></pre></td></tr></table></figure>
+<p>除了 PHOTO 所在行之外，其它行都是以空格开头，每行长度为75字节(算空格)</p>
+<h3 id="3-同一记录不同属性使用分号分隔"><a href="#3-同一记录不同属性使用分号分隔" class="headerlink" title="3.同一记录不同属性使用分号分隔"></a>3.同一记录不同属性使用分号分隔</h3><p>一行是一条记录，每条记录可以有多个属性来描述，不同的属性需要使用分号来进行分隔。比如：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">REV;VALUE=date:20151029T164508+0800</span><br></pre></td></tr></table></figure></p>
+<h3 id="4-冒号之后为记录值"><a href="#4-冒号之后为记录值" class="headerlink" title="4.冒号之后为记录值"></a>4.冒号之后为记录值</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">REV;VALUE=date:20151029T164508+0800</span><br></pre></td></tr></table></figure>
+<p>上面这条记录的值为20151029T164508+0800，因此没一条记录的冒号之后都需要携带值</p>
+<h3 id="5-时间格式"><a href="#5-时间格式" class="headerlink" title="5.时间格式"></a>5.时间格式</h3><p>部分属性为 date 类型的值，需要使用一种规定的方式来表示，格式定义为<a href="http://www.iso.org/iso/catalogue_detail?csnumber=40874" target="_blank" rel="noopener">ISO.8601.2004</a></p>
+<p>对应形式可以在<a href="https://tools.ietf.org/html/rfc6350#section-4.1.2.3" target="_blank" rel="noopener">section-4.1.2.3</a>找到</p>
+<p>上面的<code>20151029T164508+0800</code>，<code>T</code>前为年月日，<code>T</code>后为时分秒，<code>+</code>号后面为时区(正八区)</p>
+<h3 id="6-转义字符"><a href="#6-转义字符" class="headerlink" title="6.转义字符"></a>6.转义字符</h3><p><code>\</code>、<code>;</code>、<code>,</code>、<code>\n</code>都需要进行转义</p>
+<p>以上字符都需要进行反斜线转义处理。</p>
+<h3 id="7-ADR-记录说明"><a href="#7-ADR-记录说明" class="headerlink" title="7.ADR 记录说明"></a>7.ADR 记录说明</h3><p>这个字段的值定义为</p>
+<blockquote>
+<p>the post office box;<br>the extended address (e.g., apartment or suite number);<br>the street address;<br>the locality (e.g., city);<br>the region (e.g., state or province);<br>the postal code;<br>the country name (full name in the language specified in Section 5.1).</p>
+</blockquote>
+<p>但是文档上面说从 VCard3 开始前两个字段就不再使用了，也就是说应该空置。所以 ADR 字段形式为</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ADR;TYPE=Work;TYPE=PREF:;;3494 Kuhl Avenue;Atlanta;GA;30303;USA</span><br></pre></td></tr></table></figure>
+<h3 id="8-值需要分号分割的，如果值为空分号仍然应该保留"><a href="#8-值需要分号分割的，如果值为空分号仍然应该保留" class="headerlink" title="8.值需要分号分割的，如果值为空分号仍然应该保留"></a>8.值需要分号分割的，如果值为空分号仍然应该保留</h3><p>比如 ADR  其中的 postal 不存在，那么分号仍然应该保留，为如下形式</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ADR;TYPE=Work;TYPE=PREF:;;3494 Kuhl Avenue;Atlanta;GA;;USA</span><br></pre></td></tr></table></figure>
+<h3 id="9-必须存在-FN-记录"><a href="#9-必须存在-FN-记录" class="headerlink" title="9.必须存在 FN 记录"></a>9.必须存在 FN 记录</h3><p>VCard 的基本形式为</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;BEGIN:VCARD&quot; CRLF</span><br><span class="line">&quot;VERSION:3.0&quot; CRLF</span><br><span class="line">1*contentline</span><br><span class="line">&quot;END:VCARD&quot; CRLF</span><br></pre></td></tr></table></figure>
+<p>其中 contentline 中必须包含 FN 这条记录</p>
+<h2 id="最后付一个生成之后的-VCF-文件"><a href="#最后付一个生成之后的-VCF-文件" class="headerlink" title="最后付一个生成之后的 VCF 文件"></a>最后付一个生成之后的 VCF 文件</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">BEGIN:VCARD</span><br><span class="line">VERSION:3.0</span><br><span class="line">N:Appleseed;John;;;</span><br><span class="line">FN:John Appleseed</span><br><span class="line">ORG:;</span><br><span class="line">BDAY;VALUE=date:19800622</span><br><span class="line">NOTE:College roommate \nqwwq\;<span class="string">'asd\,asd\\qw asd\nad</span></span><br><span class="line"><span class="string">PHOTO;ENCODING=BASE64:/9j/4AAQSkZJRgABAQAASABIAAD/4QBMRXhpZgAATU0AKgAAAAgAA</span></span><br><span class="line"><span class="string"> gESAAMAAAABAAEAAIdpAAQAAAABAAAAJgAAAAAAAqACAAQAAAABAAABWaADAAQAAAABAAABWQA</span></span><br><span class="line"><span class="string"> AAAD/7QA4UGhvdG9zaG9wIDMuMAA4QklNBAQAAAAAAAA4QklNBCUAAAAAABDUHYzZjwCyBOmAC</span></span><br><span class="line"><span class="string"> Zjs+EJ+/8AAEQgBWQFZAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAk</span></span><br><span class="line"><span class="string"> KC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJ</span></span><br><span class="line"><span class="string"> DNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl</span></span><br><span class="line"><span class="string"> 7Vyz6dBqWnSQM3lM2GbORtYHg8evIrwpPFfiCNVVLxwE4AwMDv0xViXxp4kmR43uhiRdrYijBI</span></span><br><span class="line"><span class="string"> PuFrT6lUvdMmNGS6nd6h4S1L7MksAS4Pop54P6/hVCOO4tmSG/VjMgBEmMvEvOcgjJ4rirDxTr</span></span><br><span class="line"><span class="string"> 2mZ+x3bKCMYYK4/JgQDRL4p16eb7RNdF3xjLKpA/DGK39hPZ2NYqWzOtmvo5bhrcSEE9A3yhwf</span></span><br><span class="line"><span class="string"> Q96z/8ASPU/kP8ACuWn1jULkgyyKSOAQiKefcCq3226/v8A/joqlh7AoH//0v5/6KKKACiiigA</span></span><br><span class="line"><span class="string"> ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKA</span></span><br><span class="line"><span class="string"> CiiigAooooAKKKKACiiigAooooAKKKKAP/T/n/ooooAKKKKACiiigAooooAKKKKACiiigAoooo</span></span><br><span class="line"><span class="string"> AKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiii</span></span><br><span class="line"><span class="string"> gAooooA/9T+f+iiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKK</span></span><br><span class="line"><span class="string"> KACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/2Q==</span></span><br><span class="line"><span class="string">REV;VALUE=date:20151029T164508+0800</span></span><br><span class="line"><span class="string">ADR;TYPE=Work;TYPE=PREF:;;3494 Kuhl Avenue;Atlanta;GA;30303;USA</span></span><br><span class="line"><span class="string">ADR;TYPE=Home:;;1234 Laurel Street;Atlanta;GA;30303;USA</span></span><br><span class="line"><span class="string">TEL;TYPE=mobile;TYPE=PREF:888-555-5512</span></span><br><span class="line"><span class="string">TEL;TYPE=Home:888-555-1212</span></span><br><span class="line"><span class="string">EMAIL;TYPE=Work;TYPE=PREF:John-Appleseed@mac.com</span></span><br><span class="line"><span class="string">PRODID:-//address book sync//iOS 9.0 version 1//EN</span></span><br><span class="line"><span class="string">END:VCARD</span></span><br></pre></td></tr></table></figure>
+<p>注：PHOTO 数据部分作了截取</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/10/29/VCard格式说明/" data-id="ck71kb9up003863t5sh6w1pof" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/10/29/VCard格式说明/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VCard/">VCard</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/11/04/百度WormHole漏洞分析/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          百度 WormHole 漏洞分析
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/09/21/人体肌肉模型/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">人体肌肉模型</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/05/27/负数取模/">负数取模</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/30/深入理解RunLoop/">深入理解 RunLoop</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/12/计算机浮点数那些事/">计算机浮点数那些事</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/01/HTTPS总结/">HTTPS 总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/03/HTTPS详解(二)/">HTTPS 详解(二)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OSX/">OSX</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Swift/">Swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具党/">工具党</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/有意思/">有意思</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲聊/">闲聊</a><span class="category-list-count">7</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AFNetworking/" style="font-size: 10px;">AFNetworking</a> <a href="/tags/APPStore/" style="font-size: 10px;">APPStore</a> <a href="/tags/ARC/" style="font-size: 10px;">ARC</a> <a href="/tags/Autolayout/" style="font-size: 10px;">Autolayout</a> <a href="/tags/Cocoa/" style="font-size: 10px;">Cocoa</a> <a href="/tags/CocoaPods/" style="font-size: 10px;">CocoaPods</a> <a href="/tags/CollectionViewLayout/" style="font-size: 10px;">CollectionViewLayout</a> <a href="/tags/Content-Type/" style="font-size: 10px;">Content-Type</a> <a href="/tags/CoreData/" style="font-size: 10px;">CoreData</a> <a href="/tags/CoreText/" style="font-size: 10px;">CoreText</a> <a href="/tags/GFWList/" style="font-size: 10px;">GFWList</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/NSAttributedString/" style="font-size: 10px;">NSAttributedString</a> <a href="/tags/OSX/" style="font-size: 12.5px;">OSX</a> <a href="/tags/Objective-C/" style="font-size: 10px;">Objective-C</a> <a href="/tags/RESTAPI/" style="font-size: 10px;">RESTAPI</a> <a href="/tags/RSA/" style="font-size: 12.5px;">RSA</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/SizeClasses/" style="font-size: 10px;">SizeClasses</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/Threejs/" style="font-size: 10px;">Threejs</a> <a href="/tags/UITableView/" style="font-size: 10px;">UITableView</a> <a href="/tags/UITextField/" style="font-size: 10px;">UITextField</a> <a href="/tags/UIView/" style="font-size: 17.5px;">UIView</a> <a href="/tags/UIViewController/" style="font-size: 10px;">UIViewController</a> <a href="/tags/UIWebView/" style="font-size: 10px;">UIWebView</a> <a href="/tags/VCard/" style="font-size: 10px;">VCard</a> <a href="/tags/Waterdrop/" style="font-size: 10px;">Waterdrop</a> <a href="/tags/WormHole/" style="font-size: 10px;">WormHole</a> <a href="/tags/XIB/" style="font-size: 12.5px;">XIB</a> <a href="/tags/block/" style="font-size: 10px;">__block</a> <a href="/tags/api-HTTP/" style="font-size: 10px;">api.HTTP</a> <a href="/tags/autorelease/" style="font-size: 10px;">autorelease</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/bounds/" style="font-size: 10px;">bounds</a> <a href="/tags/crash/" style="font-size: 10px;">crash</a> <a href="/tags/frame/" style="font-size: 10px;">frame</a> <a href="/tags/gitignore/" style="font-size: 10px;">gitignore</a> <a href="/tags/header/" style="font-size: 10px;">header</a> <a href="/tags/http/" style="font-size: 17.5px;">http</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOSHelper/" style="font-size: 10px;">iOSHelper</a> <a href="/tags/iTerm/" style="font-size: 10px;">iTerm</a> <a href="/tags/isa/" style="font-size: 10px;">isa</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/lipo/" style="font-size: 10px;">lipo</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pod/" style="font-size: 10px;">pod</a> <a href="/tags/protocol/" style="font-size: 10px;">protocol</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/weak/" style="font-size: 10px;">weak</a> <a href="/tags/web/" style="font-size: 17.5px;">web</a> <a href="/tags/xcode/" style="font-size: 10px;">xcode</a> <a href="/tags/xib/" style="font-size: 10px;">xib</a> <a href="/tags/三体/" style="font-size: 10px;">三体</a> <a href="/tags/加密/" style="font-size: 10px;">加密</a> <a href="/tags/奇技淫巧/" style="font-size: 10px;">奇技淫巧</a> <a href="/tags/安全/" style="font-size: 12.5px;">安全</a> <a href="/tags/宏/" style="font-size: 10px;">宏</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/支付宝/" style="font-size: 12.5px;">支付宝</a> <a href="/tags/李健/" style="font-size: 10px;">李健</a> <a href="/tags/模/" style="font-size: 10px;">模</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/浮点/" style="font-size: 10px;">浮点</a> <a href="/tags/淘宝/" style="font-size: 10px;">淘宝</a> <a href="/tags/程序猿/" style="font-size: 10px;">程序猿</a> <a href="/tags/袖手旁观/" style="font-size: 10px;">袖手旁观</a> <a href="/tags/装B/" style="font-size: 10px;">装B</a> <a href="/tags/调试/" style="font-size: 10px;">调试</a> <a href="/tags/贱人曾/" style="font-size: 10px;">贱人曾</a> <a href="/tags/运行时/" style="font-size: 10px;">运行时</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/闲聊/" style="font-size: 12.5px;">闲聊</a> <a href="/tags/隐私/" style="font-size: 10px;">隐私</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 独 奏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+    <a href="http://wiki.honglu.me" class="mobile-nav-link">Wiki</a>
+  
+</nav>
+
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'du-zou-s-blog';
+  
+  var disqus_url = 'https://honglu.me/2015/10/29/VCard格式说明/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

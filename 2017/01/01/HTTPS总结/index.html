@@ -1,0 +1,432 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>HTTPS 总结 | 独 奏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这是内部分享的资料，也是对前面几篇关于 HTTPS 相关文章的一个总结。现公开出来。前面的两篇关于 HTTPS 的文章链接如下：  HTTPS 详解   HTTPS 详解(二)  下面是我使用 wireshark 进行抓包的文件： package 可以下载下来使用 wireshark 打开后对比来看。">
+<meta name="keywords" content="HTTPS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTPS 总结">
+<meta property="og:url" content="https://honglu.me/2017/01/01/HTTPS总结/index.html">
+<meta property="og:site_name" content="独 奏">
+<meta property="og:description" content="这是内部分享的资料，也是对前面几篇关于 HTTPS 相关文章的一个总结。现公开出来。前面的两篇关于 HTTPS 的文章链接如下：  HTTPS 详解   HTTPS 详解(二)  下面是我使用 wireshark 进行抓包的文件： package 可以下载下来使用 wireshark 打开后对比来看。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.qiniu.lololo.store/2017-02-09-14832472425287.png">
+<meta property="og:image" content="http://blog.qiniu.lololo.store/2016-09-23-14746019657998.png">
+<meta property="og:image" content="http://blog.qiniu.lololo.store/2016-09-23-14746107556067.jpg">
+<meta property="og:updated_time" content="2019-06-12T06:17:51.234Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTPS 总结">
+<meta name="twitter:description" content="这是内部分享的资料，也是对前面几篇关于 HTTPS 相关文章的一个总结。现公开出来。前面的两篇关于 HTTPS 的文章链接如下：  HTTPS 详解   HTTPS 详解(二)  下面是我使用 wireshark 进行抓包的文件： package 可以下载下来使用 wireshark 打开后对比来看。">
+<meta name="twitter:image" content="http://blog.qiniu.lololo.store/2017-02-09-14832472425287.png">
+  
+    <link rel="alternative" href="/atom.xml" title="独 奏" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Baidu Analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ff2d4025fdadaba5944a656c7fdd681f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- End Baidu Analytics -->
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-66673227-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">独 奏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">道阻且长，行则将至</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+          <a class="main-nav-link" href="http://wiki.honglu.me">Wiki</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="honglu.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-HTTPS总结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/01/01/HTTPS总结/" class="article-date">
+  <time datetime="2017-01-01T02:00:00.000Z" itemprop="datePublished">1月 1 2017</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/HTTP/">HTTP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      HTTPS 总结
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这是内部分享的资料，也是对前面几篇关于 HTTPS 相关文章的一个总结。现公开出来。前面的两篇关于 HTTPS 的文章链接如下：</p>
+<ul>
+<li><a href="http://honglu.me/2016/01/13/HTTPS%E8%AF%A6%E8%A7%A3/">HTTPS 详解</a>  </li>
+<li><a href="http://honglu.me/2016/10/03/HTTPS%E8%AF%A6%E8%A7%A3(%E4%BA%8C)/">HTTPS 详解(二)</a></li>
+</ul>
+<p>下面是我使用 wireshark 进行抓包的文件：</p>
+<p><a href="http://blog.qiniu.lololo.store/package.pcapng" target="_blank" rel="noopener">package</a></p>
+<p>可以下载下来使用 wireshark 打开后对比来看。</p>
+<a id="more"></a>
+<h2 id="HTTPS-TLS-层握手流程"><a href="#HTTPS-TLS-层握手流程" class="headerlink" title="HTTPS TLS 层握手流程"></a>HTTPS TLS 层握手流程</h2><p><img src="http://blog.qiniu.lololo.store/2017-02-09-14832472425287.png" alt=""></p>
+<ol>
+<li>客户端握手请求(Client Hello)：<ul>
+<li>支持的协议版本。</li>
+<li>客户端随机数(<code>random_1</code>)，这个随机数既需要客户端保存又需要发送给服务器。</li>
+<li>支持的加密方法。</li>
+<li>支持的压缩方法。</li>
+</ul>
+</li>
+<li><p>服务器回复：</p>
+<p> <strong>server hello</strong></p>
+<ul>
+<li>确认使用的加密通信协议版本。</li>
+<li>服务器随机数(<code>random_2</code>)。</li>
+<li><p>确认使用的加密方法。</p>
+<p><strong>certificate</strong></p>
+<p>发送服务器证书。</p>
+<p><strong>server key exchange</strong></p>
+<p>当服务端向客户端发送的证书中没有提供足够的信息的时候，还可以向客户端发送一个 Server Key Exchange。如使用 RSA 算法，则服务端可以在这里提供加密预主密钥(PreMaster Secret)的公钥。如使用 DH 算法，则这里传输 DH parameter。</p>
+<p><strong>certificate request</strong></p>
+<p>若服务端需验证客户端证书，需要发送客户端证书请求。</p>
+<p><strong>server hello done</strong></p>
+</li>
+</ul>
+</li>
+<li><p>客户端回应：</p>
+<p> 验证服务器证书的合法性。</p>
+<p> <strong>certificate</strong></p>
+<p> 如果前一步服务端需要客户端提供证书，则通过这里发送客户端证书</p>
+<p> <strong>client key exchange</strong></p>
+<p> 若使用 RSA 算法生成密钥对，则这里生成 <code>PreMaster Secret</code> 并用前面服务器发送过来的公钥加密。若使用 DH 算法，则这里传输 DH parameter</p>
+<p> <strong>certificate vertify</strong></p>
+<p>  只有在客户端发送了自己证书到服务器端，这个消息才需要发送。该消息是让服务端验证该客户端证书，证明客户端确实有该证书的私钥。</p>
+<p> <strong>change cipher spec</strong></p>
+<p> 编码改变通知，表示随后的信息都将用双方商定的加密方法和密钥发送。</p>
+<p> <strong>encrypted handshake message</strong></p>
+<p> 客户端向服务器端发送一个加密的报文(前面所有发送内容的摘要)，如果服务器能够解密，并验证成功，说明两端密钥一致</p>
+</li>
+<li><p>服务器回应</p>
+<p><strong>change cipher spec</strong></p>
+<p>编码改变通知，表示随后的信息都将用双方商定的加密方法和密钥发送。</p>
+<p><strong>encrypted handshake message</strong></p>
+<p>服务器向客户端发送一个加密的报文(前面所有发送内容的摘要)，如果客户端能够解密，并验证成功，说明两端密钥一致。</p>
+</li>
+<li><p>application data</p>
+<p>传输使用公共密钥加密的数据</p>
+</li>
+</ol>
+<h2 id="读懂加密方式"><a href="#读懂加密方式" class="headerlink" title="读懂加密方式"></a>读懂加密方式</h2><p><code>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</code></p>
+<p>ECDHE_RSA: 协商密钥时使用的算法，ECDHE 用于密钥交换，RSA 用于身份认证。<br>AES_256_GCM: 数据交换时使用的加密算法<br>SHA384: 签名算法</p>
+<h2 id="链接重用"><a href="#链接重用" class="headerlink" title="链接重用"></a>链接重用</h2><p>TLS 握手阶段需要9次请求，非常耗时。链接重用目前有两种方式</p>
+<h3 id="session-ID"><a href="#session-ID" class="headerlink" title="session ID"></a>session ID</h3><p>session ID的思想很简单，就是每一次对话都有一个编号（session ID）。如果对话中断，下次重连的时候，只要客户端给出这个编号，且服务器有这个编号的记录，双方就可以重新使用已有的”对话密钥”，而不必重新生成。</p>
+<p>该方式类似服务端的 session，可以使用 session ID 作为该次回话的唯一 标识，缺点在于 session id 需要服务器做存储，对于服务器集群来说，需要专门维护 session ID，可能造成数据不同步的问题。</p>
+<h3 id="session-ticket"><a href="#session-ticket" class="headerlink" title="session ticket"></a>session ticket</h3><p>这个session ticket是加密的，只有服务器才能解密，其中包括本次对话的主要信息，比如对话密钥和加密方法等。当服务器收到session ticket以后，可直接从中解密出对话密钥。</p>
+<p>这种方式的优点就在于不需要服务器存储。缺点在于可携带的信息量有限。</p>
+<h2 id="CDN"><a href="#CDN" class="headerlink" title="CDN"></a>CDN</h2><p>网站为了加快访问速度通常会使用 CDN，如果使用外部 CDN，我们通常不会把私钥交给 CDN 服务商，针对这种场景 CloudFlare 公司提出了一种解决方案 —— <a href="https://www.cloudflare.com/ssl/keyless-ssl/" target="_blank" rel="noopener">Keyless SSL</a>。</p>
+<p><img src="http://blog.qiniu.lololo.store/2016-09-23-14746019657998.png" alt=""></p>
+<p>上图中主要区别在于第四步，CDN 提供商拿到前一步由源服务器公钥加密过的密文后，通过安全的信道交给源服务器来解密，由源服务器提取会话秘钥或完成签名以后再提交给 CDN 节点。如此 CDN 就获得了此次回话的密钥。</p>
+<h2 id="Diffie-Hellman-算法"><a href="#Diffie-Hellman-算法" class="headerlink" title="Diffie-Hellman 算法"></a>Diffie-Hellman 算法</h2><p>由于握手交换随机数的过程是不加密的，因此，如果有人窃听通信，他可以知道双方选择的加密方法，以及三个随机数中的两个。整个通话的安全，只取决于第三个随机数（Premaster secret）能不能被破解。</p>
+<p>虽然理论上，只要服务器的公钥足够长（比如2048位），那么Premaster secret可以保证不被破解。但是为了足够安全，我们可以把协商密钥阶段通过 RSA 传输密钥，改为使用 Diffie-Hellman 算法（简称DH算法）生成密钥。</p>
+<p>采用DH算法后，Premaster secret不需要传递，双方只要交换各自的参数，就可以算出一个相同的会话密钥。</p>
+<p><img src="http://blog.qiniu.lololo.store/2016-09-23-14746107556067.jpg" alt=""></p>
+<p>该算法最大的问题在于不具备身份认证能力，很容易受到中间人攻击。因此在 HTTPS 中需配合使用 RSA 证书来做身份认证。</p>
+<blockquote>
+<p>注：<br>DH 算法是一种密钥交换算法。<br>RSA 既可作为密钥交换算法，又可以作为签名认证算法。</p>
+</blockquote>
+<h2 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h2><h3 id="前向安全性"><a href="#前向安全性" class="headerlink" title="前向安全性"></a>前向安全性</h3><p>前向安全性指的是，如果攻击者抓取并保存流量，那么将来私钥泄露后，攻击者也无法利用泄露的私钥解密这些流量。</p>
+<p>斯诺登就曾曝光过 NSA 的『今日捕获，明日破解』政策。</p>
+<p>RSA 协商密钥的安全性完全依赖于服务器端私钥的安全性，如果服务器端私钥泄露，则所有链接都不再安全。</p>
+<p>而 DH 算法由于密钥协商过程中随机数并没有传输，因此即使私钥泄露，也无法获得会话的随机数，故而也就得不到会话密钥。因此是前向安全的。</p>
+<h3 id="TLS-层存在的安全隐患"><a href="#TLS-层存在的安全隐患" class="headerlink" title="TLS 层存在的安全隐患"></a>TLS 层存在的安全隐患</h3><h4 id="降级"><a href="#降级" class="headerlink" title="降级"></a>降级</h4><p>这种方式就是攻击者充当中间人和服务器通信，然后把相应的通信内容通过 HTTP 协议发送给客户端，由于 HTTP 协议是未加密的，于是就可以截获用户的访问数据。</p>
+<p>这种攻击方式比较简单，通过代理，可以很容易的把 HTTPS 变成 HTTP，这个一方面需要用户留意网站是否有从 HTTPS 跳转到 HTTP 的行为，另一方面服务器也可以通过配置将所有HTTP的请求强制转移到HTTPS上。</p>
+<p>另一种是加密协议降级，如劫持后在 client hello 时只提供有漏洞的加密协议。这种方式可以在服务器端禁用低安全性的协议来规避。</p>
+<h4 id="HTTPS-劫持"><a href="#HTTPS-劫持" class="headerlink" title="HTTPS 劫持"></a>HTTPS 劫持</h4><p>这种方式攻击者为了获得 HTTPS 的明文传输内容，需要充当中间人，替换服务器发给用户的包含公钥的证书。攻击者既和用户之间建立了 HTTPS 链接，又和服务器建立了 HTTPS 链接。</p>
+<p>在上面握手建立的过程中，由于用户的公钥是攻击者生成的，所以攻击者可以轻易获得握手中的数据。也就可以获取到和用户通信过程中的对称加密的密钥，攻击者可以通过密钥获取用户发送的数据，同时在使用和服务器通信的密钥加密后再发送给服务器。</p>
+<p>这种攻击方式也有一个明显的问题就是攻击者生成的证书几乎是不可能被用户信任的，在这种情况下，用户浏览器通常会提示该网站的证书不可信，是否继续访问，这已经对用户进行了一个明显的警告了。</p>
+<p>当然，如果 CA 机构对证书的管理混乱也有可能造成这种劫持，如：</p>
+<ol>
+<li>谷歌官方安全博客<a href="https://security.googleblog.com/2015/03/maintaining-digital-certificate-security.html" target="_blank" rel="noopener">报道</a>，谷歌发现CNNIC颁发了多个针对谷歌域名的用于中间人攻击的证书。</li>
+<li><a href="http://k.sina.cn/article_1772191555_69a17f430190016i6.html?vt=4" target="_blank" rel="noopener">国内CA机构沃通错误颁发GitHub域名SSL证书</a></li>
+<li>震网病毒曾盗取台湾某证书机构的数字证书，用来给自己的病毒签名。</li>
+</ol>
+<p>另外我们也可以通过这种对基于 HTTPS 的通信进行抓包分析。Mac 平台著名的抓包工具 Charles 就是基于这种方式，首先要求你信任一个它的证书，然后自己充当中间人对你与某个服务器的 HTTPS 通信进行抓包分析。</p>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><ol>
+<li><a href="https://zh.wikipedia.org/zh-hans/%E5%BF%83%E8%84%8F%E5%87%BA%E8%A1%80%E6%BC%8F%E6%B4%9E" target="_blank" rel="noopener">OpenSSL 心脏出血漏洞</a></li>
+<li><a href="http://www.infoq.com/cn/news/2015/05/sourceDNA-AFNetworking-ssl" target="_blank" rel="noopener">知名开源库AFNetworking曝SSL漏洞，2.5万iOS应用受影响</a></li>
+<li><a href="http://bobao.360.cn/news/detail/2316.html" target="_blank" rel="noopener">Diffie-Hellman密钥交换协议存在安全缺陷</a></li>
+<li><a href="http://netsec.ccert.edu.cn/duanhx/?p=2061" target="_blank" rel="noopener">NSA如何窃听Google的加密流量——当HTTPS遇到CDN</a></li>
+</ol>
+<h2 id="QA"><a href="#QA" class="headerlink" title="QA"></a>QA</h2><p><strong>1. 为何需要三个参数生成 Master Secret ？</strong></p>
+<p>由于SSL协议中证书是静态的，因此需要引入一种随机因素来保证协商出来的密钥的随机性。SSL协议不信任每个主机都能生成完全随机的随机数，所以这里需要服务器和客户端共生成3个随机数，每增加一个自由度，随机性就会相应增加。</p>
+<p>同时需要注意前两个随机数都是明文传输的，窃听者是可以轻易获取到的，只有最后一个 PreMaster Secret 是加密传输的，只有拥有服务器私钥才能解密，一旦 PreMaster Secret 泄露，那么本次通信就就完全可被破解了。</p>
+<p><strong>2. 为何使用 RSA 协商密钥不直接使用证书公钥，而是通过server key exchange传输服务器密钥？</strong></p>
+<p>可能有几个原因</p>
+<ol>
+<li>曾经美帝有出口限制，限制 RSA 在512比特以下，对称加密密钥限制40比特以下，如果超过512只能拿来签名，不能拿来加密。因此证书里头的RSA公钥长度超过512的不得不重新生成一对512长度的临时加密用的密钥，并将RSA公钥塞进消息体发出去。</li>
+<li>服务器的证书只用做签名，不用做密钥交换，或者服务器没有证书。</li>
+</ol>
+<p><strong>3. Change Cipher Spec 有必要么？</strong></p>
+<p>Change Cipher Spec 用来通知对端，开始启用协商好的密钥做对称加密，内容只有1个字节。 这个协议是冗余的，在TLS 1.3里面直接被删除了。</p>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p><a href="https://zh.wikipedia.org/wiki/%E8%BF%AA%E8%8F%B2-%E8%B5%AB%E7%88%BE%E6%9B%BC%E5%AF%86%E9%91%B0%E4%BA%A4%E6%8F%9B" target="_blank" rel="noopener">Deffie-Hellman 密钥交换</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2017/01/01/HTTPS总结/" data-id="ck71kb9to000z63t5n6s9ki4y" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2017/01/01/HTTPS总结/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HTTPS/">HTTPS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/03/12/计算机浮点数那些事/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          计算机浮点数那些事
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/10/03/HTTPS详解(二)/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">HTTPS 详解(二)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/05/27/负数取模/">负数取模</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/30/深入理解RunLoop/">深入理解 RunLoop</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/12/计算机浮点数那些事/">计算机浮点数那些事</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/01/HTTPS总结/">HTTPS 总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/03/HTTPS详解(二)/">HTTPS 详解(二)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OSX/">OSX</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Swift/">Swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具党/">工具党</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/有意思/">有意思</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲聊/">闲聊</a><span class="category-list-count">7</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AFNetworking/" style="font-size: 10px;">AFNetworking</a> <a href="/tags/APPStore/" style="font-size: 10px;">APPStore</a> <a href="/tags/ARC/" style="font-size: 10px;">ARC</a> <a href="/tags/Autolayout/" style="font-size: 10px;">Autolayout</a> <a href="/tags/Cocoa/" style="font-size: 10px;">Cocoa</a> <a href="/tags/CocoaPods/" style="font-size: 10px;">CocoaPods</a> <a href="/tags/CollectionViewLayout/" style="font-size: 10px;">CollectionViewLayout</a> <a href="/tags/Content-Type/" style="font-size: 10px;">Content-Type</a> <a href="/tags/CoreData/" style="font-size: 10px;">CoreData</a> <a href="/tags/CoreText/" style="font-size: 10px;">CoreText</a> <a href="/tags/GFWList/" style="font-size: 10px;">GFWList</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/NSAttributedString/" style="font-size: 10px;">NSAttributedString</a> <a href="/tags/OSX/" style="font-size: 12.5px;">OSX</a> <a href="/tags/Objective-C/" style="font-size: 10px;">Objective-C</a> <a href="/tags/RESTAPI/" style="font-size: 10px;">RESTAPI</a> <a href="/tags/RSA/" style="font-size: 12.5px;">RSA</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/SizeClasses/" style="font-size: 10px;">SizeClasses</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/Threejs/" style="font-size: 10px;">Threejs</a> <a href="/tags/UITableView/" style="font-size: 10px;">UITableView</a> <a href="/tags/UITextField/" style="font-size: 10px;">UITextField</a> <a href="/tags/UIView/" style="font-size: 17.5px;">UIView</a> <a href="/tags/UIViewController/" style="font-size: 10px;">UIViewController</a> <a href="/tags/UIWebView/" style="font-size: 10px;">UIWebView</a> <a href="/tags/VCard/" style="font-size: 10px;">VCard</a> <a href="/tags/Waterdrop/" style="font-size: 10px;">Waterdrop</a> <a href="/tags/WormHole/" style="font-size: 10px;">WormHole</a> <a href="/tags/XIB/" style="font-size: 12.5px;">XIB</a> <a href="/tags/block/" style="font-size: 10px;">__block</a> <a href="/tags/api-HTTP/" style="font-size: 10px;">api.HTTP</a> <a href="/tags/autorelease/" style="font-size: 10px;">autorelease</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/bounds/" style="font-size: 10px;">bounds</a> <a href="/tags/crash/" style="font-size: 10px;">crash</a> <a href="/tags/frame/" style="font-size: 10px;">frame</a> <a href="/tags/gitignore/" style="font-size: 10px;">gitignore</a> <a href="/tags/header/" style="font-size: 10px;">header</a> <a href="/tags/http/" style="font-size: 17.5px;">http</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOSHelper/" style="font-size: 10px;">iOSHelper</a> <a href="/tags/iTerm/" style="font-size: 10px;">iTerm</a> <a href="/tags/isa/" style="font-size: 10px;">isa</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/lipo/" style="font-size: 10px;">lipo</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pod/" style="font-size: 10px;">pod</a> <a href="/tags/protocol/" style="font-size: 10px;">protocol</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/weak/" style="font-size: 10px;">weak</a> <a href="/tags/web/" style="font-size: 17.5px;">web</a> <a href="/tags/xcode/" style="font-size: 10px;">xcode</a> <a href="/tags/xib/" style="font-size: 10px;">xib</a> <a href="/tags/三体/" style="font-size: 10px;">三体</a> <a href="/tags/加密/" style="font-size: 10px;">加密</a> <a href="/tags/奇技淫巧/" style="font-size: 10px;">奇技淫巧</a> <a href="/tags/安全/" style="font-size: 12.5px;">安全</a> <a href="/tags/宏/" style="font-size: 10px;">宏</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/支付宝/" style="font-size: 12.5px;">支付宝</a> <a href="/tags/李健/" style="font-size: 10px;">李健</a> <a href="/tags/模/" style="font-size: 10px;">模</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/浮点/" style="font-size: 10px;">浮点</a> <a href="/tags/淘宝/" style="font-size: 10px;">淘宝</a> <a href="/tags/程序猿/" style="font-size: 10px;">程序猿</a> <a href="/tags/袖手旁观/" style="font-size: 10px;">袖手旁观</a> <a href="/tags/装B/" style="font-size: 10px;">装B</a> <a href="/tags/调试/" style="font-size: 10px;">调试</a> <a href="/tags/贱人曾/" style="font-size: 10px;">贱人曾</a> <a href="/tags/运行时/" style="font-size: 10px;">运行时</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/闲聊/" style="font-size: 12.5px;">闲聊</a> <a href="/tags/隐私/" style="font-size: 10px;">隐私</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 独 奏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+    <a href="http://wiki.honglu.me" class="mobile-nav-link">Wiki</a>
+  
+</nav>
+
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'du-zou-s-blog';
+  
+  var disqus_url = 'https://honglu.me/2017/01/01/HTTPS总结/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

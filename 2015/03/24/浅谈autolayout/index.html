@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>浅谈 Autolayout | 独 奏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Autolayout 其实很早便引入了 Cocoa，但是可能在过去苹果的设备屏幕还并没有变得这么多样化，因此我们也就并没有过多的关注 Autolayout 的相关特征，更何况那个时候 Autolayout 还没有那么好用。在2014年的 WWDC 大会上，苹果发布了新的 iPhone6 plus 和至今仍未面市的 apple watch，开发者们大呼『oh shit ，又多了两种屏幕尺寸。。。』，">
+<meta name="keywords" content="Autolayout,SizeClasses">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈 Autolayout">
+<meta property="og:url" content="https://honglu.me/2015/03/24/浅谈autolayout/index.html">
+<meta property="og:site_name" content="独 奏">
+<meta property="og:description" content="Autolayout 其实很早便引入了 Cocoa，但是可能在过去苹果的设备屏幕还并没有变得这么多样化，因此我们也就并没有过多的关注 Autolayout 的相关特征，更何况那个时候 Autolayout 还没有那么好用。在2014年的 WWDC 大会上，苹果发布了新的 iPhone6 plus 和至今仍未面市的 apple watch，开发者们大呼『oh shit ，又多了两种屏幕尺寸。。。』，">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.qiniu.lololo.store/image/2015/1/size_classes.png">
+<meta property="og:image" content="http://blog.qiniu.lololo.store/image/2015/03/autolayout_01.png">
+<meta property="og:image" content="http://blog.qiniu.lololo.store/image/2015/03/autolayout_02.jpg">
+<meta property="og:image" content="http://blog.qiniu.lololo.store/image/2015/03/autolayout_03.png">
+<meta property="og:image" content="http://blog.qiniu.lololo.store/image/2015/03/autolayout_04.png">
+<meta property="og:image" content="http://blog.qiniu.lololo.store/image/2015/03/autolayout_05.png">
+<meta property="og:updated_time" content="2019-06-12T06:17:51.234Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈 Autolayout">
+<meta name="twitter:description" content="Autolayout 其实很早便引入了 Cocoa，但是可能在过去苹果的设备屏幕还并没有变得这么多样化，因此我们也就并没有过多的关注 Autolayout 的相关特征，更何况那个时候 Autolayout 还没有那么好用。在2014年的 WWDC 大会上，苹果发布了新的 iPhone6 plus 和至今仍未面市的 apple watch，开发者们大呼『oh shit ，又多了两种屏幕尺寸。。。』，">
+<meta name="twitter:image" content="http://blog.qiniu.lololo.store/image/2015/1/size_classes.png">
+  
+    <link rel="alternative" href="/atom.xml" title="独 奏" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Baidu Analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ff2d4025fdadaba5944a656c7fdd681f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- End Baidu Analytics -->
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-66673227-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">独 奏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">道阻且长，行则将至</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+          <a class="main-nav-link" href="http://wiki.honglu.me">Wiki</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="honglu.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-浅谈autolayout" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/03/24/浅谈autolayout/" class="article-date">
+  <time datetime="2015-03-24T13:58:10.000Z" itemprop="datePublished">3月 24 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      浅谈 Autolayout
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Autolayout 其实很早便引入了 Cocoa，但是可能在过去苹果的设备屏幕还并没有变得这么多样化，因此我们也就并没有过多的关注 Autolayout 的相关特征，更何况那个时候 Autolayout 还没有那么好用。在2014年的 WWDC 大会上，苹果发布了新的 iPhone6 plus 和至今仍未面市的 apple watch，开发者们大呼『oh shit ，又多了两种屏幕尺寸。。。』，不过好消息是苹果增加了两种尺寸的设备同时，也为开发者带来了更为强大的屏幕适配方式：Size Classes</p>
+<a id="more"></a>
+<p>在过去我们适用屏幕布局往往是通过设置 frame 来进行布局，Autolayout 给我们带来了更为强大的约束布局，我们只需要指定 view 间的约束关系，就可以根据不同尺寸自动生成相应的布局，如今的 Size Classes 又进一步的抽象，把不同尺寸抽象成 Compact,Any,Regular 三中不同的规格，两两组合就有了很多种变换方式，分别对应了不同的设备尺寸和设备方向(横屏/竖屏)，下面这幅图很形象的描述了这种对应关系</p>
+<p><img src="http://blog.qiniu.lololo.store/image/2015/1/size_classes.png" alt="Size-Classes"></p>
+<p>关于 Autolayout 在网上已经有很多介绍了，所以就不再细致的讲述Autolayout该怎么用了，以下只说明一下Autolayout使用过程中应该注意的一些问题，还有平时比较常用的一些布局方式如何用Autolayout来实现。</p>
+<h2 id="xib编辑页面Autolayout相关选项的功能"><a href="#xib编辑页面Autolayout相关选项的功能" class="headerlink" title="xib编辑页面Autolayout相关选项的功能"></a>xib编辑页面Autolayout相关选项的功能</h2><p><img src="http://blog.qiniu.lololo.store/image/2015/03/autolayout_01.png" alt="Autolayout_01"><br><img src="http://blog.qiniu.lololo.store/image/2015/03/autolayout_02.jpg" alt="Autolayout_02"></p>
+<h2 id="UIScrollView-的布局方式"><a href="#UIScrollView-的布局方式" class="headerlink" title="UIScrollView 的布局方式"></a>UIScrollView 的布局方式</h2><p>UIScrollView 应该是比较常用的控件了，但是在Autolayout下使用scrollView经常不得其法，其关键在于不明白scrollView自动调整大小的原理。</p>
+<p>下面看一个例子</p>
+<p><img src="http://blog.qiniu.lololo.store/image/2015/03/autolayout_03.png" alt="Autolayout_03"></p>
+<p>scrollview与superview的边距0，contentview和scrollview的边距0，然后在contentview里面放入了一个subview，我们期望subview的布局是相对contentview来布局的，subview的宽度随contentview的宽度变化。但是这个时候xib就报了下面错误：</p>
+<p><code>Has ambiguous scrollable content width</code></p>
+<p>意思是告诉我们scrollview的宽度不明确。</p>
+<p>首先要明确一点，scrollView通过计算内部subview的宽高来调整本身的contentSize，那么如果我们的subview设置了相对scrollview的左右边距，而没有设置width。那么问题就出现了，scrollview计算contentsize的时候不知道subview的宽度，没错，这就是我们在使用uiscrollview的时候经常会遇到的错误。例子中scrollview可以通过推断subview的高度和边距来计算contentsize的height，但是width却无法计算。</p>
+<p>问题出在scrollview无法知道subview的宽度，但是subview的宽度需要和scrollview的宽度相等。实际上scrollview的宽度是和其superview等宽的，我们的根本需求是让scrollview里面的subview相对于屏幕宽度来布局。也就是说我们需要让contentview和屏幕宽度相等，然后内部的subview相对contentview布局。那么就好办了，我们只需要再加一个约束来指定contentview的宽度就好了，方法如下：</p>
+<p><img src="http://blog.qiniu.lololo.store/image/2015/03/autolayout_04.png" alt="Autolayout_04"></p>
+<p>首先我们在superview里面加入了一个view，然后设置这个view的边距，然后我们指定contentview和这个view等宽，这样的话contentview的宽度就确定了，既不依赖于scrollview又能够随屏幕的宽度变化。</p>
+<p>其实在Autolayout下使用scrollview确实是够蛋疼的，光是配置好scrollview，我们就需要添加10多条约束。。。</p>
+<p>参考:<br><a href="http://grayluo.github.io/WeiFocusIo/Autolayout/2015/01/27/Autolayout3/" target="_blank" rel="noopener">Autolayout深入浅出三[相遇Scrollview]</a></p>
+<h2 id="横向-纵向等间隙排列的布局方式"><a href="#横向-纵向等间隙排列的布局方式" class="headerlink" title="横向/纵向等间隙排列的布局方式"></a>横向/纵向等间隙排列的布局方式</h2><p>我们在布局的时候常会用到横向多个view等宽等距，但是在WWDC没有看到相关的操作，所以就自己摸索了一下。</p>
+<p><img src="http://blog.qiniu.lololo.store/image/2015/03/autolayout_05.png" alt="Autolayout_05"></p>
+<p>我们先把每一个view设置top和leading属性，最后一个view还要加一个trailing，然后选中所有的view，设置equal width，这样就可以等宽等间距了。然后高度我们可以设置aspect ratio来让高与宽1:1比例，也可以先设置第一个view的高度然后选中所有equal height，或者分别设置。</p>
+<p><a href="http://www.devtalking.com/articles/adaptive-layout-for-iphone6-1/" target="_blank" rel="noopener">为iPhone6设计自适应布局（一）</a></p>
+<h2 id="UITableView-cell自适应"><a href="#UITableView-cell自适应" class="headerlink" title="UITableView cell自适应"></a>UITableView cell自适应</h2><p>该功能仅支持 ios8 ，待完善。。。</p>
+<h2 id="推荐一些代码Autolayout的三方库"><a href="#推荐一些代码Autolayout的三方库" class="headerlink" title="推荐一些代码Autolayout的三方库"></a>推荐一些代码Autolayout的三方库</h2><p><a href="https://github.com/Masonry/Masonry" target="_blank" rel="noopener">Masonry</a><br><a href="https://github.com/smileyborg/PureLayout" target="_blank" rel="noopener">PureLayout</a>  </p>
+<p><a href="http://adad184.com/2014/09/28/use-masonry-to-quick-solve-autolayout/" target="_blank" rel="noopener">Masonry介绍与使用实践(快速上手Autolayout)</a><br><a href="http://www.infoq.com/cn/news/2014/02/ios-auto-layout" target="_blank" rel="noopener">Masonry与iOS自动布局</a>  </p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>在xcode6 下新建的 xib 文件默认都是开启 size classes 和 auto layout 的，在这种模式下，如果这时你试图通过代码修改 frame 你会发现不管用，这个问题曾经困扰我很长时间，后来才发现在 Autolayout 模式下是不支持修改 frame 的，也就是说在 Autolayout 下就没有 frame 的概念，一切都是相对的，我们要通过约束来调整布局，不再是通过 frame 来调整布局。所以要使用 Autolayout 你必须要懂得 VFL 是如何书写的，要懂 Constraint 是如何使用的，如果你觉得这两个都非常的蛋疼，还是调整 frame 来的快捷，那你可以在 xib 里面取消 Autolayout 的选项，我们就又可以和 frame 愉快的玩耍了~</p>
+<h2 id="相关文章"><a href="#相关文章" class="headerlink" title="相关文章"></a>相关文章</h2><p><a href="http://segmentfault.com/blog/ilikewhite/1190000000646452?utm_source=tuicool" target="_blank" rel="noopener">从此爱上iOS Autolayout</a><br><a href="http://grayluo.github.io/WeiFocusIo/autolayout/2015/01/24/autolayout1" target="_blank" rel="noopener">Autolayout深入浅出一[前传]</a><br><a href="http://grayluo.github.io/WeiFocusIo/autolayout/2015/01/24/autolayout2" target="_blank" rel="noopener">Autolayout深入浅出二[基本使用]</a><br><a href="http://grayluo.github.io/WeiFocusIo/autolayout/2015/01/27/autolayout3" target="_blank" rel="noopener">Autolayout深入浅出三[相遇Scrollview]</a><br><a href="http://grayluo.github.io/WeiFocusIo/autolayout/2015/02/01/autolayout4" target="_blank" rel="noopener">Autolayout深入浅出四[不仅是UIWebView与UITableView的纠缠]</a><br><a href="http://grayluo.github.io/WeiFocusIo/autolayout/2015/02/01/autolayout5" target="_blank" rel="noopener">Autolayout深入浅出五[UITableView动态高度]</a><br><a href="http://grayluo.github.io/WeiFocusIo/autolayout/2015/02/01/autolayout6" target="_blank" rel="noopener">Autolayout深入浅出五[纯代码的偏执]</a>  </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/03/24/浅谈autolayout/" data-id="ck71kb9w9006f63t5jjxhuhfd" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/03/24/浅谈autolayout/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Autolayout/">Autolayout</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SizeClasses/">SizeClasses</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/04/10/开发常用工具/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          常用的第三方库
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/03/02/袖手旁观/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">袖手旁观</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/05/27/负数取模/">负数取模</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/30/深入理解RunLoop/">深入理解 RunLoop</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/12/计算机浮点数那些事/">计算机浮点数那些事</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/01/HTTPS总结/">HTTPS 总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/03/HTTPS详解(二)/">HTTPS 详解(二)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OSX/">OSX</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Swift/">Swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具党/">工具党</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/有意思/">有意思</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲聊/">闲聊</a><span class="category-list-count">7</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AFNetworking/" style="font-size: 10px;">AFNetworking</a> <a href="/tags/APPStore/" style="font-size: 10px;">APPStore</a> <a href="/tags/ARC/" style="font-size: 10px;">ARC</a> <a href="/tags/Autolayout/" style="font-size: 10px;">Autolayout</a> <a href="/tags/Cocoa/" style="font-size: 10px;">Cocoa</a> <a href="/tags/CocoaPods/" style="font-size: 10px;">CocoaPods</a> <a href="/tags/CollectionViewLayout/" style="font-size: 10px;">CollectionViewLayout</a> <a href="/tags/Content-Type/" style="font-size: 10px;">Content-Type</a> <a href="/tags/CoreData/" style="font-size: 10px;">CoreData</a> <a href="/tags/CoreText/" style="font-size: 10px;">CoreText</a> <a href="/tags/GFWList/" style="font-size: 10px;">GFWList</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/NSAttributedString/" style="font-size: 10px;">NSAttributedString</a> <a href="/tags/OSX/" style="font-size: 12.5px;">OSX</a> <a href="/tags/Objective-C/" style="font-size: 10px;">Objective-C</a> <a href="/tags/RESTAPI/" style="font-size: 10px;">RESTAPI</a> <a href="/tags/RSA/" style="font-size: 12.5px;">RSA</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/SizeClasses/" style="font-size: 10px;">SizeClasses</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/Threejs/" style="font-size: 10px;">Threejs</a> <a href="/tags/UITableView/" style="font-size: 10px;">UITableView</a> <a href="/tags/UITextField/" style="font-size: 10px;">UITextField</a> <a href="/tags/UIView/" style="font-size: 17.5px;">UIView</a> <a href="/tags/UIViewController/" style="font-size: 10px;">UIViewController</a> <a href="/tags/UIWebView/" style="font-size: 10px;">UIWebView</a> <a href="/tags/VCard/" style="font-size: 10px;">VCard</a> <a href="/tags/Waterdrop/" style="font-size: 10px;">Waterdrop</a> <a href="/tags/WormHole/" style="font-size: 10px;">WormHole</a> <a href="/tags/XIB/" style="font-size: 12.5px;">XIB</a> <a href="/tags/block/" style="font-size: 10px;">__block</a> <a href="/tags/api-HTTP/" style="font-size: 10px;">api.HTTP</a> <a href="/tags/autorelease/" style="font-size: 10px;">autorelease</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/bounds/" style="font-size: 10px;">bounds</a> <a href="/tags/crash/" style="font-size: 10px;">crash</a> <a href="/tags/frame/" style="font-size: 10px;">frame</a> <a href="/tags/gitignore/" style="font-size: 10px;">gitignore</a> <a href="/tags/header/" style="font-size: 10px;">header</a> <a href="/tags/http/" style="font-size: 17.5px;">http</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOSHelper/" style="font-size: 10px;">iOSHelper</a> <a href="/tags/iTerm/" style="font-size: 10px;">iTerm</a> <a href="/tags/isa/" style="font-size: 10px;">isa</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/lipo/" style="font-size: 10px;">lipo</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pod/" style="font-size: 10px;">pod</a> <a href="/tags/protocol/" style="font-size: 10px;">protocol</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/weak/" style="font-size: 10px;">weak</a> <a href="/tags/web/" style="font-size: 17.5px;">web</a> <a href="/tags/xcode/" style="font-size: 10px;">xcode</a> <a href="/tags/xib/" style="font-size: 10px;">xib</a> <a href="/tags/三体/" style="font-size: 10px;">三体</a> <a href="/tags/加密/" style="font-size: 10px;">加密</a> <a href="/tags/奇技淫巧/" style="font-size: 10px;">奇技淫巧</a> <a href="/tags/安全/" style="font-size: 12.5px;">安全</a> <a href="/tags/宏/" style="font-size: 10px;">宏</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/支付宝/" style="font-size: 12.5px;">支付宝</a> <a href="/tags/李健/" style="font-size: 10px;">李健</a> <a href="/tags/模/" style="font-size: 10px;">模</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/浮点/" style="font-size: 10px;">浮点</a> <a href="/tags/淘宝/" style="font-size: 10px;">淘宝</a> <a href="/tags/程序猿/" style="font-size: 10px;">程序猿</a> <a href="/tags/袖手旁观/" style="font-size: 10px;">袖手旁观</a> <a href="/tags/装B/" style="font-size: 10px;">装B</a> <a href="/tags/调试/" style="font-size: 10px;">调试</a> <a href="/tags/贱人曾/" style="font-size: 10px;">贱人曾</a> <a href="/tags/运行时/" style="font-size: 10px;">运行时</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/闲聊/" style="font-size: 12.5px;">闲聊</a> <a href="/tags/隐私/" style="font-size: 10px;">隐私</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 独 奏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+    <a href="http://wiki.honglu.me" class="mobile-nav-link">Wiki</a>
+  
+</nav>
+
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'du-zou-s-blog';
+  
+  var disqus_url = 'https://honglu.me/2015/03/24/浅谈autolayout/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

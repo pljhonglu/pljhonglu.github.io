@@ -1,0 +1,803 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Tag: iOS | 独 奏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="独 奏">
+<meta property="og:url" content="https://honglu.me/tags/iOS/page/2/index.html">
+<meta property="og:site_name" content="独 奏">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="独 奏">
+  
+    <link rel="alternative" href="/atom.xml" title="独 奏" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Baidu Analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ff2d4025fdadaba5944a656c7fdd681f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- End Baidu Analytics -->
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-66673227-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">独 奏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">道阻且长，行则将至</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+          <a class="main-nav-link" href="http://wiki.honglu.me">Wiki</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="honglu.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main">
+  
+    <article id="post-再谈RSA-客户端与服务器互通" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/05/16/再谈RSA-客户端与服务器互通/" class="article-date">
+  <time datetime="2015-05-16T02:37:16.000Z" itemprop="datePublished">5月 16 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/05/16/再谈RSA-客户端与服务器互通/">再谈RSA-客户端与服务器互通</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>曾经写过一篇 RSA 加密的文章，没想到今天使用 RSA 加密的时候还是会面临这么多问题，这里就再整理一下。</p>
+<p>现在的项目是在接口部分使用 RSA 加密了一个时间戳用作验证字段，防止接口攻击。由于服务器是 JAVA 的，最开始由服务器生成的私钥和公钥，公钥给的 der 文件，但是在 iOS 上面测试发现使用系统 API 无法设置公钥，后来在一个三方库的代码里发现在验证 der 文件的时候有如下一段代码</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (c_key[idx++] != <span class="number">0x30</span>) <span class="keyword">return</span>(<span class="literal">nil</span>);</span><br></pre></td></tr></table></figure>
+<p>因此就很好奇这个0x30开头是个什么东西，结果就引出了以下问题。。。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/05/16/再谈RSA-客户端与服务器互通/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/05/16/再谈RSA-客户端与服务器互通/" data-id="ck71kb9vk004u63t5goigadez" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/05/16/再谈RSA-客户端与服务器互通/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RSA/">RSA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-ARC中autoreleasepool的使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/24/ARC中autoreleasepool的使用/" class="article-date">
+  <time datetime="2015-04-24T14:25:16.000Z" itemprop="datePublished">4月 24 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/24/ARC中autoreleasepool的使用/">ARC中autoreleasepool的使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在 MRC 的年代，autoReleasePool 是必学的内容，但是进入到 ARC 的时代之后，编译器会自动加入retain, release 和 autorelease 代码， autoReleasePool 越来越没有存在感了，难道它真的就是没有用了么？如果没用了为什么苹果还要保留<code>@autoreleasepool{}</code>这种使用方式呢？</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/04/24/ARC中autoreleasepool的使用/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/04/24/ARC中autoreleasepool的使用/" data-id="ck71kb9t8000b63t5ofa61yu4" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/04/24/ARC中autoreleasepool的使用/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/autorelease/">autorelease</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS开发的奇技淫巧" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/24/iOS开发的奇技淫巧/" class="article-date">
+  <time datetime="2015-04-24T12:43:16.000Z" itemprop="datePublished">4月 24 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/04/24/iOS开发的奇技淫巧/">iOS开发的奇技淫巧</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近好像这个话题很热啊，我不生产<code>奇技淫巧</code>我是大自然的搬运工</p>
+<h2 id="结构体简便初始化"><a href="#结构体简便初始化" class="headerlink" title="结构体简便初始化"></a>结构体简便初始化</h2><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 不加(CGRect)强转也不会warning</span></span><br><span class="line"><span class="built_in">CGRect</span> rect1 = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line"><span class="built_in">CGRect</span> rect2 = &#123;.origin.x=<span class="number">5</span>, .size=&#123;<span class="number">10</span>, <span class="number">10</span>&#125;&#125;; <span class="comment">// &#123;5, 0, 10, 10&#125;</span></span><br><span class="line"><span class="built_in">CGRect</span> rect3 = &#123;<span class="number">1</span>, <span class="number">2</span>&#125;; <span class="comment">// &#123;1, 2, 0, 0&#125;</span></span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2015/04/24/iOS开发的奇技淫巧/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/04/24/iOS开发的奇技淫巧/" data-id="ck71kb9uv003p63t5jz03ioo0" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/04/24/iOS开发的奇技淫巧/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/奇技淫巧/">奇技淫巧</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-浅谈OC运行时-RunTime" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/29/浅谈OC运行时-RunTime/" class="article-date">
+  <time datetime="2014-12-29T12:18:06.000Z" itemprop="datePublished">12月 29 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/29/浅谈OC运行时-RunTime/">浅谈OC运行时(RunTime)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>常说OC是一门动态语言，这使得OC开发可以变得相当灵活，但是归根结底OC还是一种编译型的语言，其具有一定的动态性，但是其动态特性也比不上JavaScript这种解释型的语言。OC的动态性主要体现在&lt;objc/runtime.h&gt;这个文件中，下面我们打开这个文件，对其总结一下。</p>
+<h2 id="一、基本结构及其继承关系"><a href="#一、基本结构及其继承关系" class="headerlink" title="一、基本结构及其继承关系"></a>一、基本结构及其继承关系</h2><p>要谈runtime首先必然要先了解OC的对象以及类的结构，这非常有助与我们理解其动态性。</p>
+<p>首先我们打开<code>&lt;objc/objc.h&gt;</code>文件，可以看到如下定义：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="comment">/// An opaque type that represents an Objective-C class.</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_class *Class;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// Represents an instance of a class.</span></span><br><span class="line"><span class="keyword">struct</span> objc_object &#123;</span><br><span class="line">    Class isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// A pointer to an instance of a class.</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_object *<span class="keyword">id</span>;</span><br></pre></td></tr></table></figure>
+<p>通过上面定义我们可以看出以下几点：</p>
+<ul>
+<li>我们常用的id类型实际上一个指向objc_object结构体的指针，id通常指代一个对象，也就是说OC对象其实就一个指向objc_object结构体的指针</li>
+<li>我们看objc_object结构体定义，得知其结构体内有一个类型为Class的字段isa，这就是我们常说的isa指针了。</li>
+<li>再来看Class的声明，为一个指向objc_class的指针，</li>
+<li>实际上isa就是指明当前结构体所属类型，我们可以理解为objc_object为Class类型的</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2014/12/29/浅谈OC运行时-RunTime/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2014/12/29/浅谈OC运行时-RunTime/" data-id="ck71kb9w5006763t53s1nhycz" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2014/12/29/浅谈OC运行时-RunTime/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RunTime/">RunTime</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS-Development-Tips-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/29/iOS-Development-Tips-1/" class="article-date">
+  <time datetime="2014-12-29T12:07:23.000Z" itemprop="datePublished">12月 29 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/29/iOS-Development-Tips-1/">iOS Development Tips (1)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="清除UITableView底部多余的分割线"><a href="#清除UITableView底部多余的分割线" class="headerlink" title="清除UITableView底部多余的分割线"></a>清除UITableView底部多余的分割线</h3><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="keyword">self</span>.tableView.tableFooterView = [[<span class="built_in">UIView</span> alloc] init];</span><br></pre></td></tr></table></figure>
+<h3 id="tableview-设置-cell-间的分割线长度"><a href="#tableview-设置-cell-间的分割线长度" class="headerlink" title="tableview 设置 cell 间的分割线长度"></a>tableview 设置 cell 间的分割线长度</h3><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">_myTableView.separatorInset = <span class="built_in">UIEdgeInsetsMake</span>(<span class="number">0</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">11</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="把tableview里cell的小对勾的颜色改成别的颜色"><a href="#把tableview里cell的小对勾的颜色改成别的颜色" class="headerlink" title="把tableview里cell的小对勾的颜色改成别的颜色"></a>把tableview里cell的小对勾的颜色改成别的颜色</h3><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">_mTableView.tintColor = [<span class="built_in">UIColor</span> redColor];</span><br></pre></td></tr></table></figure>
+<h3 id="tableview里cell右侧小箭头"><a href="#tableview里cell右侧小箭头" class="headerlink" title="tableview里cell右侧小箭头"></a>tableview里cell右侧小箭头</h3><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">cell.accessoryType = <span class="built_in">UITableViewCellAccessoryDisclosureIndicator</span>;</span><br><span class="line"><span class="comment">//剪头前面添加文字</span></span><br><span class="line">cell.detailTextLabel.text = <span class="string">@"mona"</span>;</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2014/12/29/iOS-Development-Tips-1/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2014/12/29/iOS-Development-Tips-1/" data-id="ck71kb9us003g63t5atizbjxi" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2014/12/29/iOS-Development-Tips-1/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tips/">tips</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-RESTAPI设计指南" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/28/RESTAPI设计指南/" class="article-date">
+  <time datetime="2014-11-28T13:43:24.000Z" itemprop="datePublished">11月 28 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/28/RESTAPI设计指南/">RESTAPI设计指南【转】</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一段时间前，Heroku在其Github Repo发表了一篇关于HTTP API设计的经验和总结，这些经验都建立在Heroku Platform的开发和运维之上，非常值得借鉴。</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>这篇文章展示了我们在Heroku Platform API 开发中具体HTTP+JSON API的设计实践。 同时，本文作为内部的设计指南也将继续规范Heroku的内部API开发，希望其他同仁也能对此感兴趣。 我们的目的是建立持久可靠的业务，并且只将精力集中于业务逻辑的开发，避免重复制造轮子。 我们一直在寻找一个优秀的，可靠的，文档齐全的API设计方法，但这种方法并不是最终的，唯一的。 在开始之前，我们假定你已经了解最基本的HTTP+JSON APIs，所以我们将不会赘述这些基本概念。</p>
+        
+          <p class="article-more-link">
+            <a href="/2014/11/28/RESTAPI设计指南/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2014/11/28/RESTAPI设计指南/" data-id="ck71kb9ud002i63t502868e1k" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2014/11/28/RESTAPI设计指南/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RESTAPI/">RESTAPI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/api-HTTP/">api.HTTP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-支付宝AlipayRsaLiba中删除base64o" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/10/25/支付宝AlipayRsaLiba中删除base64o/" class="article-date">
+  <time datetime="2014-10-25T01:44:59.000Z" itemprop="datePublished">10月 25 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/10/25/支付宝AlipayRsaLiba中删除base64o/">支付宝AlipayRsaLib.a中删除base64.o</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>由于目前项目中集成了支付宝和 ZBar 二维码库，支付宝的 <code>AlipayRsaLib.a</code> 与 ZBar 的 <code>base64.o</code> 同名，导致编译不通过。搜索后发现这个冲突似乎是不光在他俩之间，在百度地图SDK以及 TencentOpenAPI 中都存在类似冲突。<br>在支付宝论坛中查找后得知 <code>AlipayRsaLib.a</code> 并不依赖 <code>base64.o</code>，因此我们可以把 <code>base64.o</code> 从中删除。</p>
+<p>下面是从 <code>AlipayRsaLib.a</code> 中删除 <code>base64.o</code> 的操作。</p>
+        
+          <p class="article-more-link">
+            <a href="/2014/10/25/支付宝AlipayRsaLiba中删除base64o/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2014/10/25/支付宝AlipayRsaLiba中删除base64o/" data-id="ck71kb9vy005o63t5cbggnt32" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2014/10/25/支付宝AlipayRsaLiba中删除base64o/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/支付宝/">支付宝</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-浅析frame与bounds" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/10/21/浅析frame与bounds/" class="article-date">
+  <time datetime="2014-10-21T12:54:04.000Z" itemprop="datePublished">10月 21 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/10/21/浅析frame与bounds/">浅析frame与bounds</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>UIView 有两个属性，frame 与 bounds。我们所熟知的是 bounds 其实就是 x,y 均为0的 frame。但是你是否有过这样的疑问：</p>
+<ul>
+<li>既然 bounds 就是 x,y 均为0的 frame，那为什么还要有 bounds 这个属性的存在，直接使用 frame 不就好了么。</li>
+<li>既然 bounds 的 x,y，均为0，那为什么 bounds 还是 CGRect 类型，直接是 CGSize 类型不就好了么。</li>
+</ul>
+<p>针对问题一，我们给出的答案是，frame 是描述当前 view 相对于父 view 的坐标系的位置关系，而 bounds 是描述当前 view 相对于自己的坐标系的位置关系。这两个属性所描述的东西不同所以都有存在的意义，而且这也很好的解释了为什么 bounds 的 x,y 值始终为0。</p>
+<p>那么对于为题二，既然 bounds 是 CGRect 类型的，那么就表示其 x,y 属性都是有意义的。那么我们就来看一下 bounds 的 x,y 属性的意义究竟是什么</p>
+        
+          <p class="article-more-link">
+            <a href="/2014/10/21/浅析frame与bounds/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2014/10/21/浅析frame与bounds/" data-id="ck71kb9w2005y63t5zimdk2ul" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2014/10/21/浅析frame与bounds/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UIView/">UIView</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/bounds/">bounds</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/frame/">frame</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-APP被APPStore拒绝的各种原因" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/10/08/APP被APPStore拒绝的各种原因/" class="article-date">
+  <time datetime="2014-10-08T13:20:19.000Z" itemprop="datePublished">10月 8 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/10/08/APP被APPStore拒绝的各种原因/">APP被APPStore拒绝的各种原因</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>作为iOS开发者，估计有很多都遇到过APP提交到AppStore被拒，然后这些被拒的原因多种多样，这里收集了常见的被拒的原因，务必把它熟记于心，以避免出现问题</p>
+        
+          <p class="article-more-link">
+            <a href="/2014/10/08/APP被APPStore拒绝的各种原因/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2014/10/08/APP被APPStore拒绝的各种原因/" data-id="ck71kb9t6000963t5c6g3ogcm" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2014/10/08/APP被APPStore拒绝的各种原因/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/APPStore/">APPStore</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-WebViewJavascriptBridge使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/09/27/WebViewJavascriptBridge使用/" class="article-date">
+  <time datetime="2014-09-27T02:42:04.000Z" itemprop="datePublished">9月 27 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/09/27/WebViewJavascriptBridge使用/">WebViewJavascriptBridge使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>WebViewJavascriptBridge是一个Objective-C与JavaScript进行消息互通的三方库。这里简单总结一下其使用</p>
+<h2 id="Objective-C初始化"><a href="#Objective-C初始化" class="headerlink" title="Objective-C初始化"></a>Objective-C初始化</h2><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">_bridge = [WebViewJavascriptBridge bridgeForWebView:webView webViewDelegate:<span class="keyword">self</span> handler:^(<span class="keyword">id</span> data, WVJBResponseCallback responseCallback) &#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"ObjC received message from JS: %@"</span>, data);</span><br><span class="line">        responseCallback(<span class="string">@"Response for message from ObjC"</span>);</span><br><span class="line">    &#125;];</span><br></pre></td></tr></table></figure>
+<p>这是使用类方法创建一个WebViewJavascriptBridge对象。其中有一个block类型的handle。这个handle主要是用来接收JavaScript里面通过send方法传过来的消息的，这里的handle里面的参数与JavaScript中send方法里面的参数对应。</p>
+        
+          <p class="article-more-link">
+            <a href="/2014/09/27/WebViewJavascriptBridge使用/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2014/09/27/WebViewJavascriptBridge使用/" data-id="ck71kb9un003463t5w3z17m87" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2014/09/27/WebViewJavascriptBridge使用/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UIWebView/">UIWebView</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/tags/iOS/">&laquo; Prev</a><a class="page-number" href="/tags/iOS/">1</a><span class="page-number current">2</span><a class="page-number" href="/tags/iOS/page/3/">3</a><a class="page-number" href="/tags/iOS/page/4/">4</a><a class="extend next" rel="next" href="/tags/iOS/page/3/">Next &raquo;</a>
+  </nav>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/05/27/负数取模/">负数取模</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/30/深入理解RunLoop/">深入理解 RunLoop</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/12/计算机浮点数那些事/">计算机浮点数那些事</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/01/HTTPS总结/">HTTPS 总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/03/HTTPS详解(二)/">HTTPS 详解(二)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OSX/">OSX</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Swift/">Swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具党/">工具党</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/有意思/">有意思</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲聊/">闲聊</a><span class="category-list-count">7</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AFNetworking/" style="font-size: 10px;">AFNetworking</a> <a href="/tags/APPStore/" style="font-size: 10px;">APPStore</a> <a href="/tags/ARC/" style="font-size: 10px;">ARC</a> <a href="/tags/Autolayout/" style="font-size: 10px;">Autolayout</a> <a href="/tags/Cocoa/" style="font-size: 10px;">Cocoa</a> <a href="/tags/CocoaPods/" style="font-size: 10px;">CocoaPods</a> <a href="/tags/CollectionViewLayout/" style="font-size: 10px;">CollectionViewLayout</a> <a href="/tags/Content-Type/" style="font-size: 10px;">Content-Type</a> <a href="/tags/CoreData/" style="font-size: 10px;">CoreData</a> <a href="/tags/CoreText/" style="font-size: 10px;">CoreText</a> <a href="/tags/GFWList/" style="font-size: 10px;">GFWList</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/NSAttributedString/" style="font-size: 10px;">NSAttributedString</a> <a href="/tags/OSX/" style="font-size: 12.5px;">OSX</a> <a href="/tags/Objective-C/" style="font-size: 10px;">Objective-C</a> <a href="/tags/RESTAPI/" style="font-size: 10px;">RESTAPI</a> <a href="/tags/RSA/" style="font-size: 12.5px;">RSA</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/SizeClasses/" style="font-size: 10px;">SizeClasses</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/Threejs/" style="font-size: 10px;">Threejs</a> <a href="/tags/UITableView/" style="font-size: 10px;">UITableView</a> <a href="/tags/UITextField/" style="font-size: 10px;">UITextField</a> <a href="/tags/UIView/" style="font-size: 17.5px;">UIView</a> <a href="/tags/UIViewController/" style="font-size: 10px;">UIViewController</a> <a href="/tags/UIWebView/" style="font-size: 10px;">UIWebView</a> <a href="/tags/VCard/" style="font-size: 10px;">VCard</a> <a href="/tags/Waterdrop/" style="font-size: 10px;">Waterdrop</a> <a href="/tags/WormHole/" style="font-size: 10px;">WormHole</a> <a href="/tags/XIB/" style="font-size: 12.5px;">XIB</a> <a href="/tags/block/" style="font-size: 10px;">__block</a> <a href="/tags/api-HTTP/" style="font-size: 10px;">api.HTTP</a> <a href="/tags/autorelease/" style="font-size: 10px;">autorelease</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/bounds/" style="font-size: 10px;">bounds</a> <a href="/tags/crash/" style="font-size: 10px;">crash</a> <a href="/tags/frame/" style="font-size: 10px;">frame</a> <a href="/tags/gitignore/" style="font-size: 10px;">gitignore</a> <a href="/tags/header/" style="font-size: 10px;">header</a> <a href="/tags/http/" style="font-size: 17.5px;">http</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOSHelper/" style="font-size: 10px;">iOSHelper</a> <a href="/tags/iTerm/" style="font-size: 10px;">iTerm</a> <a href="/tags/isa/" style="font-size: 10px;">isa</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/lipo/" style="font-size: 10px;">lipo</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pod/" style="font-size: 10px;">pod</a> <a href="/tags/protocol/" style="font-size: 10px;">protocol</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/weak/" style="font-size: 10px;">weak</a> <a href="/tags/web/" style="font-size: 17.5px;">web</a> <a href="/tags/xcode/" style="font-size: 10px;">xcode</a> <a href="/tags/xib/" style="font-size: 10px;">xib</a> <a href="/tags/三体/" style="font-size: 10px;">三体</a> <a href="/tags/加密/" style="font-size: 10px;">加密</a> <a href="/tags/奇技淫巧/" style="font-size: 10px;">奇技淫巧</a> <a href="/tags/安全/" style="font-size: 12.5px;">安全</a> <a href="/tags/宏/" style="font-size: 10px;">宏</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/支付宝/" style="font-size: 12.5px;">支付宝</a> <a href="/tags/李健/" style="font-size: 10px;">李健</a> <a href="/tags/模/" style="font-size: 10px;">模</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/浮点/" style="font-size: 10px;">浮点</a> <a href="/tags/淘宝/" style="font-size: 10px;">淘宝</a> <a href="/tags/程序猿/" style="font-size: 10px;">程序猿</a> <a href="/tags/袖手旁观/" style="font-size: 10px;">袖手旁观</a> <a href="/tags/装B/" style="font-size: 10px;">装B</a> <a href="/tags/调试/" style="font-size: 10px;">调试</a> <a href="/tags/贱人曾/" style="font-size: 10px;">贱人曾</a> <a href="/tags/运行时/" style="font-size: 10px;">运行时</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/闲聊/" style="font-size: 12.5px;">闲聊</a> <a href="/tags/隐私/" style="font-size: 10px;">隐私</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 独 奏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+    <a href="http://wiki.honglu.me" class="mobile-nav-link">Wiki</a>
+  
+</nav>
+
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'du-zou-s-blog';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,411 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>RESTAPI设计指南【转】 | 独 奏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一段时间前，Heroku在其Github Repo发表了一篇关于HTTP API设计的经验和总结，这些经验都建立在Heroku Platform的开发和运维之上，非常值得借鉴。 Introduction这篇文章展示了我们在Heroku Platform API 开发中具体HTTP+JSON API的设计实践。 同时，本文作为内部的设计指南也将继续规范Heroku的内部API开发，希望其他同仁也能对">
+<meta name="keywords" content="iOS,RESTAPI,api.HTTP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RESTAPI设计指南【转】">
+<meta property="og:url" content="https://honglu.me/2014/11/28/RESTAPI设计指南/index.html">
+<meta property="og:site_name" content="独 奏">
+<meta property="og:description" content="一段时间前，Heroku在其Github Repo发表了一篇关于HTTP API设计的经验和总结，这些经验都建立在Heroku Platform的开发和运维之上，非常值得借鉴。 Introduction这篇文章展示了我们在Heroku Platform API 开发中具体HTTP+JSON API的设计实践。 同时，本文作为内部的设计指南也将继续规范Heroku的内部API开发，希望其他同仁也能对">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-09T03:55:11.791Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RESTAPI设计指南【转】">
+<meta name="twitter:description" content="一段时间前，Heroku在其Github Repo发表了一篇关于HTTP API设计的经验和总结，这些经验都建立在Heroku Platform的开发和运维之上，非常值得借鉴。 Introduction这篇文章展示了我们在Heroku Platform API 开发中具体HTTP+JSON API的设计实践。 同时，本文作为内部的设计指南也将继续规范Heroku的内部API开发，希望其他同仁也能对">
+  
+    <link rel="alternative" href="/atom.xml" title="独 奏" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Baidu Analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ff2d4025fdadaba5944a656c7fdd681f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- End Baidu Analytics -->
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-66673227-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">独 奏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">道阻且长，行则将至</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+          <a class="main-nav-link" href="http://wiki.honglu.me">Wiki</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="honglu.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-RESTAPI设计指南" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/28/RESTAPI设计指南/" class="article-date">
+  <time datetime="2014-11-28T13:43:24.000Z" itemprop="datePublished">11月 28 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      RESTAPI设计指南【转】
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一段时间前，Heroku在其Github Repo发表了一篇关于HTTP API设计的经验和总结，这些经验都建立在Heroku Platform的开发和运维之上，非常值得借鉴。</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>这篇文章展示了我们在Heroku Platform API 开发中具体HTTP+JSON API的设计实践。 同时，本文作为内部的设计指南也将继续规范Heroku的内部API开发，希望其他同仁也能对此感兴趣。 我们的目的是建立持久可靠的业务，并且只将精力集中于业务逻辑的开发，避免重复制造轮子。 我们一直在寻找一个优秀的，可靠的，文档齐全的API设计方法，但这种方法并不是最终的，唯一的。 在开始之前，我们假定你已经了解最基本的HTTP+JSON APIs，所以我们将不会赘述这些基本概念。</p>
+<a id="more"></a>
+<h2 id="Foundations"><a href="#Foundations" class="headerlink" title="Foundations"></a>Foundations</h2><h3 id="Require-TLS"><a href="#Require-TLS" class="headerlink" title="Require TLS"></a>Require TLS</h3><p>无一例外，访问API需要TLS（TSL1.0== SSLv3.1）加密。而不是讨论什么时候需要TLS什么时候不需要，<strong>任何时候任何情况下</strong>，都需要TLS。 理想情况下，应该屏蔽所有访问http或者80端口的请求避免非安全的数据交换。如果具体环境不允许，服务器应该提示403 Forbidden。 同时，尽量避免Redirect，因为即使采用TLS加密，在跳转过程中，敏感数据可能在第一次请求时已经被泄露，而且请求跳转会使服务器压力加倍。</p>
+<h3 id="Version-with-Accepts-header"><a href="#Version-with-Accepts-header" class="headerlink" title="Version with Accepts header"></a>Version with Accepts header</h3><p>在请求Header中设置API version信息，在Header中的Accept：字段，通过自定义content type来表明API version，例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Accept: application/vnd.heroku+json; version=3</span><br></pre></td></tr></table></figure>
+<p>最好不要使用默认的API version，而是显式的要求客户端对特定版本的API发起请求。</p>
+<h3 id="Support-caching-with-Etags"><a href="#Support-caching-with-Etags" class="headerlink" title="Support caching with Etags"></a>Support caching with Etags</h3><p>通过引入Etag头来标识别特定版本的返回值。客户端在后续的请求中可以通过给定If-None-Match值来确定后续请求的值是否过期。</p>
+<blockquote>
+<p>译者注： Etag（Entity Tags） 是 HTTP/1.1 引入的标准，主要为了满足客户端缓存数据的需求，有时作为Last-Modified等Header的补充。</p>
+</blockquote>
+<p>Etag由服务器端生成，客户端通过If-Match或If-None-Matchp来判断资源是否被修改。具体的流程如下：</p>
+<p>×××××××首次请求×××××××</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 客户端发起 GET 请求一个资源</span><br><span class="line">2. 服务器处理请求，返回资源内容和及其Headers，Headers中包含Etag(例如&quot;2e681a-6-5d044840&quot;)(假设服务器支持Etag生成和已经开启了Etag)。HTTP Code = 200。</span><br></pre></td></tr></table></figure>
+<p>×××××××第二次请求×××××××</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1. 客户端发起 GET 请求一个文件，同时一个If-None-Match Header，这个Header的内容就是第一次请求时服务器返回的Etag：2e681a-6-5d044840。</span><br><span class="line">2. 如果服务器判断发送过来的Etag和计算出来的Etag匹配，If-None-Match为False，不返回200，返回304 （资源未变更Code），客户端继续使用本地缓存。</span><br><span class="line">3. 如果服务器又设置了Cache-Control:max-age和Expires，这时就需要请求的Header完全匹配If-Modified-Since和If-None-Match即检查完修改时间和Etag之后，服务器才能返回HTTP code=304。</span><br><span class="line">Trace requests with Request-Ids</span><br></pre></td></tr></table></figure>
+<p>在每个请求的返回值中加入UUID(Universally Unique Identifier) 作为Request-Id，如果这样做，可以很方便的在Server端和Client端的日志文件中找到具体请求，对于Debugging和Tracing很有用。</p>
+<h3 id="Paginate-with-Ranges"><a href="#Paginate-with-Ranges" class="headerlink" title="Paginate with Ranges"></a>Paginate with Ranges</h3><p>对于有可能产生大量数据的返回值进行分页，请求头中用Content-Range来标示分页。可参考<a href="https://devcenter.heroku.com/articles/platform-api-reference#ranges" target="_blank" rel="noopener">Heroku Platform API on Ranges</a>中对于请求和返回的 headers, status codes, limits, ordering, and page-walking的详细描述。</p>
+<h2 id="Request"><a href="#Request" class="headerlink" title="Request"></a>Request</h2><h3 id="Return-appropriate-status-code"><a href="#Return-appropriate-status-code" class="headerlink" title="Return appropriate status code"></a>Return appropriate status code</h3><p>对于每个请求的返回值，应该返回合适的HTTP code。成功的请求返回值的HTTP code 应该遵循如下：</p>
+<ul>
+<li>200： GET 请求成功调用，或者 DELETE， PUT 同步请求调用成功。</li>
+<li>201： POST同步请求成功调用。</li>
+<li>202： POST， DELETE或者PUT异步请求成功调用。</li>
+<li>206： 成功收到GET请求，但是至返回部分结果。具体查看Paginate</li>
+</ul>
+<p>注意认证/授权出错的返回值code：</p>
+<ul>
+<li>401 Unauthorized：用户未认证</li>
+<li>403 Forbidden: 用户未授权访问具体资源</li>
+</ul>
+<p>对于错误的返回值给予更合适的code：</p>
+<ul>
+<li>422 Unprocessable Entity： 用户请求正确，但是传递了无效的参数</li>
+<li>429 Too Many Requests：请求过快，稍后重试</li>
+<li>500 Internal Server Error：服务器出错，检查服务器状态并且/或者 报告异常</li>
+</ul>
+<p>请参考<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html" target="_blank" rel="noopener">HTTP response code spec</a>来处理各种用户或者服务器的错误。</p>
+<h3 id="Accept-serialized-JSON-in-request-bodies"><a href="#Accept-serialized-JSON-in-request-bodies" class="headerlink" title="Accept serialized JSON in request bodies"></a>Accept serialized JSON in request bodies</h3><p>服务器只接受JSON序列化数据的PUT/PATCH/POST请求，不接受form-encoded数据，这样可以保持请求和返回都是JSON数据。</p>
+<h3 id="Use-consistent-path-formats"><a href="#Use-consistent-path-formats" class="headerlink" title="Use consistent path formats"></a>Use consistent path formats</h3><h4 id="Resource-names"><a href="#Resource-names" class="headerlink" title="Resource names"></a>Resource names</h4><p>对于资源的命名， 添加版本信息，除非是系统中必须保持唯一的资源（比如，在大多数系统中，用户的账号信息总是唯一的）。这样做，可以保证用户对于特定资源访问的持久唯一性。</p>
+<h4 id="Actions"><a href="#Actions" class="headerlink" title="Actions"></a>Actions</h4><p>对于每个资源的操作，不推荐采用特殊的操作。如果需要特殊操作，推荐将具体的操作表示添加在actions路径之后。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/resources/:resource/actions/:action</span><br></pre></td></tr></table></figure>
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/runs/&#123;run_id&#125;/actions/stop</span><br></pre></td></tr></table></figure>
+<h3 id="Downcase-paths-and-attributes"><a href="#Downcase-paths-and-attributes" class="headerlink" title="Downcase paths and attributes"></a>Downcase paths and attributes</h3><p>API的路径应该由小写字母和中划线组成：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">service-api.com/users</span><br><span class="line">service-api.com/app-setups</span><br></pre></td></tr></table></figure>
+<p>传递参数也应该又小写字母组成，但是需要用下划线，这样组成的变量在Javascript中不需要双引号扩起来：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">service_class: &quot;first&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="Support-non-id-dereferencing-for-convenience"><a href="#Support-non-id-dereferencing-for-convenience" class="headerlink" title="Support non-id dereferencing for convenience"></a>Support non-id dereferencing for convenience</h3><p>有些情况下， 用户请求需要提供资源ID，这会很不方便。例如，对于Heroku 的app，用户知道app name，但是服务器的app资源是通过UUID来标识的，这种情况，服务器就应该同时接收id和app name作为参数：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl https://service.com/apps/&#123;app_id_or_name&#125;</span><br><span class="line">$ curl https://service.com/apps/97addcf0-c182</span><br><span class="line">$ curl https://service.com/apps/www-prod</span><br></pre></td></tr></table></figure>
+<p>而不是仅仅接收IDs（例如97addcf0-c182）</p>
+<h3 id="Minimize-path-nesting"><a href="#Minimize-path-nesting" class="headerlink" title="Minimize path nesting"></a>Minimize path nesting</h3><p>如果数据的层级关系反映在API路径上，就会出现多级的路径：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/orgs/&#123;org_id&#125;/apps/&#123;app_id&#125;/dynos/&#123;dyno_id&#125;</span><br></pre></td></tr></table></figure>
+<p>推荐将资源绑定在根目录层级上。层级用来指示资源集合的关系。例如，一个dyno属于一个app，一个app属于一个org：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/orgs/&#123;org_id&#125;</span><br><span class="line">/orgs/&#123;org_id&#125;/apps</span><br><span class="line">/apps/&#123;app_id&#125;</span><br><span class="line">/apps/&#123;app_id&#125;/dynos</span><br><span class="line">/dynos/&#123;dyno_id&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Response"><a href="#Response" class="headerlink" title="Response"></a>Response</h2><h3 id="Provide-resource-UU-IDs"><a href="#Provide-resource-UU-IDs" class="headerlink" title="Provide resource (UU)IDs"></a>Provide resource (UU)IDs</h3><p>对于每个资源，都提供一个UUID，除非你有充分的理由不用。使用一个全局唯一的ID，甚至在任何一台服务器实例，以及其他资源中都是唯一的，尤其是自增长的ID。 对于UUID，采用中划线连接小写字母的格式：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;id&quot;: &quot;01234567-89ab-cdef-0123-456789abcdef&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="Provide-standard-timestamps"><a href="#Provide-standard-timestamps" class="headerlink" title="Provide standard timestamps"></a>Provide standard timestamps</h3><p>记录操作的时间戳，包括create_at 和 update_at：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line"> &#123;</span><br><span class="line">  ...</span><br><span class="line">  "created_at": "2012-01-01T12:00:00Z",</span><br><span class="line">  "updated_at": "2012-01-01T13:00:00Z",</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这些时间戳并不是对所有资源都有用，这种情况下，可以省略。</p>
+<h3 id="Use-UTC-times-formatted-in-ISO8601"><a href="#Use-UTC-times-formatted-in-ISO8601" class="headerlink" title="Use UTC times formatted in ISO8601"></a>Use UTC times formatted in ISO8601</h3><p>接收并且返回的时间都是UTC时间，采用ISO8601标准的格式：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;finished_at&quot;: &quot;2012-01-01T12:00:00Z&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="Nest-foreign-key-relations"><a href="#Nest-foreign-key-relations" class="headerlink" title="Nest foreign key relations"></a>Nest foreign key relations</h3><p>对于序列化的外键，应该包裹一个层级：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"service-production"</span>,</span><br><span class="line">  <span class="attr">"owner"</span>: &#123;</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"5d8201b0..."</span></span><br><span class="line">  &#125;,</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而不是：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"service-production"</span>,</span><br><span class="line">  <span class="attr">"owner_id"</span>: <span class="string">"5d8201b0..."</span>,</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方式可以方便我们内联更多信息而不用改变整个response的结构，或者引入新的根字段：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"service-production"</span>,</span><br><span class="line">  <span class="attr">"owner"</span>: &#123;</span><br><span class="line">    <span class="attr">"id"</span>: <span class="string">"5d8201b0..."</span>,</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"Alice"</span>,</span><br><span class="line">    <span class="attr">"email"</span>: <span class="string">"alice@heroku.com"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Generate-structured-errors"><a href="#Generate-structured-errors" class="headerlink" title="Generate structured errors"></a>Generate structured errors</h3><p>应该创建一致的，有组织的错误返回值，例如，包含一个机器能识别的错误id，一个人能读懂的错误message，以及一个备选的url地址，其中有更多的错误信息以及错误处理方法：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 429 Too Many Requests</span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">"id"</span>:      <span class="string">"rate_limit"</span>,</span><br><span class="line">  <span class="attr">"message"</span>: <span class="string">"Account reached its API rate limit."</span>,</span><br><span class="line">  <span class="attr">"url"</span>:     <span class="string">"https://docs.service.com/rate-limits"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同时，以文档的方式标明用户可能会遇到的错误id和错误信息格式。</p>
+<h3 id="Show-rate-limit-status"><a href="#Show-rate-limit-status" class="headerlink" title="Show rate limit status"></a>Show rate limit status</h3><p>为了保持服务的可靠，需要限制用户的请求次数和频率。可以采用<a href="http://en.wikipedia.org/wiki/Token_bucket" target="_blank" rel="noopener">token bucket algorithm</a> 来量化用户请求。</p>
+<h3 id="Keep-JSON-minified-in-all-responses"><a href="#Keep-JSON-minified-in-all-responses" class="headerlink" title="Keep JSON minified in all responses"></a>Keep JSON minified in all responses</h3><p>多余的空格和Tab只会加大JSON请求的数据大小，实际上很多客户端或者用户自己都会自动的格式化JSON输出，所以完全可以压缩JSON返回值：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">"beta"</span>:<span class="literal">false</span>,<span class="attr">"email"</span>:<span class="string">"alice@heroku.com"</span>,<span class="attr">"id"</span>:<span class="string">"01234567-89ab-cdef-0123-456789abcdef"</span>,<span class="attr">"last_login"</span>:<span class="string">"2012-01-01T12:00:00Z"</span>, <span class="attr">"created_at"</span>:<span class="string">"2012-01-01T12:00:00Z"</span>,<span class="attr">"updated_at"</span>:<span class="string">"2012-01-01T12:00:00Z"</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>而不是返回格式化的JSON:</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">   <span class="attr">"beta"</span>: <span class="literal">false</span>,</span><br><span class="line">   <span class="attr">"email"</span>: <span class="string">"alice@heroku.com"</span>,</span><br><span class="line">  <span class="attr">"id"</span>: <span class="string">"01234567-89ab-cdef-0123-456789abcdef"</span>,</span><br><span class="line">  <span class="attr">"last_login"</span>: <span class="string">"2012-01-01T12:00:00Z"</span>,</span><br><span class="line">  <span class="attr">"created_at"</span>: <span class="string">"2012-01-01T12:00:00Z"</span>,</span><br><span class="line">  <span class="attr">"updated_at"</span>: <span class="string">"2012-01-01T12:00:00Z"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以考虑通过开关来控制返回值，从而返回给客户端可视化的数据。可以采用请求中加参数（?pretty=true）或者请求Header中定义参数（例如：Accept: application/vnd.heroku+json; version=3; indent=4;）等方式。</p>
+<h2 id="Artifacts"><a href="#Artifacts" class="headerlink" title="Artifacts"></a>Artifacts</h2><h3 id="Provide-machine-readable-JSON-schema"><a href="#Provide-machine-readable-JSON-schema" class="headerlink" title="Provide machine-readable JSON schema"></a>Provide machine-readable JSON schema</h3><p>提供一个机器可读的标准来具体定义一个API，可以采用<a href="https://github.com/interagent/prmd" target="_blank" rel="noopener">prmd</a>管理你的这些标准，并且保证该标准可以通过prmd verify的验证。</p>
+<h3 id="Provide-human-readable-docs"><a href="#Provide-human-readable-docs" class="headerlink" title="Provide human-readable docs"></a>Provide human-readable docs</h3><p>提供一份可读性强的文档方便开发者理解你的API。</p>
+<p>如果使用prmd来定义API的格式，你可以轻松地通过prmd doc生成一个基于Markdown的文档，其中包含所有API endpoint的描述。</p>
+<p>除此之外，应该提供API的描述如下：</p>
+<ul>
+<li>认证， 包括如何获取和使用认证tokens</li>
+<li>API的版本和稳定性，包括如何选择不同版本的API</li>
+<li>通用的API请求和返回的headers</li>
+<li>各种语言的API调用例子</li>
+</ul>
+<h3 id="Provide-executable-examples"><a href="#Provide-executable-examples" class="headerlink" title="Provide executable examples"></a>Provide executable examples</h3><p>提供可被直接在终端执行的API调用例子。最好是提供详细的逐步操作例子，减少用户调用API可能需要的工作：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">export</span> TOKEN=... <span class="comment"># acquire from dashboard</span></span><br><span class="line">$ curl -is https://<span class="variable">$TOKEN</span>@service.com/users</span><br></pre></td></tr></table></figure>
+<p>如果采用prmd doc 来生成API文档，同时也可以通过其生成每个API的调用实例。</p>
+<h3 id="Describe-stability"><a href="#Describe-stability" class="headerlink" title="Describe stability"></a>Describe stability</h3><p>根据具体开发的稳定性和成熟度，清晰描述服务的每个API， 服务的稳定性，例如：<code>prototype/development/production</code></p>
+<p>参考<a href="https://devcenter.heroku.com/articles/api-compatibility-policy" target="_blank" rel="noopener">Heroku API compatibility policy</a> ，帮助你维护API的稳定性和版本切换管理。</p>
+<p>一旦你的API被声明为production和稳定的，就不要进行不能向后兼容的改动，如果非要改动导致不能向后兼容，则应该创建一个新的API版本，作为当前的增量版本。</p>
+<p>英文原版： <a href="https://github.com/interagent/http-api-design" target="_blank" rel="noopener">https://github.com/interagent/http-api-design</a><br>转自：<a href="http://chixq.com/articles/http-api-guide/" target="_blank" rel="noopener">HTTP API 设计指南</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2014/11/28/RESTAPI设计指南/" data-id="ck71kb9ud002i63t502868e1k" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2014/11/28/RESTAPI设计指南/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RESTAPI/">RESTAPI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/api-HTTP/">api.HTTP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/12/29/iOS-Development-Tips-1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          iOS Development Tips (1)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/11/09/RSA加密浅析/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">RSA加密浅析</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/05/27/负数取模/">负数取模</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/30/深入理解RunLoop/">深入理解 RunLoop</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/12/计算机浮点数那些事/">计算机浮点数那些事</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/01/HTTPS总结/">HTTPS 总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/03/HTTPS详解(二)/">HTTPS 详解(二)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OSX/">OSX</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Swift/">Swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具党/">工具党</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/有意思/">有意思</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲聊/">闲聊</a><span class="category-list-count">7</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AFNetworking/" style="font-size: 10px;">AFNetworking</a> <a href="/tags/APPStore/" style="font-size: 10px;">APPStore</a> <a href="/tags/ARC/" style="font-size: 10px;">ARC</a> <a href="/tags/Autolayout/" style="font-size: 10px;">Autolayout</a> <a href="/tags/Cocoa/" style="font-size: 10px;">Cocoa</a> <a href="/tags/CocoaPods/" style="font-size: 10px;">CocoaPods</a> <a href="/tags/CollectionViewLayout/" style="font-size: 10px;">CollectionViewLayout</a> <a href="/tags/Content-Type/" style="font-size: 10px;">Content-Type</a> <a href="/tags/CoreData/" style="font-size: 10px;">CoreData</a> <a href="/tags/CoreText/" style="font-size: 10px;">CoreText</a> <a href="/tags/GFWList/" style="font-size: 10px;">GFWList</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/NSAttributedString/" style="font-size: 10px;">NSAttributedString</a> <a href="/tags/OSX/" style="font-size: 12.5px;">OSX</a> <a href="/tags/Objective-C/" style="font-size: 10px;">Objective-C</a> <a href="/tags/RESTAPI/" style="font-size: 10px;">RESTAPI</a> <a href="/tags/RSA/" style="font-size: 12.5px;">RSA</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/SizeClasses/" style="font-size: 10px;">SizeClasses</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/Threejs/" style="font-size: 10px;">Threejs</a> <a href="/tags/UITableView/" style="font-size: 10px;">UITableView</a> <a href="/tags/UITextField/" style="font-size: 10px;">UITextField</a> <a href="/tags/UIView/" style="font-size: 17.5px;">UIView</a> <a href="/tags/UIViewController/" style="font-size: 10px;">UIViewController</a> <a href="/tags/UIWebView/" style="font-size: 10px;">UIWebView</a> <a href="/tags/VCard/" style="font-size: 10px;">VCard</a> <a href="/tags/Waterdrop/" style="font-size: 10px;">Waterdrop</a> <a href="/tags/WormHole/" style="font-size: 10px;">WormHole</a> <a href="/tags/XIB/" style="font-size: 12.5px;">XIB</a> <a href="/tags/block/" style="font-size: 10px;">__block</a> <a href="/tags/api-HTTP/" style="font-size: 10px;">api.HTTP</a> <a href="/tags/autorelease/" style="font-size: 10px;">autorelease</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/bounds/" style="font-size: 10px;">bounds</a> <a href="/tags/crash/" style="font-size: 10px;">crash</a> <a href="/tags/frame/" style="font-size: 10px;">frame</a> <a href="/tags/gitignore/" style="font-size: 10px;">gitignore</a> <a href="/tags/header/" style="font-size: 10px;">header</a> <a href="/tags/http/" style="font-size: 17.5px;">http</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOSHelper/" style="font-size: 10px;">iOSHelper</a> <a href="/tags/iTerm/" style="font-size: 10px;">iTerm</a> <a href="/tags/isa/" style="font-size: 10px;">isa</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/lipo/" style="font-size: 10px;">lipo</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pod/" style="font-size: 10px;">pod</a> <a href="/tags/protocol/" style="font-size: 10px;">protocol</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/weak/" style="font-size: 10px;">weak</a> <a href="/tags/web/" style="font-size: 17.5px;">web</a> <a href="/tags/xcode/" style="font-size: 10px;">xcode</a> <a href="/tags/xib/" style="font-size: 10px;">xib</a> <a href="/tags/三体/" style="font-size: 10px;">三体</a> <a href="/tags/加密/" style="font-size: 10px;">加密</a> <a href="/tags/奇技淫巧/" style="font-size: 10px;">奇技淫巧</a> <a href="/tags/安全/" style="font-size: 12.5px;">安全</a> <a href="/tags/宏/" style="font-size: 10px;">宏</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/支付宝/" style="font-size: 12.5px;">支付宝</a> <a href="/tags/李健/" style="font-size: 10px;">李健</a> <a href="/tags/模/" style="font-size: 10px;">模</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/浮点/" style="font-size: 10px;">浮点</a> <a href="/tags/淘宝/" style="font-size: 10px;">淘宝</a> <a href="/tags/程序猿/" style="font-size: 10px;">程序猿</a> <a href="/tags/袖手旁观/" style="font-size: 10px;">袖手旁观</a> <a href="/tags/装B/" style="font-size: 10px;">装B</a> <a href="/tags/调试/" style="font-size: 10px;">调试</a> <a href="/tags/贱人曾/" style="font-size: 10px;">贱人曾</a> <a href="/tags/运行时/" style="font-size: 10px;">运行时</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/闲聊/" style="font-size: 12.5px;">闲聊</a> <a href="/tags/隐私/" style="font-size: 10px;">隐私</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 独 奏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+    <a href="http://wiki.honglu.me" class="mobile-nav-link">Wiki</a>
+  
+</nav>
+
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'du-zou-s-blog';
+  
+  var disqus_url = 'https://honglu.me/2014/11/28/RESTAPI设计指南/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

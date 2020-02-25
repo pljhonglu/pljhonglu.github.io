@@ -1,0 +1,356 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS开发的奇技淫巧 | 独 奏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近好像这个话题很热啊，我不生产奇技淫巧我是大自然的搬运工 结构体简便初始化// 不加(CGRect)强转也不会warningCGRect rect1 = &amp;#123;1, 2, 3, 4&amp;#125;;CGRect rect2 = &amp;#123;.origin.x=5, .size=&amp;#123;10, 10&amp;#125;&amp;#125;; // &amp;#123;5, 0, 10, 10&amp;#125;CGRect">
+<meta name="keywords" content="iOS,奇技淫巧">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发的奇技淫巧">
+<meta property="og:url" content="https://honglu.me/2015/04/24/iOS开发的奇技淫巧/index.html">
+<meta property="og:site_name" content="独 奏">
+<meta property="og:description" content="最近好像这个话题很热啊，我不生产奇技淫巧我是大自然的搬运工 结构体简便初始化// 不加(CGRect)强转也不会warningCGRect rect1 = &amp;#123;1, 2, 3, 4&amp;#125;;CGRect rect2 = &amp;#123;.origin.x=5, .size=&amp;#123;10, 10&amp;#125;&amp;#125;; // &amp;#123;5, 0, 10, 10&amp;#125;CGRect">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-09T03:55:11.797Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发的奇技淫巧">
+<meta name="twitter:description" content="最近好像这个话题很热啊，我不生产奇技淫巧我是大自然的搬运工 结构体简便初始化// 不加(CGRect)强转也不会warningCGRect rect1 = &amp;#123;1, 2, 3, 4&amp;#125;;CGRect rect2 = &amp;#123;.origin.x=5, .size=&amp;#123;10, 10&amp;#125;&amp;#125;; // &amp;#123;5, 0, 10, 10&amp;#125;CGRect">
+  
+    <link rel="alternative" href="/atom.xml" title="独 奏" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Baidu Analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ff2d4025fdadaba5944a656c7fdd681f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- End Baidu Analytics -->
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-66673227-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">独 奏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">道阻且长，行则将至</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+          <a class="main-nav-link" href="http://wiki.honglu.me">Wiki</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="honglu.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-iOS开发的奇技淫巧" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/04/24/iOS开发的奇技淫巧/" class="article-date">
+  <time datetime="2015-04-24T12:43:16.000Z" itemprop="datePublished">4月 24 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS开发的奇技淫巧
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近好像这个话题很热啊，我不生产<code>奇技淫巧</code>我是大自然的搬运工</p>
+<h2 id="结构体简便初始化"><a href="#结构体简便初始化" class="headerlink" title="结构体简便初始化"></a>结构体简便初始化</h2><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 不加(CGRect)强转也不会warning</span></span><br><span class="line"><span class="built_in">CGRect</span> rect1 = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;;</span><br><span class="line"><span class="built_in">CGRect</span> rect2 = &#123;.origin.x=<span class="number">5</span>, .size=&#123;<span class="number">10</span>, <span class="number">10</span>&#125;&#125;; <span class="comment">// &#123;5, 0, 10, 10&#125;</span></span><br><span class="line"><span class="built_in">CGRect</span> rect3 = &#123;<span class="number">1</span>, <span class="number">2</span>&#125;; <span class="comment">// &#123;1, 2, 0, 0&#125;</span></span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="三元条件表达式的两元使用"><a href="#三元条件表达式的两元使用" class="headerlink" title="三元条件表达式的两元使用"></a>三元条件表达式的两元使用</h2><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *string = inputString ?: <span class="string">@"default"</span>;</span><br><span class="line"><span class="built_in">NSString</span> *string = inputString ? inputString : <span class="string">@"default"</span>; <span class="comment">// 等价</span></span><br></pre></td></tr></table></figure>
+<p>到这里让我想起了一个笑话</p>
+<p>C有一个鲜为人知的运算符叫”趋向于”， 写作“–&gt;”。比如说如果要实现一个倒数的程序，我们可以定义一个变量x，然后让它趋向与0：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="meta">#include <span class="meta-string">&lt;stdio.h&gt;</span>  </span></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv) &#123;  </span><br><span class="line">	<span class="keyword">int</span> x = <span class="number">10</span>;</span><br><span class="line"> 	<span class="keyword">while</span> (x --&gt; <span class="number">0</span>) &#123;</span><br><span class="line">		printf(<span class="string">"%d "</span>, x);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>会打印出：<br>9 8 7 6 5 4 3 2 1 0</p>
+<h2 id="数组的下标初始化"><a href="#数组的下标初始化" class="headerlink" title="数组的下标初始化"></a>数组的下标初始化</h2><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> numbers[] = &#123;</span><br><span class="line">    [<span class="number">1</span>] = <span class="number">3</span>,</span><br><span class="line">    [<span class="number">2</span>] = <span class="number">2</span>,</span><br><span class="line">    [<span class="number">3</span>] = <span class="number">1</span>,</span><br><span class="line">    [<span class="number">5</span>] = <span class="number">12306</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// &#123;0, 3, 2, 1, 0, 12306&#125;</span></span><br></pre></td></tr></table></figure>
+<p>这个特性可以用来做枚举值和字符串的映射</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="built_in">NS_ENUM</span>(<span class="built_in">NSInteger</span>, XXType)&#123;</span><br><span class="line">    XXType1,</span><br><span class="line">    XXType2</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> <span class="built_in">NSString</span> *XXTypeNameMapping[] = &#123;</span><br><span class="line">    [XXType1] = <span class="string">@"Type1"</span>,</span><br><span class="line">    [XXType2] = <span class="string">@"Type2"</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="可变参数类型的block"><a href="#可变参数类型的block" class="headerlink" title="可变参数类型的block"></a>可变参数类型的block</h2><p>一个block像下面一样声明：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span>(^block1)(<span class="keyword">void</span>);</span><br><span class="line"><span class="keyword">void</span>(^block2)(<span class="keyword">int</span> a);</span><br><span class="line"><span class="keyword">void</span>(^block3)(<span class="built_in">NSNumber</span> *a, <span class="built_in">NSString</span> *b);</span><br></pre></td></tr></table></figure>
+<p>如果block的参数列表为空的话，相当于可变参数（不是void）</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span>(^block)(); <span class="comment">// 返回值为void，参数可变的block</span></span><br><span class="line">block = block1; <span class="comment">// 正常</span></span><br><span class="line">block = block2; <span class="comment">// 正常</span></span><br><span class="line">block = block3; <span class="comment">// 正常</span></span><br><span class="line">block(@<span class="number">1</span>, <span class="string">@"string"</span>);  <span class="comment">// 对应上面的block3</span></span><br><span class="line">block(@<span class="number">1</span>); <span class="comment">// block3的第一个参数为@1，第二个为nil</span></span><br></pre></td></tr></table></figure>
+<p>这样，block的主调和回调之间可以通过约定来决定block回传回来的参数是什么，有几个。如一个对网络层的调用：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)requestDataWithApi:(<span class="built_in">NSInteger</span>)api block:(<span class="keyword">void</span>(^)())block</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (api == <span class="number">0</span>) &#123;</span><br><span class="line">        block(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (api == <span class="number">1</span>) &#123;</span><br><span class="line">        block(<span class="string">@"1"</span>, @<span class="number">2</span>, @[<span class="string">@"3"</span>, <span class="string">@"4"</span>, <span class="string">@"5"</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>主调者知道自己请求的是哪个Api，那么根据约定，他就知道block里面应该接受哪几个参数：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">[server requestDataWithApi:<span class="number">0</span> block:^(<span class="built_in">NSInteger</span> a, <span class="built_in">NSInteger</span> b)&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;];</span><br><span class="line">[server requestDataWithApi:<span class="number">1</span> block:^(<span class="built_in">NSString</span> *s, <span class="built_in">NSNumber</span> *n, <span class="built_in">NSArray</span> *a)&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<p>这个特性在Reactive Cocoa的-combineLatest:reduce:等类似方法中已经使用的相当好了。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">+ (RACSignal *)combineLatest:(<span class="keyword">id</span>&lt;<span class="built_in">NSFastEnumeration</span>&gt;)signals reduce:(<span class="keyword">id</span> (^)())reduceBlock;</span><br></pre></td></tr></table></figure>
+<h2 id="小括号内联复合表达式"><a href="#小括号内联复合表达式" class="headerlink" title="小括号内联复合表达式"></a>小括号内联复合表达式</h2><p><code>A compound statement enclosed in parentheses</code>原谅我的渣翻译- -，来自《gcc官方对此的说明》，源自gcc对c的扩展，如今被clang继承。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">RETURN_VALUE_RECEIVER = (&#123;</span><br><span class="line">    <span class="comment">// Do whatever you want</span></span><br><span class="line">    RETURN_VALUE; <span class="comment">// 返回值</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>于是乎可以发挥想象力了：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="keyword">self</span>.backgroundView = (&#123;</span><br><span class="line">    <span class="built_in">UIView</span> *view = [[<span class="built_in">UIView</span> alloc] initWithFrame:<span class="keyword">self</span>.view.bounds];</span><br><span class="line">    view.backgroundColor = [<span class="built_in">UIColor</span> redColor];</span><br><span class="line">    view.alpha = <span class="number">0.8</span>f;</span><br><span class="line">    view;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>有点像block和内联函数的结合体，它最大的意义在于将代码整理分块，将同一个逻辑层级的代码包在一起；同时对于一个无需复用小段逻辑，也免去了重量级的调用函数，如：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="keyword">self</span>.result = (&#123;</span><br><span class="line">    <span class="keyword">double</span> result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= M_2_PI; i+= M_PI_4) &#123;</span><br><span class="line">        result += sin(i);</span><br><span class="line">    &#125;</span><br><span class="line">    result;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>这样使得代码量增大时层次仍然能比较明确。</p>
+<blockquote>
+<p>PS: 返回值和代码块结束点必须在结尾</p>
+</blockquote>
+<h2 id="快捷的收键盘代码"><a href="#快捷的收键盘代码" class="headerlink" title="快捷的收键盘代码"></a>快捷的收键盘代码</h2><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)touchesBegan:(<span class="built_in">NSSet</span> *)touches withEvent:(<span class="built_in">UIEvent</span> *)event</span><br><span class="line">&#123;</span><br><span class="line">   [<span class="keyword">self</span>.view endEditing:<span class="literal">YES</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="去掉导航条返回键-title"><a href="#去掉导航条返回键-title" class="headerlink" title="去掉导航条返回键 title"></a>去掉导航条返回键 title</h2><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">[[<span class="built_in">UIBarButtonItem</span> appearance] setBackButtonTitlePositionAdjustment:<span class="built_in">UIOffsetMake</span>(<span class="number">0</span>, <span class="number">-60</span>)</span><br><span class="line">                                                     forBarMetrics:<span class="built_in">UIBarMetricsDefault</span>];</span><br></pre></td></tr></table></figure>
+<h2 id="改变uitextfield-placeholder的颜色和位置"><a href="#改变uitextfield-placeholder的颜色和位置" class="headerlink" title="改变uitextfield placeholder的颜色和位置"></a>改变uitextfield placeholder的颜色和位置</h2><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">- (<span class="keyword">void</span>) drawPlaceholderInRect:(<span class="built_in">CGRect</span>)rect &#123;</span><br><span class="line">    [[<span class="built_in">UIColor</span> blueColor] setFill];</span><br><span class="line">    [<span class="keyword">self</span>.placeholder drawInRect:rect withFont:<span class="keyword">self</span>.font lineBreakMode:<span class="built_in">UILineBreakModeTailTruncation</span> alignment:<span class="keyword">self</span>.textAlignment];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="电话-xxxx转xxxx"><a href="#电话-xxxx转xxxx" class="headerlink" title="电话 xxxx转xxxx"></a>电话 xxxx转xxxx</h2><p>一般客服电话经常会出现需要转接分机的情况，比如 10010转6666 的形式，只需要如下的 URL scheme 就可以了：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tel:10010,6666</span><br></pre></td></tr></table></figure>
+<p>拨打的时候会首先拨通 10010，接通之后会紧接着按下6666四个数字</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jianshu.com/collection/d02b8383bbf0" target="_blank" rel="noopener">『专题』iOS&amp;Xcode奇技淫巧</a><br><a href="http://www.jianshu.com/p/50b63a221f09" target="_blank" rel="noopener">iOS开发的一些奇巧淫技</a><br><a href="http://www.jianshu.com/p/08f194e9904c" target="_blank" rel="noopener">iOS开发的一些奇巧淫技2</a><br><a href="http://blog.sunnyxx.com/2014/08/02/objc-weird-code/" target="_blank" rel="noopener">objc非主流代码技巧</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/04/24/iOS开发的奇技淫巧/" data-id="ck71kb9uv003p63t5jz03ioo0" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/04/24/iOS开发的奇技淫巧/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/奇技淫巧/">奇技淫巧</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/04/24/ARC中autoreleasepool的使用/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          ARC中autoreleasepool的使用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/04/11/json中头疼的null/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">json中头疼的null</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/05/27/负数取模/">负数取模</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/30/深入理解RunLoop/">深入理解 RunLoop</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/12/计算机浮点数那些事/">计算机浮点数那些事</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/01/HTTPS总结/">HTTPS 总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/03/HTTPS详解(二)/">HTTPS 详解(二)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OSX/">OSX</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Swift/">Swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具党/">工具党</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/有意思/">有意思</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲聊/">闲聊</a><span class="category-list-count">7</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AFNetworking/" style="font-size: 10px;">AFNetworking</a> <a href="/tags/APPStore/" style="font-size: 10px;">APPStore</a> <a href="/tags/ARC/" style="font-size: 10px;">ARC</a> <a href="/tags/Autolayout/" style="font-size: 10px;">Autolayout</a> <a href="/tags/Cocoa/" style="font-size: 10px;">Cocoa</a> <a href="/tags/CocoaPods/" style="font-size: 10px;">CocoaPods</a> <a href="/tags/CollectionViewLayout/" style="font-size: 10px;">CollectionViewLayout</a> <a href="/tags/Content-Type/" style="font-size: 10px;">Content-Type</a> <a href="/tags/CoreData/" style="font-size: 10px;">CoreData</a> <a href="/tags/CoreText/" style="font-size: 10px;">CoreText</a> <a href="/tags/GFWList/" style="font-size: 10px;">GFWList</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/NSAttributedString/" style="font-size: 10px;">NSAttributedString</a> <a href="/tags/OSX/" style="font-size: 12.5px;">OSX</a> <a href="/tags/Objective-C/" style="font-size: 10px;">Objective-C</a> <a href="/tags/RESTAPI/" style="font-size: 10px;">RESTAPI</a> <a href="/tags/RSA/" style="font-size: 12.5px;">RSA</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/SizeClasses/" style="font-size: 10px;">SizeClasses</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/Threejs/" style="font-size: 10px;">Threejs</a> <a href="/tags/UITableView/" style="font-size: 10px;">UITableView</a> <a href="/tags/UITextField/" style="font-size: 10px;">UITextField</a> <a href="/tags/UIView/" style="font-size: 17.5px;">UIView</a> <a href="/tags/UIViewController/" style="font-size: 10px;">UIViewController</a> <a href="/tags/UIWebView/" style="font-size: 10px;">UIWebView</a> <a href="/tags/VCard/" style="font-size: 10px;">VCard</a> <a href="/tags/Waterdrop/" style="font-size: 10px;">Waterdrop</a> <a href="/tags/WormHole/" style="font-size: 10px;">WormHole</a> <a href="/tags/XIB/" style="font-size: 12.5px;">XIB</a> <a href="/tags/block/" style="font-size: 10px;">__block</a> <a href="/tags/api-HTTP/" style="font-size: 10px;">api.HTTP</a> <a href="/tags/autorelease/" style="font-size: 10px;">autorelease</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/bounds/" style="font-size: 10px;">bounds</a> <a href="/tags/crash/" style="font-size: 10px;">crash</a> <a href="/tags/frame/" style="font-size: 10px;">frame</a> <a href="/tags/gitignore/" style="font-size: 10px;">gitignore</a> <a href="/tags/header/" style="font-size: 10px;">header</a> <a href="/tags/http/" style="font-size: 17.5px;">http</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOSHelper/" style="font-size: 10px;">iOSHelper</a> <a href="/tags/iTerm/" style="font-size: 10px;">iTerm</a> <a href="/tags/isa/" style="font-size: 10px;">isa</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/lipo/" style="font-size: 10px;">lipo</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pod/" style="font-size: 10px;">pod</a> <a href="/tags/protocol/" style="font-size: 10px;">protocol</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/weak/" style="font-size: 10px;">weak</a> <a href="/tags/web/" style="font-size: 17.5px;">web</a> <a href="/tags/xcode/" style="font-size: 10px;">xcode</a> <a href="/tags/xib/" style="font-size: 10px;">xib</a> <a href="/tags/三体/" style="font-size: 10px;">三体</a> <a href="/tags/加密/" style="font-size: 10px;">加密</a> <a href="/tags/奇技淫巧/" style="font-size: 10px;">奇技淫巧</a> <a href="/tags/安全/" style="font-size: 12.5px;">安全</a> <a href="/tags/宏/" style="font-size: 10px;">宏</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/支付宝/" style="font-size: 12.5px;">支付宝</a> <a href="/tags/李健/" style="font-size: 10px;">李健</a> <a href="/tags/模/" style="font-size: 10px;">模</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/浮点/" style="font-size: 10px;">浮点</a> <a href="/tags/淘宝/" style="font-size: 10px;">淘宝</a> <a href="/tags/程序猿/" style="font-size: 10px;">程序猿</a> <a href="/tags/袖手旁观/" style="font-size: 10px;">袖手旁观</a> <a href="/tags/装B/" style="font-size: 10px;">装B</a> <a href="/tags/调试/" style="font-size: 10px;">调试</a> <a href="/tags/贱人曾/" style="font-size: 10px;">贱人曾</a> <a href="/tags/运行时/" style="font-size: 10px;">运行时</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/闲聊/" style="font-size: 12.5px;">闲聊</a> <a href="/tags/隐私/" style="font-size: 10px;">隐私</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 独 奏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+    <a href="http://wiki.honglu.me" class="mobile-nav-link">Wiki</a>
+  
+</nav>
+
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'du-zou-s-blog';
+  
+  var disqus_url = 'https://honglu.me/2015/04/24/iOS开发的奇技淫巧/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

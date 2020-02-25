@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>一张图片引发的深思 | 独 奏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在项目开发中使用 SDWebImage 来做图片缓存加载，但是遇到一个问题就是服务器的某一张图片始终无法加载出来，通过URL拿到原图之后可以正常查看。于是追根溯源定位到了 SDWebImage 中的 decodedImageWithImage 方法中，也给自己科普了一下图像处理的相关知识。 下面先了解图像的一些基础知识，然后分析遇到的问题。">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一张图片引发的深思">
+<meta property="og:url" content="https://honglu.me/2016/09/02/一张图片引发的深思/index.html">
+<meta property="og:site_name" content="独 奏">
+<meta property="og:description" content="在项目开发中使用 SDWebImage 来做图片缓存加载，但是遇到一个问题就是服务器的某一张图片始终无法加载出来，通过URL拿到原图之后可以正常查看。于是追根溯源定位到了 SDWebImage 中的 decodedImageWithImage 方法中，也给自己科普了一下图像处理的相关知识。 下面先了解图像的一些基础知识，然后分析遇到的问题。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-09T03:55:11.819Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一张图片引发的深思">
+<meta name="twitter:description" content="在项目开发中使用 SDWebImage 来做图片缓存加载，但是遇到一个问题就是服务器的某一张图片始终无法加载出来，通过URL拿到原图之后可以正常查看。于是追根溯源定位到了 SDWebImage 中的 decodedImageWithImage 方法中，也给自己科普了一下图像处理的相关知识。 下面先了解图像的一些基础知识，然后分析遇到的问题。">
+  
+    <link rel="alternative" href="/atom.xml" title="独 奏" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Baidu Analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ff2d4025fdadaba5944a656c7fdd681f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- End Baidu Analytics -->
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-66673227-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">独 奏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">道阻且长，行则将至</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+          <a class="main-nav-link" href="http://wiki.honglu.me">Wiki</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="honglu.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-一张图片引发的深思" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/09/02/一张图片引发的深思/" class="article-date">
+  <time datetime="2016-09-02T10:00:00.000Z" itemprop="datePublished">9月 2 2016</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      一张图片引发的深思
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在项目开发中使用 <code>SDWebImage</code> 来做图片缓存加载，但是遇到一个问题就是服务器的某一张图片始终无法加载出来，通过URL拿到原图之后可以正常查看。于是追根溯源定位到了 SDWebImage 中的 <code>decodedImageWithImage</code> 方法中，也给自己科普了一下图像处理的相关知识。</p>
+<p>下面先了解图像的一些基础知识，然后分析遇到的问题。</p>
+<a id="more"></a>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>图像可以分为矢量图和位图，我们通常使用的图像为位图格式，这种格式又分为几种颜色模型，如 RGB,CMYK 等，分别适用于不同的场景。</p>
+<p>我们常用的 RGB 则是通过颜色发光原理来设计的。其分为红(R)、绿(G)、蓝(B)三个颜色通道，每个通道的数值表示该通道的明暗程度，根据单位像素所占空间不同，其又可以分为RGB1,RGB2,RGB4,RGB8,RGB16,RGB24,RGB32等多种格式，其中RGB1、RGB2,RGB4,RGB8为调色板类型的RGB格式，即需要通过颜色索引表来描述颜色信息，RGB16为高彩色(Hi Color)，RGB24为真彩色(TRUE COLOR)，RGB32则带Aphal通道(RGBA)。</p>
+<p>对于 RGB16，其实也是通过调色板实现的，可以分为 RGB444,RGB565,RGB555三种方式，后面的三个数字分别表示三个通道的数据位数，RGB565 表示红(R)、蓝(B)各占5位，绿(G)占三位，即单像素的表示方式为：<code>RRRRRGGGGGGBBBBB</code>，之所以绿色使用6位是因为人眼对绿色的辨识程度比较高。而RGB555表示为 <code>XRRRRRGGGGGBBBBB</code> ，其中 X 表示该位不使用，由于每个颜色使用5位表示，所以每个通道最多包含32种不同亮度值，相关的索引表也就需要把亮度从明到暗均分成32份，可以通过使用屏蔽字和移位操作来得到RGB各分量的值：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RGB555_MASK_RED 0x7C00</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RGB555_MASK_GREEN 0x03E0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RGB555_MASK_BLUE 0x001F</span></span><br><span class="line">R = (wPixel &amp; RGB555_MASK_RED) &gt;&gt; <span class="number">10</span>; <span class="comment">// 取值范围0-31</span></span><br><span class="line">G = (wPixel &amp; RGB555_MASK_GREEN) &gt;&gt; <span class="number">5</span>; <span class="comment">// 取值范围0-31</span></span><br><span class="line">B = wPixel &amp; RGB555_MASK_BLUE; <span class="comment">// 取值范围0-31</span></span><br></pre></td></tr></table></figure>
+<p>然后通过 RGB 的取值在索引表中得到真实的颜色。</p>
+<p>索引颜色是一种位图图像的编码方法。当真彩色图片转换为索引颜色的图片时，如果原图颜色不在索引颜色中，计算机会从索引颜色中选出一个相近的颜色来模拟该颜色(抖动到相近的颜色)，这也是早期浏览器存在 web 安全色的原因。要了解 web 安全色 的历史，可以戳<a href="http://www.lhyum.com/%E8%B0%88%E8%B0%88web%E5%AE%89%E5%85%A8%E8%89%B2%EF%BC%88web-safe-color%EF%BC%89/" target="_blank" rel="noopener">这里</a></p>
+<p>对于 RGB24 使用24位表示一个像素，RGB分量都用8位表示，取值范围为0-255。RGB32 则多了一个8位的 alpha 通道来表示透明度，可以使用RGBQUAD数据结构来操作一个像素：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">tagRGBQUAD</span> &#123;</span></span><br><span class="line">BYTE rgbBlue; <span class="comment">// 蓝色分量</span></span><br><span class="line">BYTE rgbGreen; <span class="comment">// 绿色分量</span></span><br><span class="line">BYTE rgbRed; <span class="comment">// 红色分量</span></span><br><span class="line">BYTE rgbReserved; <span class="comment">// 保留字节（用作Alpha通道或忽略）</span></span><br><span class="line">&#125; RGBQUAD。</span><br></pre></td></tr></table></figure>
+<p>显然，对于 RGB24 和 RGB32 ，每个通道都使用8位表示，即每个通道有256中不同的色彩深度。那么，如果每个通道使用16位甚至32位来表示，那就用有更多的颜色深度了。包含 32 位/通道的图像也称作<a href="https://zh.wikipedia.org/wiki/%E9%AB%98%E5%8A%A8%E6%80%81%E8%8C%83%E5%9B%B4%E6%88%90%E5%83%8F" target="_blank" rel="noopener">高动态范围(HDR)图像</a>。</p>
+<h2 id="诡异的图片问题"><a href="#诡异的图片问题" class="headerlink" title="诡异的图片问题"></a>诡异的图片问题</h2><p>定位到 SDWebImage 中问题代码位于 <code>SDWebImageDecoder</code> 文件下的 <code>decodedImageWithImage</code> 函数，截取部分如下：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CGImageRef</span> imageRef = image.CGImage;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">size_t width = <span class="built_in">CGImageGetWidth</span>(imageRef);</span><br><span class="line">size_t height = <span class="built_in">CGImageGetHeight</span>(imageRef);</span><br><span class="line"><span class="comment">// current</span></span><br><span class="line"><span class="built_in">CGColorSpaceModel</span> imageColorSpaceModel = <span class="built_in">CGColorSpaceGetModel</span>(<span class="built_in">CGImageGetColorSpace</span>(imageRef));</span><br><span class="line"><span class="built_in">CGColorSpaceRef</span> colorspaceRef = <span class="built_in">CGImageGetColorSpace</span>(imageRef);</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> unsupportedColorSpace = (imageColorSpaceModel == <span class="number">0</span> || imageColorSpaceModel == <span class="number">-1</span> || imageColorSpaceModel == kCGColorSpaceModelCMYK || imageColorSpaceModel == kCGColorSpaceModelIndexed);</span><br><span class="line"><span class="keyword">if</span> (unsupportedColorSpace)</span><br><span class="line">    colorspaceRef = <span class="built_in">CGColorSpaceCreateDeviceRGB</span>();</span><br><span class="line"></span><br><span class="line"><span class="built_in">CGContextRef</span> context = <span class="built_in">CGBitmapContextCreate</span>(<span class="literal">NULL</span>, width,</span><br><span class="line">                                             height,</span><br><span class="line">                                             <span class="built_in">CGImageGetBitsPerComponent</span>(imageRef),</span><br><span class="line">                                             <span class="number">0</span>,</span><br><span class="line">                                             colorspaceRef,</span><br><span class="line">                                             kCGBitmapByteOrderDefault | kCGImageAlphaPremultipliedFirst);</span><br></pre></td></tr></table></figure>
+<p>测试发现，问题图片会导致创建的 context 为 nil。</p>
+<p>查看 <code>CGBitmapContextCreate</code> 的函数定义：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="built_in">CG_EXTERN</span> <span class="built_in">CGContextRef</span> __<span class="keyword">nullable</span> <span class="built_in">CGBitmapContextCreate</span>(<span class="keyword">void</span> * __<span class="keyword">nullable</span> data,</span><br><span class="line">    size_t width, size_t height, size_t bitsPerComponent, size_t bytesPerRow,</span><br><span class="line">    <span class="built_in">CGColorSpaceRef</span> __<span class="keyword">nullable</span> space, uint32_t bitmapInfo)</span><br><span class="line">    <span class="built_in">CG_AVAILABLE_STARTING</span>(__MAC_10_0, __IPHONE_2_0);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Create a bitmap context. The context draws into a bitmap which is <code>width</code> pixels wide and <code>height</code> pixels high. The number of components for each pixel is specified by <code>space</code>, which may also specify a destination color profile. The number of bits for each component of a pixel is specified by <code>bitsPerComponent</code>. The number of bytes per pixel is equal to <code>(bitsPerComponent * number of components + 7)/8</code>. Each row of the bitmap consists of <code>bytesPerRow</code> bytes, which must be at least <code>width * bytes per pixel</code> bytes; in addition, <code>bytesPerRow</code> must be an integer multiple of the number of bytes per pixel. <code>data</code>, if non-NULL, points to a block of memory at least <code>bytesPerRow * height</code> bytes. If <code>data</code> is NULL, the data for context is allocated automatically and freed when the context is deallocated. <code>bitmapInfo</code> specifies whether the bitmap should contain an alpha channel and how it’s to be generated, along with whether the components are floating-point or integer.</p>
+</blockquote>
+<p>翻译如下：</p>
+<blockquote>
+<p>创建一个位图 context，位图的像素通过 <code>width</code>、<code>hight</code> 指定。每一个像素的颜色个数(number of components 通道数)通过 <code>space</code> 指定，也可以通过一个颜色描述文件来指定。每像素中每个颜色占用的位空间(bit)通过 <code>bitsPerComponent</code> 参数指定。每个像素的字节数(bytes per pixel)通过公式 <code>(bitsPerComponent * number of components + 7)/8</code> 计算(这个加7应该是为了位对齐)。位图的每一行包含 <code>bytesPerRow</code> 字节，其最少需要 <code>width * bytes per pixel</code> 字节；此外，<code>bytesPerRow</code> 必须是 <code>bytes per pixel</code> 的整数倍。<code>data</code> 如果不为空，其指向一个至少 <code>bytesPerRow * height</code> 字节的内存空间。若 <code>data</code> 为空，context 的 data 会随着该 context 自动创建和销毁。<code>bitmapInfo</code> 指出该位图是否包含 alpha 通道和它是如何产生的(RGB/RGBA/RGBX…)，还有每个通道应该用整数标识还是浮点数。</p>
+</blockquote>
+<p>代码中 <code>bitsPerComponent</code> 参数是获取的原始图像的 bitsPerComponent 值， <code>bytesPerRow</code> 参数直接赋值 0。</p>
+<p>通过对问题图片测试发现其 bitsPerComponent 为 16，也就是说每个通道是由16位构成的。另外，apple 在 <a href="https://developer.apple.com/library/mac/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_context/dq_context.html" target="_blank" rel="noopener">这里</a> 有份文档，里面注明了 OS X 以及 iOS 中位图所支持的像素格式，发现在 iOS 下苹果最高只支持8位的bpc。实际上问题就出在这里了，原图的 bpc 是16位，iOS 并不支持，所以得到的 context 是 nil。</p>
+<p>作者修改后为</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">size_t width = <span class="built_in">CGImageGetWidth</span>(imageRef);</span><br><span class="line">size_t height = <span class="built_in">CGImageGetHeight</span>(imageRef);</span><br><span class="line"><span class="built_in">NSUInteger</span> bytesPerPixel = <span class="number">4</span>;</span><br><span class="line"><span class="built_in">NSUInteger</span> bytesPerRow = bytesPerPixel * width;</span><br><span class="line"><span class="built_in">NSUInteger</span> bitsPerComponent = <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">CGContextRef</span> context = <span class="built_in">CGBitmapContextCreate</span>(<span class="literal">NULL</span>,</span><br><span class="line">                                            width,</span><br><span class="line">                                            height,</span><br><span class="line">                                            bitsPerComponent,</span><br><span class="line">                                            bytesPerRow,</span><br><span class="line">                                            colorspaceRef,</span><br><span class="line">                                            kCGBitmapByteOrderDefault | kCGImageAlphaNoneSkipLast);</span><br></pre></td></tr></table></figure>
+<p>直接把 bpp 和 bpc 指定为4和8，既每个像素由四通道构成，每通道8位。然后后面 <code>CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef)</code> 的时候实际上是减少了 image 的每通道位数。同时，由于 <code>bitmapInfo</code> 参数设置为 <code>kCGBitmapByteOrderDefault | kCGImageAlphaNoneSkipLast</code>，意味着新的位图图像是不使用后面8位的 alpha 通道的。</p>
+<h2 id="关于-decodedImageWithImage-方法"><a href="#关于-decodedImageWithImage-方法" class="headerlink" title="关于 decodedImageWithImage 方法"></a>关于 decodedImageWithImage 方法</h2><p>在我们使用 UIImage 的时候，创建的图片通常不会直接加载到内存，而是在渲染的时候再进行解压并加载到内存。这就会导致 UIImage 在渲染的时候效率上不是那么高效。为了提高效率通过 <code>decodedImageWithImage</code> 方法把图片提前解压加载到内存，这样这张新图片就不再需要重复解压了，提高了渲染效率。这是一种空间换时间的做法。</p>
+<p>在UI渲染的时候，实际上是把多个图层按像素叠加计算的过程，需要对每一个像素进行 RGBA 的叠加计算。当某个 layer 的是不透明的，也就是 opaque 为 YES 时，GPU 可以直接忽略掉其下方的图层，这就减少了很多工作量。这也是调用 <code>CGBitmapContextCreate</code> 时 bitmapInfo 参数设置为忽略掉 alpha 通道的原因。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://developer.apple.com/library/mac/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_context/dq_context.html" target="_blank" rel="noopener">Quartz 2D Programming Guide</a><br><a href="https://objccn.io/issue-3-1/" target="_blank" rel="noopener">绘制像素到屏幕上</a><br><a href="https://zh.wikipedia.org/wiki/%E8%89%B2%E5%BD%A9%E7%A9%BA%E9%96%93" target="_blank" rel="noopener">wikipedia - 色彩空间</a><br><a href="https://zh.wikipedia.org/wiki/%E4%B8%89%E5%8E%9F%E8%89%B2%E5%85%89%E6%A8%A1%E5%BC%8F" target="_blank" rel="noopener">wikipedia - 三原色光模式</a><br><a href="http://baike.baidu.com/item/RGB" target="_blank" rel="noopener">百度百科 - RGB</a><br><a href="http://blog.csdn.net/jacklam200/article/details/5972724" target="_blank" rel="noopener">RGB模型</a><br><a href="http://longtimenoc.com/archives/ios%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E5%9B%BE%E5%83%8F%E8%A7%A3%E5%8E%8B%E7%BC%A9%E7%9A%84%E6%97%B6%E9%97%B4%E5%BC%80%E9%94%80" target="_blank" rel="noopener">如何避免图像解压缩的时间开销</a><br><a href="http://blog.ibireme.com/2015/11/02/ios_image_tips/" target="_blank" rel="noopener">iOS 处理图片的一些小 Tip</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2016/09/02/一张图片引发的深思/" data-id="ck71kb9vf004o63t5c60lstvv" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2016/09/02/一张图片引发的深思/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/10/03/HTTPS详解(二)/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          HTTPS 详解(二)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/08/20/Laravel使用JWT多用户认证/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">Laravel 5.2 使用 JWT 进行多用户认证</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/05/27/负数取模/">负数取模</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/30/深入理解RunLoop/">深入理解 RunLoop</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/12/计算机浮点数那些事/">计算机浮点数那些事</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/01/HTTPS总结/">HTTPS 总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/03/HTTPS详解(二)/">HTTPS 详解(二)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OSX/">OSX</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Swift/">Swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具党/">工具党</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/有意思/">有意思</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲聊/">闲聊</a><span class="category-list-count">7</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AFNetworking/" style="font-size: 10px;">AFNetworking</a> <a href="/tags/APPStore/" style="font-size: 10px;">APPStore</a> <a href="/tags/ARC/" style="font-size: 10px;">ARC</a> <a href="/tags/Autolayout/" style="font-size: 10px;">Autolayout</a> <a href="/tags/Cocoa/" style="font-size: 10px;">Cocoa</a> <a href="/tags/CocoaPods/" style="font-size: 10px;">CocoaPods</a> <a href="/tags/CollectionViewLayout/" style="font-size: 10px;">CollectionViewLayout</a> <a href="/tags/Content-Type/" style="font-size: 10px;">Content-Type</a> <a href="/tags/CoreData/" style="font-size: 10px;">CoreData</a> <a href="/tags/CoreText/" style="font-size: 10px;">CoreText</a> <a href="/tags/GFWList/" style="font-size: 10px;">GFWList</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/NSAttributedString/" style="font-size: 10px;">NSAttributedString</a> <a href="/tags/OSX/" style="font-size: 12.5px;">OSX</a> <a href="/tags/Objective-C/" style="font-size: 10px;">Objective-C</a> <a href="/tags/RESTAPI/" style="font-size: 10px;">RESTAPI</a> <a href="/tags/RSA/" style="font-size: 12.5px;">RSA</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/SizeClasses/" style="font-size: 10px;">SizeClasses</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/Threejs/" style="font-size: 10px;">Threejs</a> <a href="/tags/UITableView/" style="font-size: 10px;">UITableView</a> <a href="/tags/UITextField/" style="font-size: 10px;">UITextField</a> <a href="/tags/UIView/" style="font-size: 17.5px;">UIView</a> <a href="/tags/UIViewController/" style="font-size: 10px;">UIViewController</a> <a href="/tags/UIWebView/" style="font-size: 10px;">UIWebView</a> <a href="/tags/VCard/" style="font-size: 10px;">VCard</a> <a href="/tags/Waterdrop/" style="font-size: 10px;">Waterdrop</a> <a href="/tags/WormHole/" style="font-size: 10px;">WormHole</a> <a href="/tags/XIB/" style="font-size: 12.5px;">XIB</a> <a href="/tags/block/" style="font-size: 10px;">__block</a> <a href="/tags/api-HTTP/" style="font-size: 10px;">api.HTTP</a> <a href="/tags/autorelease/" style="font-size: 10px;">autorelease</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/bounds/" style="font-size: 10px;">bounds</a> <a href="/tags/crash/" style="font-size: 10px;">crash</a> <a href="/tags/frame/" style="font-size: 10px;">frame</a> <a href="/tags/gitignore/" style="font-size: 10px;">gitignore</a> <a href="/tags/header/" style="font-size: 10px;">header</a> <a href="/tags/http/" style="font-size: 17.5px;">http</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOSHelper/" style="font-size: 10px;">iOSHelper</a> <a href="/tags/iTerm/" style="font-size: 10px;">iTerm</a> <a href="/tags/isa/" style="font-size: 10px;">isa</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/lipo/" style="font-size: 10px;">lipo</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pod/" style="font-size: 10px;">pod</a> <a href="/tags/protocol/" style="font-size: 10px;">protocol</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/weak/" style="font-size: 10px;">weak</a> <a href="/tags/web/" style="font-size: 17.5px;">web</a> <a href="/tags/xcode/" style="font-size: 10px;">xcode</a> <a href="/tags/xib/" style="font-size: 10px;">xib</a> <a href="/tags/三体/" style="font-size: 10px;">三体</a> <a href="/tags/加密/" style="font-size: 10px;">加密</a> <a href="/tags/奇技淫巧/" style="font-size: 10px;">奇技淫巧</a> <a href="/tags/安全/" style="font-size: 12.5px;">安全</a> <a href="/tags/宏/" style="font-size: 10px;">宏</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/支付宝/" style="font-size: 12.5px;">支付宝</a> <a href="/tags/李健/" style="font-size: 10px;">李健</a> <a href="/tags/模/" style="font-size: 10px;">模</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/浮点/" style="font-size: 10px;">浮点</a> <a href="/tags/淘宝/" style="font-size: 10px;">淘宝</a> <a href="/tags/程序猿/" style="font-size: 10px;">程序猿</a> <a href="/tags/袖手旁观/" style="font-size: 10px;">袖手旁观</a> <a href="/tags/装B/" style="font-size: 10px;">装B</a> <a href="/tags/调试/" style="font-size: 10px;">调试</a> <a href="/tags/贱人曾/" style="font-size: 10px;">贱人曾</a> <a href="/tags/运行时/" style="font-size: 10px;">运行时</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/闲聊/" style="font-size: 12.5px;">闲聊</a> <a href="/tags/隐私/" style="font-size: 10px;">隐私</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 独 奏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+    <a href="http://wiki.honglu.me" class="mobile-nav-link">Wiki</a>
+  
+</nav>
+
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'du-zou-s-blog';
+  
+  var disqus_url = 'https://honglu.me/2016/09/02/一张图片引发的深思/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

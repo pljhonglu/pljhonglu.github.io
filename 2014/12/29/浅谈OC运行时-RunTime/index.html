@@ -1,0 +1,362 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>浅谈OC运行时(RunTime) | 独 奏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="常说OC是一门动态语言，这使得OC开发可以变得相当灵活，但是归根结底OC还是一种编译型的语言，其具有一定的动态性，但是其动态特性也比不上JavaScript这种解释型的语言。OC的动态性主要体现在&amp;lt;objc/runtime.h&amp;gt;这个文件中，下面我们打开这个文件，对其总结一下。 一、基本结构及其继承关系要谈runtime首先必然要先了解OC的对象以及类的结构，这非常有助与我们理解其动态性">
+<meta name="keywords" content="iOS,RunTime">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈OC运行时(RunTime)">
+<meta property="og:url" content="https://honglu.me/2014/12/29/浅谈OC运行时-RunTime/index.html">
+<meta property="og:site_name" content="独 奏">
+<meta property="og:description" content="常说OC是一门动态语言，这使得OC开发可以变得相当灵活，但是归根结底OC还是一种编译型的语言，其具有一定的动态性，但是其动态特性也比不上JavaScript这种解释型的语言。OC的动态性主要体现在&amp;lt;objc/runtime.h&amp;gt;这个文件中，下面我们打开这个文件，对其总结一下。 一、基本结构及其继承关系要谈runtime首先必然要先了解OC的对象以及类的结构，这非常有助与我们理解其动态性">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blog.qiniu.lololo.store/image/12/oc对象继承模型.png">
+<meta property="og:updated_time" content="2019-06-12T06:17:51.234Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈OC运行时(RunTime)">
+<meta name="twitter:description" content="常说OC是一门动态语言，这使得OC开发可以变得相当灵活，但是归根结底OC还是一种编译型的语言，其具有一定的动态性，但是其动态特性也比不上JavaScript这种解释型的语言。OC的动态性主要体现在&amp;lt;objc/runtime.h&amp;gt;这个文件中，下面我们打开这个文件，对其总结一下。 一、基本结构及其继承关系要谈runtime首先必然要先了解OC的对象以及类的结构，这非常有助与我们理解其动态性">
+<meta name="twitter:image" content="http://blog.qiniu.lololo.store/image/12/oc对象继承模型.png">
+  
+    <link rel="alternative" href="/atom.xml" title="独 奏" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Baidu Analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ff2d4025fdadaba5944a656c7fdd681f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- End Baidu Analytics -->
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-66673227-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">独 奏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">道阻且长，行则将至</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+          <a class="main-nav-link" href="http://wiki.honglu.me">Wiki</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="honglu.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-浅谈OC运行时-RunTime" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/29/浅谈OC运行时-RunTime/" class="article-date">
+  <time datetime="2014-12-29T12:18:06.000Z" itemprop="datePublished">12月 29 2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      浅谈OC运行时(RunTime)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>常说OC是一门动态语言，这使得OC开发可以变得相当灵活，但是归根结底OC还是一种编译型的语言，其具有一定的动态性，但是其动态特性也比不上JavaScript这种解释型的语言。OC的动态性主要体现在&lt;objc/runtime.h&gt;这个文件中，下面我们打开这个文件，对其总结一下。</p>
+<h2 id="一、基本结构及其继承关系"><a href="#一、基本结构及其继承关系" class="headerlink" title="一、基本结构及其继承关系"></a>一、基本结构及其继承关系</h2><p>要谈runtime首先必然要先了解OC的对象以及类的结构，这非常有助与我们理解其动态性。</p>
+<p>首先我们打开<code>&lt;objc/objc.h&gt;</code>文件，可以看到如下定义：</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="comment">/// An opaque type that represents an Objective-C class.</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_class *Class;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// Represents an instance of a class.</span></span><br><span class="line"><span class="keyword">struct</span> objc_object &#123;</span><br><span class="line">    Class isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// A pointer to an instance of a class.</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> objc_object *<span class="keyword">id</span>;</span><br></pre></td></tr></table></figure>
+<p>通过上面定义我们可以看出以下几点：</p>
+<ul>
+<li>我们常用的id类型实际上一个指向objc_object结构体的指针，id通常指代一个对象，也就是说OC对象其实就一个指向objc_object结构体的指针</li>
+<li>我们看objc_object结构体定义，得知其结构体内有一个类型为Class的字段isa，这就是我们常说的isa指针了。</li>
+<li>再来看Class的声明，为一个指向objc_class的指针，</li>
+<li>实际上isa就是指明当前结构体所属类型，我们可以理解为objc_object为Class类型的</li>
+</ul>
+<a id="more"></a>
+<p>接下来我们继续打开<code>&lt;objc/runtime.h&gt;</code>，来看objc_class声明</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> objc_class &#123;</span><br><span class="line">    Class isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line">    </span><br><span class="line"><span class="meta">#if !__OBJC2__</span></span><br><span class="line">    Class super_class                       OBJC2_UNAVAILABLE;  <span class="comment">// 父类</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *name                        OBJC2_UNAVAILABLE;  <span class="comment">// 类名</span></span><br><span class="line">    <span class="keyword">long</span> version                            OBJC2_UNAVAILABLE;  <span class="comment">// 类的版本信息，默认为0</span></span><br><span class="line">    <span class="keyword">long</span> info                               OBJC2_UNAVAILABLE;  <span class="comment">// 类信息，供运行期使用的一些位标识</span></span><br><span class="line">    <span class="keyword">long</span> instance_size                      OBJC2_UNAVAILABLE;  <span class="comment">// 该类的实例变量大小</span></span><br><span class="line">    <span class="keyword">struct</span> objc_ivar_list *ivars            OBJC2_UNAVAILABLE;  <span class="comment">// 该类的成员变量链表</span></span><br><span class="line">    <span class="keyword">struct</span> objc_method_list **methodLists   OBJC2_UNAVAILABLE;  <span class="comment">// 方法定义的链表</span></span><br><span class="line">    <span class="keyword">struct</span> objc_cache *cache                OBJC2_UNAVAILABLE;  <span class="comment">// 方法缓存</span></span><br><span class="line">    <span class="keyword">struct</span> objc_protocol_list *protocols    OBJC2_UNAVAILABLE;  <span class="comment">// 协议链表</span></span><br><span class="line"><span class="meta">#endif</span></span><br><span class="line"></span><br><span class="line">&#125; OBJC2_UNAVAILABLE;</span><br></pre></td></tr></table></figure>
+<p>下面说一下我们感兴趣的几个字段：</p>
+<ul>
+<li>isa：这里的isa指针同样是一个指向objc_class的指针，表明该Class的类型，这里的isa指针指向的就是我们常说的meta-class了。不难看出，类本身也是一个对象</li>
+<li>super_class：这个指针就是指向该class的super class，即指向父类，如果该类已经是最顶层的根类(如NSObject或NSProxy)，则super_class为NULL。</li>
+<li>cache：用于缓存最近使用的方法。一个接收者对象接收到一个消息时，它会根据isa指针去查找能够响应这个消息的对象。在实际使用中，这个对象只有一部分方法是常用的，很多方法其实很少用或者根本用不上。这种情况下，如果每次消息来时，我们都是methodLists中遍历一遍，性能势必很差。这时，cache就派上用场了。在我们每次调用过一个方法后，这个方法就会被缓存到cache列表中，下次调用的时候runtime就会优先去cache中查找，如果cache没有，才去methodLists中查找方法。这样，对于那些经常用到的方法的调用，但提高了调用的效率。</li>
+<li>version：我们可以使用这个字段来提供类的版本信息。这对于对象的序列化非常有用，它可是让我们识别出不同类定义版本中实例变量布局的改变。</li>
+<li>objc_method_list方法链表中存放的是该类的成员方法(-方法)，类方法(+方法)存在meta-class的objc_method_list链表中。</li>
+</ul>
+<p>接下来，这里有一个很形象的图来描述相应的继承关系：</p>
+<p><img src="http://blog.qiniu.lololo.store/image/12/oc对象继承模型.png" alt="oc对象继承模型"></p>
+<p>这里的继承关系就相当清晰了，需要注意的几个小问题如下：</p>
+<ul>
+<li>meta-class的isa指针指向的是root meta-class</li>
+<li>root meta-class的isa指针指向的是其本身</li>
+<li>root meta-class的super class指向的是root class（这一点我也不是很清楚是为什么）</li>
+<li>root class的super class 指向的是nil</li>
+</ul>
+<p>上面说了这么多，现在我们再来理解一下当你调用<code>respondsToSelector:</code>这样的方法的时候，实例对象只需要根据其isa指针，找到其所属的class，然后遍历其methodLists，如果没有，那么根据这个类的super_class找到其父类，再看其父类是否能相应这个方法就可以了，直到super_class为nil时，就无法相应这个方法了，return NO。</p>
+<p>同理，当我们使用类名调用类方法(+方法)时，只需要根据class的isa指针，找到其meta-class，然后通过meta-class的methodLists找到相应的方法既可。</p>
+<h2 id="二、动态特性"><a href="#二、动态特性" class="headerlink" title="二、动态特性"></a>二、动态特性</h2><p>runtime中提供了大量的方法对其就够进行操作，当然这些方法也都是C方法</p>
+<p>例如，我们可以动态的添加/替换属性</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 为类添加属性</span></span><br><span class="line"><span class="built_in">BOOL</span> class_addProperty ( Class cls, <span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">const</span> objc_property_attribute_t *attributes, <span class="keyword">unsigned</span> <span class="keyword">int</span> attributeCount );</span><br><span class="line"></span><br><span class="line"><span class="comment">// 替换类的属性</span></span><br><span class="line"><span class="keyword">void</span> class_replaceProperty ( Class cls, <span class="keyword">const</span> <span class="keyword">char</span> *name, <span class="keyword">const</span> objc_property_attribute_t *attributes, <span class="keyword">unsigned</span> <span class="keyword">int</span> attributeCount );</span><br></pre></td></tr></table></figure>
+<p>我们可以动态的添加/替换方法</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 添加方法</span></span><br><span class="line"><span class="built_in">BOOL</span> class_addMethod ( Class cls, SEL name, IMP imp, <span class="keyword">const</span> <span class="keyword">char</span> *types );</span><br><span class="line"></span><br><span class="line"><span class="comment">// 替代方法的实现</span></span><br><span class="line">IMP class_replaceMethod ( Class cls, SEL name, IMP imp, <span class="keyword">const</span> <span class="keyword">char</span> *types );</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回方法的具体实现</span></span><br><span class="line">IMP class_getMethodImplementation ( Class cls, SEL name );</span><br><span class="line">IMP class_getMethodImplementation_stret ( Class cls, SEL name );</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类实例是否响应指定的selector</span></span><br><span class="line"><span class="built_in">BOOL</span> class_respondsToSelector ( Class cls, SEL sel );</span><br></pre></td></tr></table></figure>
+<p>我们甚至可以动态的调整一个类的继承关系</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">Class class_setSuperclass(Class cls, Class newSuper);</span><br></pre></td></tr></table></figure>
+<p>以上这些OC的动态特征全都得益于OC的内部数据结构定义。当然我们实际应用中基本不会用到类似修改一个类的父类这样的动态特性，因为这样就破坏了类本身的封装性。当然这些动态特性在某些情况下确实会带给我们很多惊喜。总之，runtime虽好，使用需谨慎。</p>
+<h2 id="三、扩展阅读"><a href="#三、扩展阅读" class="headerlink" title="三、扩展阅读"></a>三、扩展阅读</h2><p><a href="http://southpeak.github.io/2014/10/25/objective-c-runtime-1/" target="_blank" rel="noopener">Objective-C Runtime 运行时之一：类与对象</a><br><a href="http://southpeak.github.io/2014/10/30/objective-c-runtime-2/" target="_blank" rel="noopener">Objective-C Runtime 运行时之二：成员变量与属性</a><br><a href="http://southpeak.github.io/2014/11/03/objective-c-runtime-3/" target="_blank" rel="noopener">Objective-C Runtime 运行时之三：方法与消息</a><br><a href="http://southpeak.github.io/2014/11/06/objective-c-runtime-4/" target="_blank" rel="noopener">Objective-C Runtime 运行时之四：Method Swizzling</a><br><a href="http://southpeak.github.io/2014/11/08/objective-c-runtime-5/" target="_blank" rel="noopener">Objective-C Runtime 运行时之五：协议与分类</a><br><a href="http://southpeak.github.io/2014/11/09/objective-c-runtime-6/" target="_blank" rel="noopener">Objective-C Runtime 运行时之六：拾遗</a>  </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2014/12/29/浅谈OC运行时-RunTime/" data-id="ck71kb9w5006763t53s1nhycz" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2014/12/29/浅谈OC运行时-RunTime/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RunTime/">RunTime</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/01/06/weak与block区别/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          __weak与__block区别
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/12/29/iOS-Development-Tips-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">iOS Development Tips (1)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/05/27/负数取模/">负数取模</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/30/深入理解RunLoop/">深入理解 RunLoop</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/12/计算机浮点数那些事/">计算机浮点数那些事</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/01/HTTPS总结/">HTTPS 总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/03/HTTPS详解(二)/">HTTPS 详解(二)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OSX/">OSX</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Swift/">Swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具党/">工具党</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/有意思/">有意思</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲聊/">闲聊</a><span class="category-list-count">7</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AFNetworking/" style="font-size: 10px;">AFNetworking</a> <a href="/tags/APPStore/" style="font-size: 10px;">APPStore</a> <a href="/tags/ARC/" style="font-size: 10px;">ARC</a> <a href="/tags/Autolayout/" style="font-size: 10px;">Autolayout</a> <a href="/tags/Cocoa/" style="font-size: 10px;">Cocoa</a> <a href="/tags/CocoaPods/" style="font-size: 10px;">CocoaPods</a> <a href="/tags/CollectionViewLayout/" style="font-size: 10px;">CollectionViewLayout</a> <a href="/tags/Content-Type/" style="font-size: 10px;">Content-Type</a> <a href="/tags/CoreData/" style="font-size: 10px;">CoreData</a> <a href="/tags/CoreText/" style="font-size: 10px;">CoreText</a> <a href="/tags/GFWList/" style="font-size: 10px;">GFWList</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/NSAttributedString/" style="font-size: 10px;">NSAttributedString</a> <a href="/tags/OSX/" style="font-size: 12.5px;">OSX</a> <a href="/tags/Objective-C/" style="font-size: 10px;">Objective-C</a> <a href="/tags/RESTAPI/" style="font-size: 10px;">RESTAPI</a> <a href="/tags/RSA/" style="font-size: 12.5px;">RSA</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/SizeClasses/" style="font-size: 10px;">SizeClasses</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/Threejs/" style="font-size: 10px;">Threejs</a> <a href="/tags/UITableView/" style="font-size: 10px;">UITableView</a> <a href="/tags/UITextField/" style="font-size: 10px;">UITextField</a> <a href="/tags/UIView/" style="font-size: 17.5px;">UIView</a> <a href="/tags/UIViewController/" style="font-size: 10px;">UIViewController</a> <a href="/tags/UIWebView/" style="font-size: 10px;">UIWebView</a> <a href="/tags/VCard/" style="font-size: 10px;">VCard</a> <a href="/tags/Waterdrop/" style="font-size: 10px;">Waterdrop</a> <a href="/tags/WormHole/" style="font-size: 10px;">WormHole</a> <a href="/tags/XIB/" style="font-size: 12.5px;">XIB</a> <a href="/tags/block/" style="font-size: 10px;">__block</a> <a href="/tags/api-HTTP/" style="font-size: 10px;">api.HTTP</a> <a href="/tags/autorelease/" style="font-size: 10px;">autorelease</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/bounds/" style="font-size: 10px;">bounds</a> <a href="/tags/crash/" style="font-size: 10px;">crash</a> <a href="/tags/frame/" style="font-size: 10px;">frame</a> <a href="/tags/gitignore/" style="font-size: 10px;">gitignore</a> <a href="/tags/header/" style="font-size: 10px;">header</a> <a href="/tags/http/" style="font-size: 17.5px;">http</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOSHelper/" style="font-size: 10px;">iOSHelper</a> <a href="/tags/iTerm/" style="font-size: 10px;">iTerm</a> <a href="/tags/isa/" style="font-size: 10px;">isa</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/lipo/" style="font-size: 10px;">lipo</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pod/" style="font-size: 10px;">pod</a> <a href="/tags/protocol/" style="font-size: 10px;">protocol</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/weak/" style="font-size: 10px;">weak</a> <a href="/tags/web/" style="font-size: 17.5px;">web</a> <a href="/tags/xcode/" style="font-size: 10px;">xcode</a> <a href="/tags/xib/" style="font-size: 10px;">xib</a> <a href="/tags/三体/" style="font-size: 10px;">三体</a> <a href="/tags/加密/" style="font-size: 10px;">加密</a> <a href="/tags/奇技淫巧/" style="font-size: 10px;">奇技淫巧</a> <a href="/tags/安全/" style="font-size: 12.5px;">安全</a> <a href="/tags/宏/" style="font-size: 10px;">宏</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/支付宝/" style="font-size: 12.5px;">支付宝</a> <a href="/tags/李健/" style="font-size: 10px;">李健</a> <a href="/tags/模/" style="font-size: 10px;">模</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/浮点/" style="font-size: 10px;">浮点</a> <a href="/tags/淘宝/" style="font-size: 10px;">淘宝</a> <a href="/tags/程序猿/" style="font-size: 10px;">程序猿</a> <a href="/tags/袖手旁观/" style="font-size: 10px;">袖手旁观</a> <a href="/tags/装B/" style="font-size: 10px;">装B</a> <a href="/tags/调试/" style="font-size: 10px;">调试</a> <a href="/tags/贱人曾/" style="font-size: 10px;">贱人曾</a> <a href="/tags/运行时/" style="font-size: 10px;">运行时</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/闲聊/" style="font-size: 12.5px;">闲聊</a> <a href="/tags/隐私/" style="font-size: 10px;">隐私</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 独 奏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+    <a href="http://wiki.honglu.me" class="mobile-nav-link">Wiki</a>
+  
+</nav>
+
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'du-zou-s-blog';
+  
+  var disqus_url = 'https://honglu.me/2014/12/29/浅谈OC运行时-RunTime/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

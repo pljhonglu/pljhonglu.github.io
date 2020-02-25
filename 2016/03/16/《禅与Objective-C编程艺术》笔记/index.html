@@ -1,0 +1,379 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>《禅与Objective-C编程艺术》笔记 | 独 奏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="GitBook for 《禅与 Objective-C 编程艺术》 笔记。 Golden Path- (void)someMethod &amp;#123;  if (![someOther boolValue]) &amp;#123;      return;  &amp;#125;  //Do something important&amp;#125;">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《禅与Objective-C编程艺术》笔记">
+<meta property="og:url" content="https://honglu.me/2016/03/16/《禅与Objective-C编程艺术》笔记/index.html">
+<meta property="og:site_name" content="独 奏">
+<meta property="og:description" content="GitBook for 《禅与 Objective-C 编程艺术》 笔记。 Golden Path- (void)someMethod &amp;#123;  if (![someOther boolValue]) &amp;#123;      return;  &amp;#125;  //Do something important&amp;#125;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-09T03:55:11.818Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《禅与Objective-C编程艺术》笔记">
+<meta name="twitter:description" content="GitBook for 《禅与 Objective-C 编程艺术》 笔记。 Golden Path- (void)someMethod &amp;#123;  if (![someOther boolValue]) &amp;#123;      return;  &amp;#125;  //Do something important&amp;#125;">
+  
+    <link rel="alternative" href="/atom.xml" title="独 奏" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Baidu Analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ff2d4025fdadaba5944a656c7fdd681f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- End Baidu Analytics -->
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-66673227-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">独 奏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">道阻且长，行则将至</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+          <a class="main-nav-link" href="http://wiki.honglu.me">Wiki</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="honglu.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-《禅与Objective-C编程艺术》笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/03/16/《禅与Objective-C编程艺术》笔记/" class="article-date">
+  <time datetime="2016-03-16T09:04:00.000Z" itemprop="datePublished">3月 16 2016</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      《禅与Objective-C编程艺术》笔记
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>GitBook for <a href="https://github.com/oa414/objc-zen-book-cn" target="_blank" rel="noopener">《禅与 Objective-C 编程艺术》</a> 笔记。</p>
+<h2 id="Golden-Path"><a href="#Golden-Path" class="headerlink" title="Golden Path"></a>Golden Path</h2><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)someMethod &#123;</span><br><span class="line">  <span class="keyword">if</span> (![someOther boolValue]) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//Do something important</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><p>通过参数返回 error 的引用，使用这样的方法时应当检查方法的返回值，而非 error 的引用。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="built_in">NSError</span> *error = <span class="literal">nil</span>;</span><br><span class="line"><span class="keyword">if</span> (![<span class="keyword">self</span> trySomethingWithError:&amp;error]) &#123;</span><br><span class="line">    <span class="comment">// Handle Error</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一些苹果的 API 在成功的情况下会对 error 参数（如果它非 NULL）写入垃圾值（garbage values），所以如果检查 error 的值可能导致错误 （甚至崩溃）。</p>
+<h2 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h2><h3 id="常量加类名前缀"><a href="#常量加类名前缀" class="headerlink" title="常量加类名前缀"></a>常量加类名前缀</h3><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="built_in">NSTimeInterval</span> ZOCSignInViewControllerFadeOutAnimationDuration = <span class="number">0.4</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="方法名少用-and"><a href="#方法名少用-and" class="headerlink" title="方法名少用 and"></a>方法名少用 <code>and</code></h3><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)setExampleText:(<span class="built_in">NSString</span> *)text image:(<span class="built_in">UIImage</span> *)image;</span><br><span class="line">- (<span class="keyword">void</span>)sendAction:(SEL)aSelector to:(<span class="keyword">id</span>)anObject forAllCells:(<span class="built_in">BOOL</span>)flag;</span><br><span class="line">- (<span class="keyword">id</span>)viewWithTag:(<span class="built_in">NSInteger</span>)tag;</span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithWidth:(<span class="built_in">CGFloat</span>)width height:(<span class="built_in">CGFloat</span>)height;</span><br></pre></td></tr></table></figure>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><p>类名应该以三个大写字母作为前缀（双字母前缀为 Apple 的类预留），说明性的部分放在前缀和父类名的在中间(如：<code>ZOCTimelineViewController</code>)。</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>推荐的代码组织方式是将 dealloc 方法放在实现文件的最前面（直接在 @synthesize 以及 @dynamic 之后），init 应该跟在 dealloc 方法后面。如果有多个初始化方法， 指定初始化方法 (designated initializer) 应该放在最前面，间接初始化方法 (secondary initializer) 跟在后面，这样更有逻辑性。</p>
+<p>指定初始化器: <code>NS_DESIGNATED_INITIALIZER</code></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZOC_UNAVAILABLE_INSTEAD(msg) __attribute__((unavailable(<span class="meta-string">"Invoke the designated initializer, use ["</span>msg <span class="meta-string">"]."</span>)))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ZOC_UNAVAILABLE(msg) __attribute__((unavailable(msg)))</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ZOCNewsViewController</span> : <span class="title">UIViewController</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithNews:(ZOCNews *)news <span class="built_in">NS_DESIGNATED_INITIALIZER</span>;</span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithNibName:(<span class="built_in">NSString</span> *)nibNameOrNil bundle:(<span class="built_in">NSBundle</span> *)nibBundleOrNil ZOC_UNAVAILABLE_INSTEAD(<span class="string">"initWithNews:"</span>);</span><br><span class="line">- (<span class="keyword">instancetype</span>)init ZOC_UNAVAILABLE_INSTEAD(<span class="string">"initWithNews:"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">ZOCNewsViewController</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">id</span>)initWithNews:(ZOCNews *)news</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// call to the immediate superclass's designated initializer （调用直接超类的 designated initializer）</span></span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> initWithNibName:<span class="literal">nil</span> bundle:<span class="literal">nil</span>];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        _news = news;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Override the immediate superclass's designated initializer （重载直接父类的  designated initializer）</span></span><br><span class="line">- (<span class="keyword">id</span>)initWithNibName:(<span class="built_in">NSString</span> *)nibNameOrNil bundle:(<span class="built_in">NSBundle</span> *)nibBundleOrNil</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// call the new designated initializer</span></span><br><span class="line">    <span class="keyword">return</span> [<span class="keyword">self</span> initWithNews:<span class="literal">nil</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">readwrite</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *name;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>属性的参数顺序：原子性，读写 和 内存管理</li>
+<li>setter 方法中 KVO 通知(willChangeValueForKey, didChangeValueForKey) 会被自动执行。</li>
+<li>懒加载是 KVO 不友好的，因为其在 getter 中 change value</li>
+<li>永远不要在 init 方法（以及其他初始化方法）里面用 getter 和 setter 方法</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><ul>
+<li>善用断言</li>
+<li>私有方法不要用 <code>_</code> 前缀，这是 apple 保留前缀</li>
+</ul>
+<h3 id="相等性"><a href="#相等性" class="headerlink" title="相等性"></a>相等性</h3><ul>
+<li>你需要同时实现 isEqual 和 hash 方法。如果两个对象是被 isEqual 认为相等的，它们的 hash 方法需要返回一样的值。但是如果 hash 返回一样的值，并不能确保他们相等。</li>
+<li>用 <code>isEqualTo&lt;#class-name-without-prefix#&gt;:</code> 这样的格式实现一个相等性检查方法。</li>
+</ul>
+<h2 id="Categories"><a href="#Categories" class="headerlink" title="Categories"></a>Categories</h2><ul>
+<li>category 方法前加小写前缀以及下划线，比如 <code>- (id)zoc_myCategoryMethod</code>。</li>
+</ul>
+<h2 id="protocols"><a href="#protocols" class="headerlink" title="protocols"></a>protocols</h2><ul>
+<li>抽象接口</li>
+<li><a href="http://en.wikipedia.org/wiki/Liskov_substitution_principle" target="_blank" rel="noopener">里氏替换原则</a>: 你应该可以取代任意接口（也就是Objective-C里的的”protocol”）实现，而不用改变客户端或者相关实现。</li>
+</ul>
+<h2 id="NSNotification"><a href="#NSNotification" class="headerlink" title="NSNotification"></a>NSNotification</h2><ul>
+<li>用类名前缀作为这个通知名字的前缀。</li>
+<li>用一个 Did/Will 这样的动词以及用 “Notifications” 后缀来命名这个通知。</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Foo.h</span></span><br><span class="line"><span class="keyword">extern</span> <span class="built_in">NSString</span> * <span class="keyword">const</span> ZOCFooDidBecomeBarNotification</span><br><span class="line"></span><br><span class="line"><span class="comment">// Foo.m</span></span><br><span class="line"><span class="built_in">NSString</span> * <span class="keyword">const</span> ZOCFooDidBecomeBarNotification = <span class="string">@"ZOCFooDidBecomeBarNotification"</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="代码组织"><a href="#代码组织" class="headerlink" title="代码组织"></a>代码组织</h2><h3 id="利用代码块"><a href="#利用代码块" class="headerlink" title="利用代码块"></a>利用代码块</h3><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="built_in">NSURL</span> *url = (&#123;</span><br><span class="line">    <span class="built_in">NSString</span> *urlString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@/%@"</span>, baseURLString, endpoint];</span><br><span class="line">    [<span class="built_in">NSURL</span> URLWithString:urlString];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="善用-Pragma"><a href="#善用-Pragma" class="headerlink" title="善用 Pragma"></a>善用 Pragma</h3><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)dealloc &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line">- (<span class="keyword">instancetype</span>)init &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark - View Lifecycle （View 的生命周期）</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)viewDidLoad &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line">- (<span class="keyword">void</span>)viewWillAppear:(<span class="built_in">BOOL</span>)animated &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line">- (<span class="keyword">void</span>)didReceiveMemoryWarning &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark - Getter &amp; Setter （自定义访问器）</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)setCustomProperty:(<span class="keyword">id</span>)value &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line">- (<span class="keyword">id</span>)customProperty &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark - IBActions  </span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">IBAction</span>)submitData:(<span class="keyword">id</span>)sender &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark - Public </span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)publicMethod &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark - Private</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)zoc_privateMethod &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark - UITableViewDataSource</span></span><br><span class="line"></span><br><span class="line">- (<span class="built_in">UITableViewCell</span> *)tableView:(<span class="built_in">UITableView</span> *)tableView cellForRowAtIndexPath:(<span class="built_in">NSIndexPath</span> *)indexPath &#123; <span class="comment">/* ... */</span> &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark - ZOCSuperclass</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ... 重载来自 ZOCSuperclass 的方法</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#pragma mark - NSObject</span></span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span> *)description &#123; <span class="comment">/* ... */</span> &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="明确编译器警告和错误"><a href="#明确编译器警告和错误" class="headerlink" title="明确编译器警告和错误"></a>明确编译器警告和错误</h3><figure class="highlight"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">error</span> Whoa, buddy, you need to check for zero here!</span></span><br><span class="line">#warning Dude, don't compare floating point numbers like this!</span><br></pre></td></tr></table></figure>
+<h3 id="公开方法属性要有注释"><a href="#公开方法属性要有注释" class="headerlink" title="公开方法属性要有注释"></a>公开方法属性要有注释</h3><h2 id="对象通讯"><a href="#对象通讯" class="headerlink" title="对象通讯"></a>对象通讯</h2><h3 id="block"><a href="#block" class="headerlink" title="block"></a>block</h3><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)downloadObjectsAtPath:(<span class="built_in">NSString</span> *)path</span><br><span class="line">                   completion:(<span class="keyword">void</span>(^)(<span class="built_in">NSArray</span> *objects, <span class="built_in">NSError</span> *error))completion &#123;</span><br><span class="line">    <span class="keyword">if</span> (objects) &#123;</span><br><span class="line">        <span class="comment">// do something with the data</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// some error occurred, 'error' variable should not be nil by contract</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>若 objects 不为 nil，则 error 必须为 nil</li>
+<li>若 objects 为 nil，则 error 必须不为 nil</li>
+</ul>
+<p>注意避免 block 可能引起的循环引用问题，采用<a href="https://github.com/jspahrsummers/libextobjc/blob/master/extobjc/EXTScope.h" target="_blank" rel="noopener">@weakify/@strongify</a></p>
+<h3 id="委托和数据源"><a href="#委托和数据源" class="headerlink" title="委托和数据源"></a>委托和数据源</h3><ul>
+<li>代理方法必须以调用者(即委托者)作为第一个参数</li>
+<li>避免双重引用</li>
+<li>考虑用多重委托代替 NSNotifications。<a href="https://github.com/lukabernardi/LBDelegateMatrioska" target="_blank" rel="noopener">LBDelegateMatrioska</a></li>
+</ul>
+<h2 id="面向切面编程"><a href="#面向切面编程" class="headerlink" title="面向切面编程"></a>面向切面编程</h2><p>Aspect Oriented Programming (AOP，面向切面编程)，在 Objective-C 的世界里，这意味着使用运行时的特性来为指定的方法追加切面 。切面所附加的行为可以是这样的：</p>
+<ul>
+<li>在类的特定方法调用前运行特定的代码</li>
+<li>在类的特定方法调用后运行特定的代码</li>
+<li>增加代码来替代原来的类的方法的实现</li>
+</ul>
+<p><a href="https://github.com/steipete/Aspects" target="_blank" rel="noopener">Aspects</a> 库</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2016/03/16/《禅与Objective-C编程艺术》笔记/" data-id="ck71kb9v5004263t5angxctj7" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2016/03/16/《禅与Objective-C编程艺术》笔记/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/04/30/我想念你的多种方式/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">下一篇</strong>
+      <div class="article-nav-title">
+        
+          我想念你的多种方式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/03/10/ProtocolKit解析/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">上一篇</strong>
+      <div class="article-nav-title">ProtocalKit 解析</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/05/27/负数取模/">负数取模</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/30/深入理解RunLoop/">深入理解 RunLoop</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/12/计算机浮点数那些事/">计算机浮点数那些事</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/01/HTTPS总结/">HTTPS 总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/03/HTTPS详解(二)/">HTTPS 详解(二)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OSX/">OSX</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Swift/">Swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具党/">工具党</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/有意思/">有意思</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲聊/">闲聊</a><span class="category-list-count">7</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AFNetworking/" style="font-size: 10px;">AFNetworking</a> <a href="/tags/APPStore/" style="font-size: 10px;">APPStore</a> <a href="/tags/ARC/" style="font-size: 10px;">ARC</a> <a href="/tags/Autolayout/" style="font-size: 10px;">Autolayout</a> <a href="/tags/Cocoa/" style="font-size: 10px;">Cocoa</a> <a href="/tags/CocoaPods/" style="font-size: 10px;">CocoaPods</a> <a href="/tags/CollectionViewLayout/" style="font-size: 10px;">CollectionViewLayout</a> <a href="/tags/Content-Type/" style="font-size: 10px;">Content-Type</a> <a href="/tags/CoreData/" style="font-size: 10px;">CoreData</a> <a href="/tags/CoreText/" style="font-size: 10px;">CoreText</a> <a href="/tags/GFWList/" style="font-size: 10px;">GFWList</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/NSAttributedString/" style="font-size: 10px;">NSAttributedString</a> <a href="/tags/OSX/" style="font-size: 12.5px;">OSX</a> <a href="/tags/Objective-C/" style="font-size: 10px;">Objective-C</a> <a href="/tags/RESTAPI/" style="font-size: 10px;">RESTAPI</a> <a href="/tags/RSA/" style="font-size: 12.5px;">RSA</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/SizeClasses/" style="font-size: 10px;">SizeClasses</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/Threejs/" style="font-size: 10px;">Threejs</a> <a href="/tags/UITableView/" style="font-size: 10px;">UITableView</a> <a href="/tags/UITextField/" style="font-size: 10px;">UITextField</a> <a href="/tags/UIView/" style="font-size: 17.5px;">UIView</a> <a href="/tags/UIViewController/" style="font-size: 10px;">UIViewController</a> <a href="/tags/UIWebView/" style="font-size: 10px;">UIWebView</a> <a href="/tags/VCard/" style="font-size: 10px;">VCard</a> <a href="/tags/Waterdrop/" style="font-size: 10px;">Waterdrop</a> <a href="/tags/WormHole/" style="font-size: 10px;">WormHole</a> <a href="/tags/XIB/" style="font-size: 12.5px;">XIB</a> <a href="/tags/block/" style="font-size: 10px;">__block</a> <a href="/tags/api-HTTP/" style="font-size: 10px;">api.HTTP</a> <a href="/tags/autorelease/" style="font-size: 10px;">autorelease</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/bounds/" style="font-size: 10px;">bounds</a> <a href="/tags/crash/" style="font-size: 10px;">crash</a> <a href="/tags/frame/" style="font-size: 10px;">frame</a> <a href="/tags/gitignore/" style="font-size: 10px;">gitignore</a> <a href="/tags/header/" style="font-size: 10px;">header</a> <a href="/tags/http/" style="font-size: 17.5px;">http</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOSHelper/" style="font-size: 10px;">iOSHelper</a> <a href="/tags/iTerm/" style="font-size: 10px;">iTerm</a> <a href="/tags/isa/" style="font-size: 10px;">isa</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/lipo/" style="font-size: 10px;">lipo</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pod/" style="font-size: 10px;">pod</a> <a href="/tags/protocol/" style="font-size: 10px;">protocol</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/weak/" style="font-size: 10px;">weak</a> <a href="/tags/web/" style="font-size: 17.5px;">web</a> <a href="/tags/xcode/" style="font-size: 10px;">xcode</a> <a href="/tags/xib/" style="font-size: 10px;">xib</a> <a href="/tags/三体/" style="font-size: 10px;">三体</a> <a href="/tags/加密/" style="font-size: 10px;">加密</a> <a href="/tags/奇技淫巧/" style="font-size: 10px;">奇技淫巧</a> <a href="/tags/安全/" style="font-size: 12.5px;">安全</a> <a href="/tags/宏/" style="font-size: 10px;">宏</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/支付宝/" style="font-size: 12.5px;">支付宝</a> <a href="/tags/李健/" style="font-size: 10px;">李健</a> <a href="/tags/模/" style="font-size: 10px;">模</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/浮点/" style="font-size: 10px;">浮点</a> <a href="/tags/淘宝/" style="font-size: 10px;">淘宝</a> <a href="/tags/程序猿/" style="font-size: 10px;">程序猿</a> <a href="/tags/袖手旁观/" style="font-size: 10px;">袖手旁观</a> <a href="/tags/装B/" style="font-size: 10px;">装B</a> <a href="/tags/调试/" style="font-size: 10px;">调试</a> <a href="/tags/贱人曾/" style="font-size: 10px;">贱人曾</a> <a href="/tags/运行时/" style="font-size: 10px;">运行时</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/闲聊/" style="font-size: 12.5px;">闲聊</a> <a href="/tags/隐私/" style="font-size: 10px;">隐私</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 独 奏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+    <a href="http://wiki.honglu.me" class="mobile-nav-link">Wiki</a>
+  
+</nav>
+
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'du-zou-s-blog';
+  
+  var disqus_url = 'https://honglu.me/2016/03/16/《禅与Objective-C编程艺术》笔记/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

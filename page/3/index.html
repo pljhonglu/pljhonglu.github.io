@@ -1,0 +1,790 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>独 奏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="独 奏">
+<meta property="og:url" content="https://honglu.me/page/3/index.html">
+<meta property="og:site_name" content="独 奏">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="独 奏">
+  
+    <link rel="alternative" href="/atom.xml" title="独 奏" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+<!-- Baidu Analytics -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?ff2d4025fdadaba5944a656c7fdd681f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<!-- End Baidu Analytics -->
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-66673227-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">独 奏</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">道阻且长，行则将至</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+          <a class="main-nav-link" href="http://wiki.honglu.me">Wiki</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="https://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="honglu.me">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main">
+  
+    <article id="post-百度WormHole漏洞分析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/04/百度WormHole漏洞分析/" class="article-date">
+  <time datetime="2015-11-04T06:32:16.000Z" itemprop="datePublished">11月 4 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/安全/">安全</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/04/百度WormHole漏洞分析/">百度 WormHole 漏洞分析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>还记得9月份 Xcode 曝 XcodeGhost 漏洞的时候，网络上一片哗然，大家纷纷叹息一直以安全性著称的 iOS 系统也不再安全了，像微信、网易云音乐等安装量过亿的 APP 纷纷中枪。接着是各种漏洞利用的分析，分析一轮下来，最令人咋舌的就是可以通过这个漏洞来获取用户 appleID 了。</p>
+<p>然而事过两个月之后百度 Android APP 被爆出了 WormHole 虫洞漏洞，与其说这是一个漏洞，倒不如说这是百度自己留下的一个后门。百度全系APP连同使用了百度地图的APP纷纷中枪，影响用户同样过亿。该后门之流氓程度与XcodeGhost相比有过之而无不及，包括静默下载任意文件、后台上传用户文件等各种流氓行径。</p>
+<p>下面就来分析一下 WormHole 漏洞吧</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/11/04/百度WormHole漏洞分析/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/11/04/百度WormHole漏洞分析/" data-id="ck71kb9w8006c63t5dzosty1x" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/11/04/百度WormHole漏洞分析/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WormHole/">WormHole</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/安全/">安全</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-VCard格式说明" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/29/VCard格式说明/" class="article-date">
+  <time datetime="2015-10-29T09:08:19.000Z" itemprop="datePublished">10月 29 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/闲聊/">闲聊</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/29/VCard格式说明/">VCard 格式说明</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近做一个通讯录相关的东西，需要把通讯录导出 VCF 文件。之前没有接触过 VCard 相关的东西，并不知道 VCard 的格式定义。试着导出了一个 VCF 文件看一下，iCloud 导出的 VCF 文件里面部分字段都加着下划线，明显不是本身定义的字段，看起来像是扩展字段的样子，这让我犯了难。既然这样，只能先查一下 VCF 的格式规范了，奈何中文资料并不多，大部分只是对字段进行了说明，而且不够详细，只能硬着头皮去看官方文档了。VCard 的文档在 <a href="https://tools.ietf.org/html/rfc6350" target="_blank" rel="noopener">RFC6350</a> 这份规范上被定义。所以主要看的这个文档。</p>
+<p>字段定义就不多言了。出门左转，<a href="http://baike.baidu.com/link?url=3Eu0JTwgtJ8bNhLPmGbnBRwI3yypyHzT6mRG7_gKr9q4i9SRugVT42qm0gYBDDzrthKG_9EXPWSiRi9uHxVZDa" target="_blank" rel="noopener">百度百科</a>。这里只记录一下使用过程中需要注意的点</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/10/29/VCard格式说明/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/10/29/VCard格式说明/" data-id="ck71kb9up003863t5sh6w1pof" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/10/29/VCard格式说明/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VCard/">VCard</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-人体肌肉模型" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/09/21/人体肌肉模型/" class="article-date">
+  <time datetime="2015-09-21T08:21:35.000Z" itemprop="datePublished">9月 21 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/有意思/">有意思</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/21/人体肌肉模型/">人体肌肉模型</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div style="height:580px"><br>    <img src="http://blog.qiniu.lololo.store/image/jirou/blank-muscle-anatomy.jpg" alt="人体肌肉模型" name="muscles" style="width:600px; height:510px;" usemap="#muscleanatomymap" id="muscles"><br>    <map name="muscleanatomymap" id="muscleanatomymap"><br>        <area shape="poly" coords="199,119,220,133,217,117,208,97,188,88,172,95,190,103" onmouseover="document.muscles.src=deltoidmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="三角肌"><br>        <area shape="poly" coords="116,89,100,83,89,85,75,98,71,115,72,126,86,117,94,100" onmouseover="document.muscles.src=deltoidmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="三角肌"><br>        <area shape="poly" coords="491,95,502,92,512,88,524,98,530,111,529,127,519,119,508,104" onmouseover="document.muscles.src=deltoidmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="三角肌"><br>        <area shape="poly" coords="426,97,414,96,404,93,390,103,385,121,385,131,399,121,408,106" onmouseover="document.muscles.src=deltoidmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="三角肌"><br>        <area shape="poly" coords="193,120,209,132,223,143,230,159,229,170,216,167,202,149" onmouseover="document.muscles.src=bicepsbrachiimouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="肱二头肌"><br>        <area shape="poly" coords="65,167,74,166,85,149,90,135,94,116,77,127,67,138,64,156" onmouseover="document.muscles.src=bicepsbrachiimouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="肱二头肌"><br>        <area shape="poly" coords="133,96,118,97,103,102,101,114,104,126,108,138,117,143,139,141,141,121" onmouseover="document.muscles.src=pectoralismajormouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="胸大肌"><br>        <area shape="poly" coords="155,97,146,120,149,142,167,143,181,136,186,117,183,106,171,98" onmouseover="document.muscles.src=pectoralismajormouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="胸大肌"><br>        <area shape="poly" coords="98,123,95,134,99,148,102,134" onmouseover="document.muscles.src=latissimusdorsimouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="背阔肌"><br>        <area shape="poly" coords="188,122,186,134,188,152,192,134" onmouseover="document.muscles.src=latissimusdorsimouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="背阔肌"><br>        <area shape="poly" coords="410,134,426,138,438,135,451,165,441,182,433,204,420,184,419,168,412,146" onmouseover="document.muscles.src=latissimusdorsimouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="背阔肌"><br>        <area shape="poly" coords="462,162,478,131,488,135,503,134,503,142,495,166,494,182,485,195,481,202" onmouseover="document.muscles.src=latissimusdorsimouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="背阔肌"><br>        <area shape="poly" coords="464,55,449,56,448,66,439,76,416,94,429,97,437,105,440,129,457,158,475,124,481,95,497,90,475,77,465,67" onmouseover="document.muscles.src=trapeziusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="斜方肌"><br>        <area shape="poly" coords="180,87,160,72,163,89" onmouseover="document.muscles.src=trapeziusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="斜方肌"><br>        <area shape="poly" coords="124,88,110,83,127,73" onmouseover="document.muscles.src=trapeziusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="斜方肌"><br>        <area shape="poly" coords="404,127,384,136,378,146,369,164,374,180,386,176,399,156,407,141" onmouseover="document.muscles.src=tricepsbrachiimouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="肱三头肌"><br>        <area shape="poly" coords="510,119,508,137,523,170,533,176,537,162,531,135" onmouseover="document.muscles.src=tricepsbrachiimouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="肱三头肌"><br>        <area shape="poly" coords="411,130,430,132,410,119" onmouseover="document.muscles.src=teresmajormouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="大圆肌"><br>        <area shape="poly" coords="485,132,503,129,505,117" onmouseover="document.muscles.src=teresmajormouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="大圆肌"><br>        <area shape="poly" coords="414,110,427,101,431,106,432,118,435,129,420,119" onmouseover="document.muscles.src=infraspinatusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="冈下肌"><br>        <area shape="poly" coords="489,97,503,105,484,129,479,128,483,106" onmouseover="document.muscles.src=infraspinatusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="冈下肌"><br>        <area shape="poly" coords="74,188,72,182,56,210,57,214" onmouseover="document.muscles.src=flexorcarpiulnarismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="尺侧腕屈肌"><br>        <area shape="poly" coords="220,185,222,185,242,209,238,212" onmouseover="document.muscles.src=flexorcarpiulnarismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="尺侧腕屈肌"><br>        <area shape="poly" coords="379,183,384,185,354,225,354,223" onmouseover="document.muscles.src=flexorcarpiulnarismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="尺侧腕屈肌"><br>        <area shape="poly" coords="548,225,550,225,527,181,526,186" onmouseover="document.muscles.src=flexorcarpiulnarismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="尺侧腕屈肌"><br>        <area shape="poly" coords="70,184,68,178,49,206,54,208" onmouseover="document.muscles.src=flexorcarpiradialismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="桡侧腕屈肌"><br>        <area shape="poly" coords="224,181,227,180,246,206,243,208" onmouseover="document.muscles.src=flexorcarpiradialismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="桡侧腕屈肌"><br>        <area shape="poly" coords="61,177,58,166,47,179,41,206,45,207" onmouseover="document.muscles.src=brachioradialismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="肱桡肌"><br>        <area shape="poly" coords="232,167,232,177,247,201,251,200,245,178" onmouseover="document.muscles.src=brachioradialismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="肱桡肌"><br>        <area shape="poly" coords="363,179,363,201,352,220" onmouseover="document.muscles.src=extensorcarpiulnarismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="尺侧腕伸肌"><br>        <area shape="poly" coords="545,178,549,216,542,198" onmouseover="document.muscles.src=extensorcarpiulnarismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="尺侧腕伸肌"><br>        <area shape="poly" coords="346,219,348,221,357,191" onmouseover="document.muscles.src=extensordigitiminimimouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="指伸肌"><br>        <area shape="poly" coords="555,220,558,220,547,179" onmouseover="document.muscles.src=extensordigitiminimimouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="指伸肌"><br>        <area shape="poly" coords="341,218,344,218,354,193" onmouseover="document.muscles.src=extensordigitorummouseover.src" onmouseout="document.muscles.src=mouseout.src"><br>        <area shape="poly" coords="563,217,560,219,554,195" onmouseover="document.muscles.src=extensordigitorummouseover.src" onmouseout="document.muscles.src=mouseout.src"><br>        <area shape="poly" coords="548,176,556,181,559,198" onmouseover="document.muscles.src=extensorcarpiradialislongusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="伸腕桡侧长肌"><br>        <area shape="poly" coords="347,201,356,179,361,178" onmouseover="document.muscles.src=extensorcarpiradialislongusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="伸腕桡侧长肌"><br>        <area shape="poly" coords="365,178,368,175,371,189,368,194" onmouseover="document.muscles.src=anconeusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="肘肌"><br>        <area shape="poly" coords="542,172,545,174,539,191,536,187" onmouseover="document.muscles.src=anconeusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="肘肌"><br>        <area shape="poly" coords="103,145,111,149,108,156,110,158,104,163,101,152" onmouseover="document.muscles.src=serratusanteriormouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="前锯肌"><br>        <area shape="poly" coords="173,150,181,154,180,160,184,163,183,145" onmouseover="document.muscles.src=serratusanteriormouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="前锯肌"><br>        <area shape="poly" coords="123,147,144,145,165,148,166,200,161,218,153,255,136,256,122,208" onmouseover="document.muscles.src=rectusabdominismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="腹直肌"><br>        <area shape="poly" coords="171,153,185,168,184,218,170,230" onmouseover="document.muscles.src=externalobliquemouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="腹外斜肌"><br>        <area shape="poly" coords="117,150,106,169,101,217,119,233" onmouseover="document.muscles.src=externalobliquemouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="腹外斜肌"><br>        <area shape="poly" coords="489,198,498,206,493,187" onmouseover="document.muscles.src=externalobliquemouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="腹外斜肌"><br>        <area shape="poly" coords="417,206,425,197,419,187" onmouseover="document.muscles.src=externalobliquemouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="腹外斜肌"><br>        <area shape="poly" coords="426,200,431,209,418,210" onmouseover="document.muscles.src=internalobliquemouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="内斜肌"><br>        <area shape="poly" coords="489,199,498,212,484,209" onmouseover="document.muscles.src=internalobliquemouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="内斜肌"><br>        <area shape="poly" coords="182,243,177,267,170,289,176,315,178,327,185,327,189,304,192,274" onmouseover="document.muscles.src=rectusfemorismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="股直肌"><br>        <area shape="poly" coords="105,242,108,259,115,287,116,303,110,321,110,329,103,328,101,318,97,306,95,274" onmouseover="document.muscles.src=rectusfemorismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="股直肌"><br>        <area shape="poly" coords="170,252,165,244,162,249,167,258" onmouseover="document.muscles.src=pectineusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="耻骨"><br>        <area shape="poly" coords="123,247,126,252,120,260,117,255" onmouseover="document.muscles.src=pectineusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="耻骨"><br>        <area shape="poly" coords="140,272,132,264,136,275,136,287,134,298,130,319,141,292" onmouseover="document.muscles.src=gracilismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="股薄肌"><br>        <area shape="poly" coords="153,267,148,273,147,288,157,318,152,288" onmouseover="document.muscles.src=gracilismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="股薄肌"><br>        <area shape="poly" coords="434,283,429,299,429,310,426,326,424,339,428,358,430,355,429,343,434,324,437,314,439,296" onmouseover="document.muscles.src=semitendinosusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="半腱肌"><br>        <area shape="poly" coords="477,282,475,292,472,307,478,325,482,340,483,348,484,357,487,337,483,307,484,291" onmouseover="document.muscles.src=semitendinosusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="半腱肌"><br>        <area shape="poly" coords="422,216,435,216,443,219,428,224,417,234" onmouseover="document.muscles.src=gluteusmediusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="臀中肌"><br>        <area shape="poly" coords="497,235,491,215,481,216,471,218,486,224" onmouseover="document.muscles.src=gluteusmediusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="臀中肌"><br>        <area shape="poly" coords="440,220,417,237,415,261,423,279,445,280,457,264,466,281,488,282,497,265,494,237,474,220,457,241" onmouseover="document.muscles.src=gluteusmaximusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="臀大肌"><br>        <area shape="poly" coords="429,285,421,284,414,305,410,328,409,343,417,345,422,328,425,305" onmouseover="document.muscles.src=bicepsfemorismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="股二头肌"><br>        <area shape="poly" coords="483,284,491,282,499,304,501,319,503,330,505,344,496,348,491,329,487,301" onmouseover="document.muscles.src=bicepsfemorismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="股二头肌"><br>        <area shape="poly" coords="472,312,475,319,479,338,481,356,479,365,477,351,473,328,471,319" onmouseover="document.muscles.src=semimembranosusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="半膜肌"><br>        <area shape="poly" coords="441,311,438,321,436,333,433,346,434,364,437,353,440,337" onmouseover="document.muscles.src=semimembranosusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="半膜肌"><br>        <area shape="poly" coords="191,258,193,270,193,287,192,308,189,321,187,329,187,338,193,339,195,327,197,290,196,272" onmouseover="document.muscles.src=vastuslateralismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="股外侧肌"><br>        <area shape="poly" coords="100,337,100,326,94,310,92,293,94,272,97,257,89,278,89,290,90,313,95,338" onmouseover="document.muscles.src=vastuslateralismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="股外侧肌"><br>        <area shape="poly" coords="406,419,419,451,420,460,410,439,407,429" onmouseover="document.muscles.src=soleusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="比目鱼肌"><br>        <area shape="poly" coords="508,421,501,434,496,457,504,442" onmouseover="document.muscles.src=soleusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="比目鱼肌"><br>        <area shape="poly" coords="112,421,114,426,119,429,117,443,114,463,111,440" onmouseover="document.muscles.src=soleusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="比目鱼肌"><br>        <area shape="poly" coords="174,465,171,446,168,430,173,427,176,419" onmouseover="document.muscles.src=soleusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="比目鱼肌"><br>        <area shape="poly" coords="107,228,116,257,122,273,126,295,127,310,127,329,122,300,117,278,110,253,106,237" onmouseover="document.muscles.src=sartoriusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="缝匠肌"><br>        <area shape="poly" coords="182,228,179,229,171,254,164,271,160,296,160,325,162,310,165,293,169,277,176,252" onmouseover="document.muscles.src=sartoriusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="缝匠肌"><br>        <area shape="poly" coords="126,253,120,261,125,272,129,288,130,304,132,297,132,285,131,268" onmouseover="document.muscles.src=adductorlongusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="内收长肌"><br>        <area shape="poly" coords="159,255,165,263,162,272,159,286,157,305,155,295,154,284,154,270" onmouseover="document.muscles.src=adductorlongusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="内收长肌"><br>        <area shape="poly" coords="118,288,122,311,124,333,122,343,115,344,112,332,115,317,118,305" onmouseover="document.muscles.src=vastusmedialismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="股内侧肌"><br>        <area shape="poly" coords="169,290,166,306,164,318,163,332,166,345,175,343,173,324,171,311" onmouseover="document.muscles.src=vastusmedialismouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="股内侧肌"><br>        <area shape="poly" coords="423,361,432,373,432,388,435,408,432,424,434,425,425,420,423,413,415,417,406,420,403,406,403,389,408,366,414,357,417,366" onmouseover="document.muscles.src=gastrocnemiusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="腓肠肌"><br>        <area shape="poly" coords="489,359,493,367,500,358,508,365,509,376,512,393,510,410,507,421,499,417,491,410,488,419,483,425,479,416,481,394,483,380,483,370" onmouseover="document.muscles.src=gastrocnemiusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="腓肠肌"><br>        <area shape="poly" coords="117,382,122,399,122,410,121,424,113,418,111,409,111,393" onmouseover="document.muscles.src=gastrocnemiusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="腓肠肌"><br>        <area shape="poly" coords="170,382,177,397,175,415,167,424,166,411,167,398" onmouseover="document.muscles.src=gastrocnemiusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="腓肠肌"><br>        <area shape="poly" coords="453,276,448,282,439,286,443,298,442,323,451,296" onmouseover="document.muscles.src=adductormagnusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="大收肌"><br>        <area shape="poly" coords="473,285,461,277,462,293,471,320,470,297" onmouseover="document.muscles.src=adductormagnusmouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="大收肌"><br>        <area shape="poly" coords="96,372,100,384,101,402,104,435,100,435,94,406,94,390" onmouseover="document.muscles.src=tibialisanteriormouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="胫骨前肌"><br>        <area shape="poly" coords="191,370,193,384,192,398,191,411,186,434,183,433,185,411,188,392" onmouseover="document.muscles.src=tibialisanteriormouseover.src" onmouseout="document.muscles.src=mouseout.src" alt="胫骨前肌"><br>    </map><br></div>
+        
+          <p class="article-more-link">
+            <a href="/2015/09/21/人体肌肉模型/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/09/21/人体肌肉模型/" data-id="ck71kb9vm005063t5bc4o9vdj" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/09/21/人体肌肉模型/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-向三体致敬——《Waterdrop》" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/09/21/向三体致敬——《Waterdrop》/" class="article-date">
+  <time datetime="2015-09-21T06:29:10.000Z" itemprop="datePublished">9月 21 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/有意思/">有意思</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/21/向三体致敬——《Waterdrop》/">《Waterdrop》——向三体致敬</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>视频地址:</p>
+<iframe height="498" width="510" src="http://player.youku.com/embed/XMTMzNjgzMDc2MA==" frameborder="0" allowfullscreen></iframe>
+
+<p><a href="http://www.zhihu.com/question/35647731" target="_blank" rel="noopener">知乎讨论</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/09/21/向三体致敬——《Waterdrop》/" data-id="ck71kb9vl004x63t5odso3r0x" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/09/21/向三体致敬——《Waterdrop》/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Waterdrop/">Waterdrop</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/三体/">三体</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Objective-C很有用的特性" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/09/16/Objective-C很有用的特性/" class="article-date">
+  <time datetime="2015-09-16T08:55:16.000Z" itemprop="datePublished">9月 16 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/16/Objective-C很有用的特性/">Objective-C 很有用的特性</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>总结一下 Objective-C 的一些不太常用但是很有用的特征，有些特性是为了和 Swift 统一，不过对日常开发都是非常有益的~</p>
+<h2 id="Modules"><a href="#Modules" class="headerlink" title="Modules"></a>Modules</h2><p>新的编译符号<code>@import</code><br><figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="keyword">@import</span> <span class="built_in">UIKit</span>.UIView;</span><br></pre></td></tr></table></figure></p>
+<p>编译优化，避免编译时重复引用，增加编译速度。</p>
+<p>参考:<br><a href="http://onevcat.com/2013/06/new-in-xcode5-and-objc/" target="_blank" rel="noopener">WWDC 2013 Session笔记 - Xcode5和ObjC新特性</a></p>
+        
+          <p class="article-more-link">
+            <a href="/2015/09/16/Objective-C很有用的特性/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/09/16/Objective-C很有用的特性/" data-id="ck71kb9u5001y63t5ndbvay7p" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/09/16/Objective-C很有用的特性/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Objective-C/">Objective-C</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-给时光以生命" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/09/01/给时光以生命/" class="article-date">
+  <time datetime="2015-09-01T02:26:35.000Z" itemprop="datePublished">9月 1 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/闲聊/">闲聊</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/09/01/给时光以生命/">给时光以生命</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>毕业不知不觉已有一年多了，工作也有2年了~但是回想着两年的生活，却觉得索然无味，每天过着上班下班的生活，似乎并没有什么大的波澜。</p>
+<p>对比现在与在学校的时光，似乎并没有什么差别，唯独时间变得越来越破碎，大学时可以一整天呆在图书馆看一本喜欢的书，而现在却只能在地铁里刷知乎。但是对书本与知识的渴望犹存，却没了往日的激情，懒病越来越严重，事情总是一拖再拖，却能够在家很悠闲的看一天电视，想想这真的是一件很可怕的事情。也许一个人就是在这么一天一天的不知不觉中变得越来越平庸，直到有一天发现应届生的水平都已经超过你了，这个时候再想起来上进却已然来不及了。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/09/01/给时光以生命/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/09/01/给时光以生命/" data-id="ck71kb9wd006m63t5ypq9txj6" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/09/01/给时光以生命/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-APP安全性解析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/08/04/APP安全性解析/" class="article-date">
+  <time datetime="2015-08-04T07:08:19.000Z" itemprop="datePublished">8月 4 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/安全/">安全</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/08/04/APP安全性解析/">APP安全性解析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>翻看一下乌云上面关于 APP 的漏洞，发现有不少漏洞都是很弱智的错误，而且部分厂家还会选择主动忽略漏洞。按照近期公布的《第36次中国互联网络发展状况统计调查报告》显示，我国网民规模达6.68亿，其中手机网民规模达5.94亿，手机上网人群已超过台式机、笔记本等传统上网模式。如此规模的网民，安全问题却还没有获得足够的重视。</p>
+<p>这一篇文章只是对 APP 中常见的安全问题做一个汇总概述，后续可能会单独拿出来一一详解。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/08/04/APP安全性解析/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/08/04/APP安全性解析/" data-id="ck71kb9t4000763t53bcrdxsg" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/08/04/APP安全性解析/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/安全/">安全</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Swift构造过程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/07/25/Swift构造过程/" class="article-date">
+  <time datetime="2015-07-25T02:12:10.000Z" itemprop="datePublished">7月 25 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Swift/">Swift</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/07/25/Swift构造过程/">Swift 构造过程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Swift 的构造过程算是比较复杂的，《The Swift Programming Language》 中关于 Initialization 的信息量也是非常大。</p>
+<p>Swift 中构造器的写法如下</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>: <span class="title">NSObject</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span>?</span><br><span class="line">    <span class="keyword">init</span>(name: <span class="type">String</span>) &#123;</span><br><span class="line">        <span class="keyword">super</span>.<span class="keyword">init</span>()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>与 Objective-C 不同，</p>
+<ul>
+<li>Swift 的构造器是没有返回值的</li>
+<li>Swift 的构造器是通过参数列表来区分的</li>
+<li>Swift 的构造器默认情况下是不被继承的</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2015/07/25/Swift构造过程/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/07/25/Swift构造过程/" data-id="ck71kb9ul003063t52nb3jq2w" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/07/25/Swift构造过程/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swift/">Swift</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-常用的几种Content-Type" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/07/13/常用的几种Content-Type/" class="article-date">
+  <time datetime="2015-07-13T09:10:32.000Z" itemprop="datePublished">7月 13 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/HTTP/">HTTP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/07/13/常用的几种Content-Type/">常用的几种 Content-Type</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>列举几种开发中常用的 Content-Type</p>
+<h2 id="application-x-www-form-urlencoded"><a href="#application-x-www-form-urlencoded" class="headerlink" title="application/x-www-form-urlencoded"></a>application/x-www-form-urlencoded</h2><p>浏览器的原生 form 表单，如果不设置 enctype 属性，那么最终就会以 application/x-www-form-urlencoded 方式提交数据。请求如下面形式：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">POST http://www.example.com HTTP/1.1</span><br><span class="line">Content-Type: application/x-www-form-urlencoded;charset=utf-8</span><br><span class="line"></span><br><span class="line">title=<span class="built_in">test</span>&amp;sub%5B%5D=1&amp;sub%5B%5D=2&amp;sub%5B%5D=3</span><br></pre></td></tr></table></figure>
+<p>该种方式提交的数据放在 body 里面，数据按照 key1=val1&amp;key2=val2 的方式进行编码，key 和 val 都进行了 URL 转码。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/07/13/常用的几种Content-Type/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/07/13/常用的几种Content-Type/" data-id="ck71kb9vr005763t59ny5bzqs" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/07/13/常用的几种Content-Type/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Content-Type/">Content-Type</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/http/">http</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-开发中常用的HTTP-header" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/07/13/开发中常用的HTTP-header/" class="article-date">
+  <time datetime="2015-07-13T08:50:15.000Z" itemprop="datePublished">7月 13 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/HTTP/">HTTP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/07/13/开发中常用的HTTP-header/">开发中常用的 HTTP header</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在开发中最常用的就是 http 协议。通常情况下我们使用已经封装好的库来装载请求内容，但是你真的了解 http 协议么，这篇文章主要分析一下开发中常用到的 http header。</p>
+        
+          <p class="article-more-link">
+            <a href="/2015/07/13/开发中常用的HTTP-header/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="https://honglu.me/2015/07/13/开发中常用的HTTP-header/" data-id="ck71kb9vt005e63t520so8uo6" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="https://honglu.me/2015/07/13/开发中常用的HTTP-header/#disqus_thread" class="article-comment-link">评论</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/header/">header</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/http/">http</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+
+  <nav id="page-nav">
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+  </nav>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/05/27/负数取模/">负数取模</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/30/深入理解RunLoop/">深入理解 RunLoop</a>
+          </li>
+        
+          <li>
+            <a href="/2017/03/12/计算机浮点数那些事/">计算机浮点数那些事</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/01/HTTPS总结/">HTTPS 总结</a>
+          </li>
+        
+          <li>
+            <a href="/2016/10/03/HTTPS详解(二)/">HTTPS 详解(二)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/OSX/">OSX</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Swift/">Swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">39</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/web/">web</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具党/">工具党</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/有意思/">有意思</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/闲聊/">闲聊</a><span class="category-list-count">7</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/05/">五月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/10/">十月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/09/">九月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">五月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">二月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">一月 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">十一月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">十月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">九月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">八月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">七月 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">六月 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">五月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/04/">四月 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">三月 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">一月 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">十二月 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">十一月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/10/">十月 2014</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/09/">九月 2014</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/08/">八月 2014</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/07/">七月 2014</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AFNetworking/" style="font-size: 10px;">AFNetworking</a> <a href="/tags/APPStore/" style="font-size: 10px;">APPStore</a> <a href="/tags/ARC/" style="font-size: 10px;">ARC</a> <a href="/tags/Autolayout/" style="font-size: 10px;">Autolayout</a> <a href="/tags/Cocoa/" style="font-size: 10px;">Cocoa</a> <a href="/tags/CocoaPods/" style="font-size: 10px;">CocoaPods</a> <a href="/tags/CollectionViewLayout/" style="font-size: 10px;">CollectionViewLayout</a> <a href="/tags/Content-Type/" style="font-size: 10px;">Content-Type</a> <a href="/tags/CoreData/" style="font-size: 10px;">CoreData</a> <a href="/tags/CoreText/" style="font-size: 10px;">CoreText</a> <a href="/tags/GFWList/" style="font-size: 10px;">GFWList</a> <a href="/tags/Git/" style="font-size: 10px;">Git</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/HTTPS/" style="font-size: 15px;">HTTPS</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/NSAttributedString/" style="font-size: 10px;">NSAttributedString</a> <a href="/tags/OSX/" style="font-size: 12.5px;">OSX</a> <a href="/tags/Objective-C/" style="font-size: 10px;">Objective-C</a> <a href="/tags/RESTAPI/" style="font-size: 10px;">RESTAPI</a> <a href="/tags/RSA/" style="font-size: 12.5px;">RSA</a> <a href="/tags/RunLoop/" style="font-size: 10px;">RunLoop</a> <a href="/tags/RunTime/" style="font-size: 10px;">RunTime</a> <a href="/tags/ShadowSocks/" style="font-size: 10px;">ShadowSocks</a> <a href="/tags/SizeClasses/" style="font-size: 10px;">SizeClasses</a> <a href="/tags/Swift/" style="font-size: 10px;">Swift</a> <a href="/tags/Threejs/" style="font-size: 10px;">Threejs</a> <a href="/tags/UITableView/" style="font-size: 10px;">UITableView</a> <a href="/tags/UITextField/" style="font-size: 10px;">UITextField</a> <a href="/tags/UIView/" style="font-size: 17.5px;">UIView</a> <a href="/tags/UIViewController/" style="font-size: 10px;">UIViewController</a> <a href="/tags/UIWebView/" style="font-size: 10px;">UIWebView</a> <a href="/tags/VCard/" style="font-size: 10px;">VCard</a> <a href="/tags/Waterdrop/" style="font-size: 10px;">Waterdrop</a> <a href="/tags/WormHole/" style="font-size: 10px;">WormHole</a> <a href="/tags/XIB/" style="font-size: 12.5px;">XIB</a> <a href="/tags/block/" style="font-size: 10px;">__block</a> <a href="/tags/api-HTTP/" style="font-size: 10px;">api.HTTP</a> <a href="/tags/autorelease/" style="font-size: 10px;">autorelease</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/bounds/" style="font-size: 10px;">bounds</a> <a href="/tags/crash/" style="font-size: 10px;">crash</a> <a href="/tags/frame/" style="font-size: 10px;">frame</a> <a href="/tags/gitignore/" style="font-size: 10px;">gitignore</a> <a href="/tags/header/" style="font-size: 10px;">header</a> <a href="/tags/http/" style="font-size: 17.5px;">http</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOSHelper/" style="font-size: 10px;">iOSHelper</a> <a href="/tags/iTerm/" style="font-size: 10px;">iTerm</a> <a href="/tags/isa/" style="font-size: 10px;">isa</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/lipo/" style="font-size: 10px;">lipo</a> <a href="/tags/php/" style="font-size: 10px;">php</a> <a href="/tags/pod/" style="font-size: 10px;">pod</a> <a href="/tags/protocol/" style="font-size: 10px;">protocol</a> <a href="/tags/proxy/" style="font-size: 10px;">proxy</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/tips/" style="font-size: 10px;">tips</a> <a href="/tags/weak/" style="font-size: 10px;">weak</a> <a href="/tags/web/" style="font-size: 17.5px;">web</a> <a href="/tags/xcode/" style="font-size: 10px;">xcode</a> <a href="/tags/xib/" style="font-size: 10px;">xib</a> <a href="/tags/三体/" style="font-size: 10px;">三体</a> <a href="/tags/加密/" style="font-size: 10px;">加密</a> <a href="/tags/奇技淫巧/" style="font-size: 10px;">奇技淫巧</a> <a href="/tags/安全/" style="font-size: 12.5px;">安全</a> <a href="/tags/宏/" style="font-size: 10px;">宏</a> <a href="/tags/定时任务/" style="font-size: 10px;">定时任务</a> <a href="/tags/工具/" style="font-size: 10px;">工具</a> <a href="/tags/支付宝/" style="font-size: 12.5px;">支付宝</a> <a href="/tags/李健/" style="font-size: 10px;">李健</a> <a href="/tags/模/" style="font-size: 10px;">模</a> <a href="/tags/正则/" style="font-size: 10px;">正则</a> <a href="/tags/浮点/" style="font-size: 10px;">浮点</a> <a href="/tags/淘宝/" style="font-size: 10px;">淘宝</a> <a href="/tags/程序猿/" style="font-size: 10px;">程序猿</a> <a href="/tags/袖手旁观/" style="font-size: 10px;">袖手旁观</a> <a href="/tags/装B/" style="font-size: 10px;">装B</a> <a href="/tags/调试/" style="font-size: 10px;">调试</a> <a href="/tags/贱人曾/" style="font-size: 10px;">贱人曾</a> <a href="/tags/运行时/" style="font-size: 10px;">运行时</a> <a href="/tags/适配/" style="font-size: 10px;">适配</a> <a href="/tags/闲聊/" style="font-size: 12.5px;">闲聊</a> <a href="/tags/隐私/" style="font-size: 10px;">隐私</a> <a href="/tags/黑客/" style="font-size: 10px;">黑客</a>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 独 奏<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+    <a href="http://wiki.honglu.me" class="mobile-nav-link">Wiki</a>
+  
+</nav>
+
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<script>
+  var disqus_shortname = 'du-zou-s-blog';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"/css/bdshare.css"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+<script src="/js/script.js"></script>
+
+</div>
+</body>
+</html>

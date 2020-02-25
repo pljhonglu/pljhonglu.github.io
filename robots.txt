@@ -1,0 +1,9 @@
+# hexo robots.txt
+User-agent: *
+Disallow: /secret/
+Disallow: /unfinished/
+Disallow: /CNAME
+Disallow: /atom.xml
+
+Sitemap: http://honglu.me/sitemap.xml
+Sitemap: http://cn.honglu.me/sitemap.xml
