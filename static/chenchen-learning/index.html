@@ -2,35 +2,25 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="color-scheme" content="light" />
-  <title>辰辰的幼小衔接乐园</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>辰辰学习乐园 · 已改为自托管</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1.2rem; line-height: 1.6; color: #222; }
+    code, pre { background: #f4f4f5; border-radius: 6px; }
+    code { padding: 0.1em 0.35em; }
+    pre { padding: 1rem; overflow: auto; }
+    a { color: #2563eb; }
+  </style>
 </head>
 <body>
-  <div class="bg-deco" aria-hidden="true"></div>
-  <div class="app">
-    <header class="header">
-      <h1>🌟 辰辰的学习乐园</h1>
-      <p class="sub">幼小衔接 · 古诗 · 数学 · 拼音 · 写字</p>
-    </header>
-    <main>
-      <section class="view active" data-view="home" id="home-content"></section>
-      <section class="view" data-view="poems" id="poems-content"></section>
-      <section class="view" data-view="poem-detail" id="poem-detail-content"></section>
-      <section class="view" data-view="math" id="math-content"></section>
-      <section class="view" data-view="pinyin" id="pinyin-content"></section>
-      <section class="view" data-view="write" id="write-content"></section>
-    </main>
-  </div>
-  <nav class="nav" aria-label="主导航">
-    <button type="button" data-nav="home" class="active"><span class="ico">🏠</span>今日复习</button>
-    <button type="button" data-nav="poems"><span class="ico">📜</span>古诗馆</button>
-    <button type="button" data-nav="math"><span class="ico">🔢</span>数学</button>
-    <button type="button" data-nav="pinyin"><span class="ico">🔤</span>拼音</button>
-    <button type="button" data-nav="write"><span class="ico">✍️</span>写字</button>
-  </nav>
-  <script src="poems.js"></script>
-  <script src="app.js"></script>
+  <h1>🌟 辰辰的学习乐园</h1>
+  <p>本 GitHub Pages 镜像<strong>已下线</strong>。请使用自托管 Docker 部署（进度存本地 SQLite，不再使用 Cloudflare Worker / 云同步码）。</p>
+  <p>仓库与部署说明：<br>
+    <a href="https://github.com/pljhonglu/chenchen-learning">https://github.com/pljhonglu/chenchen-learning</a>
+  </p>
+  <pre><code>git clone https://github.com/pljhonglu/chenchen-learning.git
+cd chenchen-learning
+docker compose up -d --build
+# 打开 http://<NAS-IP>:8080/</code></pre>
 </body>
 </html>
