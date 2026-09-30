@@ -1,0 +1,83 @@
+name: Deploy chenchen-learning addon
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'static/chenchen-learning/**'
+      - '.github/workflows/deploy-chenchen.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Mirror current live site and add chenchen-learning
+        run: |
+          set -euo pipefail
+          mkdir -p public
+          curl -fsSL https://pljhonglu.github.io/sitemap.xml -o /tmp/sitemap.xml || true
+          python3 - <<'PY'
+          import re, subprocess, pathlib, urllib.parse
+          root = pathlib.Path('public')
+          root.mkdir(exist_ok=True)
+          urls = ['https://pljhonglu.github.io/']
+          try:
+            text = pathlib.Path('/tmp/sitemap.xml').read_text(encoding='utf-8', errors='ignore')
+            urls += re.findall(r'<loc>(.*?)</loc>', text)
+          except Exception:
+            pass
+          seen=set()
+          for u in urls:
+            if u in seen: continue
+            seen.add(u)
+            path = urllib.parse.urlparse(u).path
+            if not path or path.endswith('/'):
+              rel = path.lstrip('/') + 'index.html'
+            else:
+              rel = path.lstrip('/')
+              if not rel.endswith('.html') and '.' not in rel.split('/')[-1]:
+                rel = rel.rstrip('/') + '/index.html'
+            dest = root / rel
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            print('GET', u, '->', dest)
+            subprocess.run(['curl','-fsSL',u,'-o',str(dest)], check=False)
+          assets = [
+            '/css/main.min.css','/css/style.min.css','/favicon.ico',
+            '/favicon-32x32.png','/favicon-16x16.png','/apple-touch-icon.png',
+            '/index.xml','/lib/katex/katex.min.css','/lib/katex/copy-tex.min.css',
+          ]
+          for a in assets:
+            dest = root / a.lstrip('/')
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            subprocess.run(['curl','-fsSL','https://pljhonglu.github.io'+a,'-o',str(dest)], check=False)
+          PY
+          rm -rf public/chenchen-learning
+          mkdir -p public/chenchen-learning
+          cp -a static/chenchen-learning/. public/chenchen-learning/
+          touch public/chenchen-learning/.nojekyll
+          ls -la public/chenchen-learning/
+          test -f public/chenchen-learning/index.html
+          test -f public/chenchen-learning/app.js
+          test -f public/chenchen-learning/poems.js
+          test -f public/chenchen-learning/styles.css
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
