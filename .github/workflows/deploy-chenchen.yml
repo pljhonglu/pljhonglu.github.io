@@ -1,4 +1,5 @@
 name: Deploy chenchen-learning addon
+# single-q deploy v1
 on:
   push:
     branches: [main]
@@ -65,7 +66,8 @@ jobs:
               dest.parent.mkdir(parents=True, exist_ok=True)
               subprocess.run(['curl','-fsSL','https://pljhonglu.github.io'+a,'-o',str(dest)], check=False)
           PY
-          rm -rf public/chenchen-learning
+          rm -rf public/chenchen-learning /tmp/chenchen-src
+          git clone --depth 1 https://github.com/pljhonglu/chenchen-learning.git /tmp/chenchen-src
           mkdir -p public/chenchen-learning
           python3 - <<'PY'
           import base64, io, pathlib, re, tarfile, urllib.request
@@ -73,9 +75,14 @@ jobs:
           out.mkdir(parents=True, exist_ok=True)
           base = 'https://raw.githubusercontent.com/pljhonglu/chenchen-learning/main'
 
+          SRC = pathlib.Path('/tmp/chenchen-src')
           def fetch(path):
+              local = SRC / path
+              if local.is_file():
+                  print('clone', path, local.stat().st_size)
+                  return local.read_bytes()
               try:
-                  with urllib.request.urlopen(base + '/' + path) as r:
+                  with urllib.request.urlopen(base + '/' + path + '?t=1') as r:
                       return r.read()
               except Exception as e:
                   print('fetch fail', path, e)
@@ -157,8 +164,9 @@ jobs:
           assert '@file' not in styles and '@font-face' in styles
           # Require number-bonds workbook UI on deploy
           app_t = (out/'app.js').read_text(encoding='utf-8')
-          assert 'renderBondPanel' in app_t, 'missing number-bonds UI in app.js'
-          assert 'nb-fork' in styles, 'missing number-bonds styles'
+          assert 'renderBondPanel' in app_t and 'nb-single-wrap' in app_t, 'missing single-question number-bonds UI'
+          assert 'nb-fork' in styles and 'nb-single-wrap' in styles, 'missing number-bonds styles'
+          assert '.nb-grid' not in styles, 'old multi-card grid styles still present'
           (out/'.nojekyll').write_text('\n', encoding='utf-8')
           print('classic deploy payload ready')
           for p in sorted(out.iterdir()):
