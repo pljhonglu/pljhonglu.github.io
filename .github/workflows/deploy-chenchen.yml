@@ -6,6 +6,8 @@ on:
       - 'static/chenchen-learning/**'
       - '.github/workflows/deploy-chenchen.yml'
   workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
 
 permissions:
   contents: read
@@ -25,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Mirror live site and fetch chenchen-learning from sibling repo
+      - name: Mirror live site and deploy classic chenchen-learning files
         run: |
           set -euo pipefail
           mkdir -p public
@@ -53,7 +55,6 @@ jobs:
                 rel = rel.rstrip('/') + '/index.html'
             dest = root / rel
             dest.parent.mkdir(parents=True, exist_ok=True)
-            print('GET', u, '->', dest)
             subprocess.run(['curl','-fsSL',u,'-o',str(dest)], check=False)
           assets = [
             '/css/main.min.css','/css/style.min.css','/favicon.ico',
@@ -66,20 +67,43 @@ jobs:
             subprocess.run(['curl','-fsSL','https://pljhonglu.github.io'+a,'-o',str(dest)], check=False)
           PY
           rm -rf public/chenchen-learning
-          mkdir -p public/chenchen-learning/assets
+          mkdir -p public/chenchen-learning
           BASE=https://raw.githubusercontent.com/pljhonglu/chenchen-learning/main
-          for f in index.html styles.css README.md .nojekyll; do
-            curl -fsSL "$BASE/$f" -o "public/chenchen-learning/$f" || true
-          done
-          for f in app.part1.b64 app.part2.b64 poems.part1.b64 poems.part2.b64 styles.css.gz.b64; do
-            curl -fsSL "$BASE/assets/$f" -o "public/chenchen-learning/assets/$f"
-          done
+          # Prefer classic multi-file from repo root; fall back to unpacking deploy-src parts
+          if curl -fsSL "$BASE/poems.js" -o /tmp/poems.js && grep -q 'const POEMS' /tmp/poems.js && \
+             curl -fsSL "$BASE/app.js" -o /tmp/app.js && \
+             curl -fsSL "$BASE/styles.css" -o /tmp/styles.css && \
+             curl -fsSL "$BASE/index.html" -o /tmp/index.html && \
+             grep -q 'src="poems.js"' /tmp/index.html; then
+            cp /tmp/index.html /tmp/styles.css /tmp/app.js /tmp/poems.js public/chenchen-learning/
+            curl -fsSL "$BASE/README.md" -o public/chenchen-learning/README.md || true
+            curl -fsSL "$BASE/.nojekyll" -o public/chenchen-learning/.nojekyll || true
+          else
+            mkdir -p /tmp/parts
+            for i in 0 1 2 3; do
+              curl -fsSL "$BASE/deploy-src/classic.part${i}.b64" -o "/tmp/parts/classic.part${i}.b64"
+            done
+            cat /tmp/parts/classic.part*.b64 | tr -d '\n\r ' | base64 -d > /tmp/classic.tar.gz
+            tar xzf /tmp/classic.tar.gz -C public/chenchen-learning
+          fi
           touch public/chenchen-learning/.nojekyll
-          ls -laR public/chenchen-learning
-          test -f public/chenchen-learning/index.html
-          test -f public/chenchen-learning/assets/app.part1.b64
-          test -f public/chenchen-learning/assets/poems.part1.b64
-          test -f public/chenchen-learning/assets/styles.css.gz.b64
+          ls -la public/chenchen-learning/
+          test -s public/chenchen-learning/index.html
+          test -s public/chenchen-learning/styles.css
+          test -s public/chenchen-learning/app.js
+          test -s public/chenchen-learning/poems.js
+          grep -q 'src="poems.js"' public/chenchen-learning/index.html
+          grep -q 'const POEMS' public/chenchen-learning/poems.js
+          python3 - <<'PY'
+          import re, pathlib
+          t = pathlib.Path('public/chenchen-learning/poems.js').read_text(encoding='utf-8')
+          n = len(re.findall(r'"id"\s*:\s*"poem-', t))
+          print('poem ids', n)
+          assert n >= 30, n
+          html = pathlib.Path('public/chenchen-learning/index.html').read_text(encoding='utf-8')
+          assert 'gzip' not in html.lower() and 'DecompressionStream' not in html
+          print('classic index ok')
+          PY
 
       - uses: actions/upload-pages-artifact@v3
         with:
