@@ -36,34 +36,34 @@ jobs:
           root.mkdir(exist_ok=True)
           urls = ['https://pljhonglu.github.io/']
           try:
-            text = pathlib.Path('/tmp/sitemap.xml').read_text(encoding='utf-8', errors='ignore')
-            urls += re.findall(r'<loc>(.*?)</loc>', text)
+              text = pathlib.Path('/tmp/sitemap.xml').read_text(encoding='utf-8', errors='ignore')
+              urls += re.findall(r'<loc>(.*?)</loc>', text)
           except Exception:
-            pass
+              pass
           seen=set()
           for u in urls:
-            if u in seen: continue
-            seen.add(u)
-            path = urllib.parse.urlparse(u).path
-            if not path or path.endswith('/'):
-              rel = path.lstrip('/') + 'index.html'
-            else:
-              rel = path.lstrip('/')
+              if u in seen: continue
+              seen.add(u)
+              path = urllib.parse.urlparse(u).path
+              if not path or path.endswith('/'):
+                  rel = path.lstrip('/') + 'index.html'
+              else:
+                  rel = path.lstrip('/')
               if not rel.endswith('.html') and '.' not in rel.split('/')[-1]:
-                rel = rel.rstrip('/') + '/index.html'
-            dest = root / rel
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            print('GET', u, '->', dest)
-            subprocess.run(['curl','-fsSL',u,'-o',str(dest)], check=False)
+                  rel = rel.rstrip('/') + '/index.html'
+              dest = root / rel
+              dest.parent.mkdir(parents=True, exist_ok=True)
+              print('GET', u, '->', dest)
+              subprocess.run(['curl','-fsSL',u,'-o',str(dest)], check=False)
           assets = [
-            '/css/main.min.css','/css/style.min.css','/favicon.ico',
-            '/favicon-32x32.png','/favicon-16x16.png','/apple-touch-icon.png',
-            '/index.xml','/lib/katex/katex.min.css','/lib/katex/copy-tex.min.css',
+              '/css/main.min.css','/css/style.min.css','/favicon.ico',
+              '/favicon-32x32.png','/favicon-16x16.png','/apple-touch-icon.png',
+              '/index.xml','/lib/katex/katex.min.css','/lib/katex/copy-tex.min.css',
           ]
           for a in assets:
-            dest = root / a.lstrip('/')
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            subprocess.run(['curl','-fsSL','https://pljhonglu.github.io'+a,'-o',str(dest)], check=False)
+              dest = root / a.lstrip('/')
+              dest.parent.mkdir(parents=True, exist_ok=True)
+              subprocess.run(['curl','-fsSL','https://pljhonglu.github.io'+a,'-o',str(dest)], check=False)
           PY
           rm -rf public/chenchen-learning
           mkdir -p public/chenchen-learning
@@ -74,81 +74,80 @@ jobs:
           base = 'https://raw.githubusercontent.com/pljhonglu/chenchen-learning/main'
 
           def fetch(path):
-            try:
-              with urllib.request.urlopen(base + '/' + path) as r:
-                return r.read()
-            except Exception as e:
-              print('fetch fail', path, e)
-              return None
+              try:
+                  with urllib.request.urlopen(base + '/' + path) as r:
+                      return r.read()
+              except Exception as e:
+                  print('fetch fail', path, e)
+                  return None
 
           def try_root():
-            poems = fetch('poems.js')
-            app = fetch('app.js')
-            styles = fetch('styles.css')
-            index = fetch('index.html')
-            speech = fetch('speech.js')
-            if not all([poems, app, styles, index]):
-              return False
-            poems_t = poems.decode('utf-8')
-            styles_t = styles.decode('utf-8')
-            index_t = index.decode('utf-8')
-            if 'const POEMS' not in poems_t:
-              return False
-            if 'src="poems.js"' not in index_t:
-              return False
-            if '@file' in styles_t or '@font-face' not in styles_t:
-              return False
-            # If index asks for speech.js, require it
-            if 'speech.js' in index_t:
-              if not speech or 'ChenchenSpeech' not in speech.decode('utf-8'):
-                print('speech.js missing or invalid while index references it')
-                return False
-              (out/'speech.js').write_bytes(speech)
-            (out/'poems.js').write_bytes(poems)
-            (out/'app.js').write_bytes(app)
-            (out/'styles.css').write_bytes(styles)
-            (out/'index.html').write_bytes(index)
-            for extra in ['README.md', '.nojekyll']:
-              b = fetch(extra)
-              if b is not None:
-                (out/extra).write_bytes(b)
-            print('used classic files from repo root')
-            return True
+              poems = fetch('poems.js')
+              app = fetch('app.js')
+              styles = fetch('styles.css')
+              index = fetch('index.html')
+              speech = fetch('speech.js')
+              if not all([poems, app, styles, index]):
+                  return False
+              poems_t = poems.decode('utf-8')
+              styles_t = styles.decode('utf-8')
+              index_t = index.decode('utf-8')
+              if 'const POEMS' not in poems_t:
+                  return False
+              if 'src="poems.js"' not in index_t:
+                  return False
+              if '@file' in styles_t or '@font-face' not in styles_t:
+                  return False
+              if 'speech.js' in index_t:
+                  if not speech or 'ChenchenSpeech' not in speech.decode('utf-8'):
+                      print('speech.js missing or invalid while index references it')
+                      return False
+                  (out/'speech.js').write_bytes(speech)
+              (out/'poems.js').write_bytes(poems)
+              (out/'app.js').write_bytes(app)
+              (out/'styles.css').write_bytes(styles)
+              (out/'index.html').write_bytes(index)
+              for extra in ['README.md', '.nojekyll']:
+                  b = fetch(extra)
+                  if b is not None:
+                      (out/extra).write_bytes(b)
+              print('used classic files from repo root')
+              return True
 
           def unpack_parts():
-            chunks = []
-            for i in range(4):
-              b = fetch(f'deploy-src/classic.part{i}.b64')
-              if b is None:
-                raise SystemExit(f'missing part {i}')
-              chunks.append(b.decode('utf-8'))
-            raw = re.sub(r'\s+', '', ''.join(chunks))
-            fixes = [
-              ('ML+g9neScwH4o', 'ML+i9neScwH4o'),
-              ('MxUS8yU8va7rh', 'MxUs8yU8va7rh'),
-            ]
-            for a,b in fixes:
-              if a in raw:
-                raw = raw.replace(a, b)
-                print('applied fix', a, '->', b)
-            data = base64.b64decode(raw)
-            with tarfile.open(fileobj=io.BytesIO(data), mode='r:gz') as tf:
-              print('tar members', tf.getnames())
-              tf.extractall(out)
-            print('unpacked classic from deploy-src parts')
+              chunks = []
+              for i in range(4):
+                  b = fetch(f'deploy-src/classic.part{i}.b64')
+                  if b is None:
+                      raise SystemExit(f'missing part {i}')
+                  chunks.append(b.decode('utf-8'))
+              raw = re.sub(r'\s+', '', ''.join(chunks))
+              fixes = [
+                  ('ML+g9neScwH4o', 'ML+i9neScwH4o'),
+                  ('MxUS8yU8va7rh', 'MxUs8yU8va7rh'),
+              ]
+              for a,b in fixes:
+                  if a in raw:
+                      raw = raw.replace(a, b)
+                      print('applied fix', a, '->', b)
+              data = base64.b64decode(raw)
+              with tarfile.open(fileobj=io.BytesIO(data), mode='r:gz') as tf:
+                  print('tar members', tf.getnames())
+                  tf.extractall(out)
+              print('unpacked classic from deploy-src parts')
 
           if not try_root():
-            unpack_parts()
+              unpack_parts()
 
           for f in ['index.html','styles.css','app.js','poems.js']:
-            assert (out/f).is_file() and (out/f).stat().st_size > 0, f
+              assert (out/f).is_file() and (out/f).stat().st_size > 0, f
           html = (out/'index.html').read_text(encoding='utf-8')
           assert 'src="poems.js"' in html
           assert 'gzip' not in html.lower() and 'DecompressionStream' not in html
           if 'speech.js' in html:
-            assert (out/'speech.js').is_file()
-            assert 'ChenchenSpeech' in (out/'speech.js').read_text(encoding='utf-8')
-            assert 'btn-speak' in (out/'app.js').read_text(encoding='utf-8')
+              assert (out/'speech.js').is_file()
+              assert 'ChenchenSpeech' in (out/'speech.js').read_text(encoding='utf-8')
+              assert 'btn-speak' in (out/'app.js').read_text(encoding='utf-8')
           poems = (out/'poems.js').read_text(encoding='utf-8')
           assert 'const POEMS' in poems
           n = len(re.findall(r'"id"\s*:\s*"poem-', poems))
@@ -156,10 +155,14 @@ jobs:
           assert n >= 30, n
           styles = (out/'styles.css').read_text(encoding='utf-8')
           assert '@file' not in styles and '@font-face' in styles
+          # Require number-bonds workbook UI on deploy
+          app_t = (out/'app.js').read_text(encoding='utf-8')
+          assert 'renderBondPanel' in app_t, 'missing number-bonds UI in app.js'
+          assert 'nb-fork' in styles, 'missing number-bonds styles'
           (out/'.nojekyll').write_text('\n', encoding='utf-8')
           print('classic deploy payload ready')
           for p in sorted(out.iterdir()):
-            print(p.name, p.stat().st_size)
+              print(p.name, p.stat().st_size)
           PY
 
       - uses: actions/upload-pages-artifact@v3
