@@ -67,7 +67,6 @@ jobs:
           PY
           rm -rf public/chenchen-learning
           mkdir -p public/chenchen-learning
-          BASE=https://raw.githubusercontent.com/pljhonglu/chenchen-learning/main
           python3 - <<'PY'
           import base64, io, pathlib, re, tarfile, urllib.request
           out = pathlib.Path('public/chenchen-learning')
@@ -87,6 +86,7 @@ jobs:
             app = fetch('app.js')
             styles = fetch('styles.css')
             index = fetch('index.html')
+            speech = fetch('speech.js')
             if not all([poems, app, styles, index]):
               return False
             poems_t = poems.decode('utf-8')
@@ -98,6 +98,12 @@ jobs:
               return False
             if '@file' in styles_t or '@font-face' not in styles_t:
               return False
+            # If index asks for speech.js, require it
+            if 'speech.js' in index_t:
+              if not speech or 'ChenchenSpeech' not in speech.decode('utf-8'):
+                print('speech.js missing or invalid while index references it')
+                return False
+              (out/'speech.js').write_bytes(speech)
             (out/'poems.js').write_bytes(poems)
             (out/'app.js').write_bytes(app)
             (out/'styles.css').write_bytes(styles)
@@ -139,6 +145,10 @@ jobs:
           html = (out/'index.html').read_text(encoding='utf-8')
           assert 'src="poems.js"' in html
           assert 'gzip' not in html.lower() and 'DecompressionStream' not in html
+          if 'speech.js' in html:
+            assert (out/'speech.js').is_file()
+            assert 'ChenchenSpeech' in (out/'speech.js').read_text(encoding='utf-8')
+            assert 'btn-speak' in (out/'app.js').read_text(encoding='utf-8')
           poems = (out/'poems.js').read_text(encoding='utf-8')
           assert 'const POEMS' in poems
           n = len(re.findall(r'"id"\s*:\s*"poem-', poems))
