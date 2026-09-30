@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Mirror current live site and add chenchen-learning
+      - name: Mirror live site and fetch chenchen-learning from sibling repo
         run: |
           set -euo pipefail
           mkdir -p public
@@ -66,14 +66,20 @@ jobs:
             subprocess.run(['curl','-fsSL','https://pljhonglu.github.io'+a,'-o',str(dest)], check=False)
           PY
           rm -rf public/chenchen-learning
-          mkdir -p public/chenchen-learning
-          cp -a static/chenchen-learning/. public/chenchen-learning/
+          mkdir -p public/chenchen-learning/assets
+          BASE=https://raw.githubusercontent.com/pljhonglu/chenchen-learning/main
+          for f in index.html styles.css README.md .nojekyll; do
+            curl -fsSL "$BASE/$f" -o "public/chenchen-learning/$f" || true
+          done
+          for f in app.part1.b64 app.part2.b64 poems.part1.b64 poems.part2.b64 styles.css.gz.b64; do
+            curl -fsSL "$BASE/assets/$f" -o "public/chenchen-learning/assets/$f"
+          done
           touch public/chenchen-learning/.nojekyll
-          ls -la public/chenchen-learning/
+          ls -laR public/chenchen-learning
           test -f public/chenchen-learning/index.html
-          test -f public/chenchen-learning/app.js
-          test -f public/chenchen-learning/poems.js
-          test -f public/chenchen-learning/styles.css
+          test -f public/chenchen-learning/assets/app.part1.b64
+          test -f public/chenchen-learning/assets/poems.part1.b64
+          test -f public/chenchen-learning/assets/styles.css.gz.b64
 
       - uses: actions/upload-pages-artifact@v3
         with:
