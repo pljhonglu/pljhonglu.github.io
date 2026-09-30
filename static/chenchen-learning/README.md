@@ -1,5 +1,7 @@
-# 辰辰的幼小衔接乐园
+# chenchen-learning（Pages 已停用）
 
-静态学习站：古诗馆、数学、拼音、写字、间隔复习。
+请改用自托管 Docker：https://github.com/pljhonglu/chenchen-learning
 
-访问：https://pljhonglu.github.io/chenchen-learning/
+```bash
+docker compose up -d --build
+```
