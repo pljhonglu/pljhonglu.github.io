@@ -6,8 +6,6 @@ on:
       - 'static/chenchen-learning/**'
       - '.github/workflows/deploy-chenchen.yml'
   workflow_dispatch:
-  schedule:
-    - cron: '*/15 * * * *'
 
 permissions:
   contents: read
@@ -55,6 +53,7 @@ jobs:
                 rel = rel.rstrip('/') + '/index.html'
             dest = root / rel
             dest.parent.mkdir(parents=True, exist_ok=True)
+            print('GET', u, '->', dest)
             subprocess.run(['curl','-fsSL',u,'-o',str(dest)], check=False)
           assets = [
             '/css/main.min.css','/css/style.min.css','/favicon.ico',
@@ -69,40 +68,88 @@ jobs:
           rm -rf public/chenchen-learning
           mkdir -p public/chenchen-learning
           BASE=https://raw.githubusercontent.com/pljhonglu/chenchen-learning/main
-          # Prefer classic multi-file from repo root; fall back to unpacking deploy-src parts
-          if curl -fsSL "$BASE/poems.js" -o /tmp/poems.js && grep -q 'const POEMS' /tmp/poems.js && \
-             curl -fsSL "$BASE/app.js" -o /tmp/app.js && \
-             curl -fsSL "$BASE/styles.css" -o /tmp/styles.css && \
-             curl -fsSL "$BASE/index.html" -o /tmp/index.html && \
-             grep -q 'src="poems.js"' /tmp/index.html; then
-            cp /tmp/index.html /tmp/styles.css /tmp/app.js /tmp/poems.js public/chenchen-learning/
-            curl -fsSL "$BASE/README.md" -o public/chenchen-learning/README.md || true
-            curl -fsSL "$BASE/.nojekyll" -o public/chenchen-learning/.nojekyll || true
-          else
-            mkdir -p /tmp/parts
-            for i in 0 1 2 3; do
-              curl -fsSL "$BASE/deploy-src/classic.part${i}.b64" -o "/tmp/parts/classic.part${i}.b64"
-            done
-            cat /tmp/parts/classic.part*.b64 | tr -d '\n\r ' | base64 -d > /tmp/classic.tar.gz
-            tar xzf /tmp/classic.tar.gz -C public/chenchen-learning
-          fi
-          touch public/chenchen-learning/.nojekyll
-          ls -la public/chenchen-learning/
-          test -s public/chenchen-learning/index.html
-          test -s public/chenchen-learning/styles.css
-          test -s public/chenchen-learning/app.js
-          test -s public/chenchen-learning/poems.js
-          grep -q 'src="poems.js"' public/chenchen-learning/index.html
-          grep -q 'const POEMS' public/chenchen-learning/poems.js
           python3 - <<'PY'
-          import re, pathlib
-          t = pathlib.Path('public/chenchen-learning/poems.js').read_text(encoding='utf-8')
-          n = len(re.findall(r'"id"\s*:\s*"poem-', t))
+          import base64, io, pathlib, re, tarfile, urllib.request
+          out = pathlib.Path('public/chenchen-learning')
+          out.mkdir(parents=True, exist_ok=True)
+          base = 'https://raw.githubusercontent.com/pljhonglu/chenchen-learning/main'
+
+          def fetch(path):
+            try:
+              with urllib.request.urlopen(base + '/' + path) as r:
+                return r.read()
+            except Exception as e:
+              print('fetch fail', path, e)
+              return None
+
+          def try_root():
+            poems = fetch('poems.js')
+            app = fetch('app.js')
+            styles = fetch('styles.css')
+            index = fetch('index.html')
+            if not all([poems, app, styles, index]):
+              return False
+            poems_t = poems.decode('utf-8')
+            styles_t = styles.decode('utf-8')
+            index_t = index.decode('utf-8')
+            if 'const POEMS' not in poems_t:
+              return False
+            if 'src="poems.js"' not in index_t:
+              return False
+            if '@file' in styles_t or '@font-face' not in styles_t:
+              return False
+            (out/'poems.js').write_bytes(poems)
+            (out/'app.js').write_bytes(app)
+            (out/'styles.css').write_bytes(styles)
+            (out/'index.html').write_bytes(index)
+            for extra in ['README.md', '.nojekyll']:
+              b = fetch(extra)
+              if b is not None:
+                (out/extra).write_bytes(b)
+            print('used classic files from repo root')
+            return True
+
+          def unpack_parts():
+            chunks = []
+            for i in range(4):
+              b = fetch(f'deploy-src/classic.part{i}.b64')
+              if b is None:
+                raise SystemExit(f'missing part {i}')
+              chunks.append(b.decode('utf-8'))
+            raw = re.sub(r'\s+', '', ''.join(chunks))
+            fixes = [
+              ('ML+g9neScwH4o', 'ML+i9neScwH4o'),
+              ('MxUS8yU8va7rh', 'MxUs8yU8va7rh'),
+            ]
+            for a,b in fixes:
+              if a in raw:
+                raw = raw.replace(a, b)
+                print('applied fix', a, '->', b)
+            data = base64.b64decode(raw)
+            with tarfile.open(fileobj=io.BytesIO(data), mode='r:gz') as tf:
+              print('tar members', tf.getnames())
+              tf.extractall(out)
+            print('unpacked classic from deploy-src parts')
+
+          if not try_root():
+            unpack_parts()
+
+          for f in ['index.html','styles.css','app.js','poems.js']:
+            assert (out/f).is_file() and (out/f).stat().st_size > 0, f
+          html = (out/'index.html').read_text(encoding='utf-8')
+          assert 'src="poems.js"' in html
+          assert 'gzip' not in html.lower() and 'DecompressionStream' not in html
+          poems = (out/'poems.js').read_text(encoding='utf-8')
+          assert 'const POEMS' in poems
+          n = len(re.findall(r'"id"\s*:\s*"poem-', poems))
           print('poem ids', n)
           assert n >= 30, n
-          html = pathlib.Path('public/chenchen-learning/index.html').read_text(encoding='utf-8')
-          assert 'gzip' not in html.lower() and 'DecompressionStream' not in html
-          print('classic index ok')
+          styles = (out/'styles.css').read_text(encoding='utf-8')
+          assert '@file' not in styles and '@font-face' in styles
+          (out/'.nojekyll').write_text('\n', encoding='utf-8')
+          print('classic deploy payload ready')
+          for p in sorted(out.iterdir()):
+            print(p.name, p.stat().st_size)
           PY
 
       - uses: actions/upload-pages-artifact@v3
